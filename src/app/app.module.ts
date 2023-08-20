@@ -7,10 +7,14 @@ import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
 import {CovalentLayoutModule} from "@covalent/core/layout";
 import {CovalentMarkdownModule} from "@covalent/markdown";
 import {CovalentHighlightModule} from "@covalent/highlight";
+import { BMIComponent } from './bmi/bmi.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatTableModule} from "@angular/material/table";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    BMIComponent
   ],
   imports: [
     BrowserModule,
@@ -19,7 +23,9 @@ import {CovalentHighlightModule} from "@covalent/highlight";
     // (optional) Additional Covalent Modules imports
     CovalentDynamicFormsModule,
     CovalentHighlightModule,
-    CovalentMarkdownModule
+    CovalentMarkdownModule,
+    MatCardModule,
+    MatTableModule
     ,
   ],
   providers: [],
