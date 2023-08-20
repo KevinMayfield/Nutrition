@@ -10,6 +10,12 @@ import {CovalentHighlightModule} from "@covalent/highlight";
 import { BMIComponent } from './bmi/bmi.component';
 import {MatCardModule} from "@angular/material/card";
 import {MatTableModule} from "@angular/material/table";
+import {MatInputModule} from "@angular/material/input";
+import {MatSelectModule} from "@angular/material/select";
+import {MatButtonModule} from "@angular/material/button";
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FormsModule} from "@angular/forms";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -18,15 +24,21 @@ import {MatTableModule} from "@angular/material/table";
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     CovalentLayoutModule,
+      FormsModule,
+
     // (optional) Additional Covalent Modules imports
     CovalentDynamicFormsModule,
     CovalentHighlightModule,
     CovalentMarkdownModule,
     MatCardModule,
-    MatTableModule
-    ,
+    MatFormFieldModule,
+    MatTableModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

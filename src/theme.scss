@@ -41,7 +41,7 @@ $theme: mat.define-light-theme((
 @include mat.legacy-core-theme($theme);
 @include mat.all-legacy-component-themes($theme);
 @include angular-material-theme($theme);
-@include covalent-theme($theme);
+@include covalent-theme($theme, $typography);
 
 // (optional) Additional themes
 @include covalent-markdown-theme($theme);

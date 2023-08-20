@@ -1,10 +1,44 @@
-
-<mat-card>
+<mat-card xmlns="http://www.w3.org/1999/html">
     <mat-card-header>
         BMI Scaffholding
     </mat-card-header>
       <mat-card-content>
-          content
+            <div class="example-form">
+              <mat-form-field class="example-third-width">
+                  <mat-label >Height</mat-label>
+                  <input matInput type="number"  >
+                  <span matSuffix>cm</span>
+              </mat-form-field>
+              <mat-form-field class="example-third-width">
+                  <mat-label>Age</mat-label>
+                  <input matInput type="number" min="18" max="120">
+                  <span matSuffix>years</span>
+              </mat-form-field>
+              <mat-form-field class="example-third-width">
+                  <mat-label>Weight</mat-label>
+                  <input matInput type="number">
+                  <span matSuffix>kg</span>
+              </mat-form-field>
+              <mat-form-field class="example-third-width">
+                  <mat-label>Sex</mat-label>
+                  <select matNativeControl required>
+                      <option>Male</option>
+                      <option>Female</option>
+                  </select>
+              </mat-form-field>
+               <mat-form-field class="example-third-width">
+                  <mat-label>Ethnic Category</mat-label>
+                  <select matNativeControl>
+                      <option value="one">Pink</option>
+                      <option value="two">Blue</option>
+                  </select>
+                  <!--<mat-hint>Black, Asian and other minority ethnic groups with a BMI of 23 or more have a higher risk of getting type 2 diabetes and other long term illnesses</mat-hint>
+                  -->
+              </mat-form-field>
+
+            </div>
+          <button mat-raised-button color="accent" (click)="calculate()">Calculate</button>
+          <mat-label>{{bmi}}</mat-label>
       </mat-card-content>
 
 </mat-card>
