@@ -7,7 +7,7 @@
             <div class="example-form">
               <mat-form-field class="example-third-width">
                   <mat-label >Height</mat-label>
-                  <input matInput type="number" [(ngModel)]="height" >
+                  <input matInput type="number" [(ngModel)]="height" required>
                   <span matSuffix>cm</span>
               </mat-form-field>
               <mat-form-field class="example-third-width">
@@ -17,9 +17,14 @@
               </mat-form-field>
               <mat-form-field class="example-third-width">
                   <mat-label>Weight</mat-label>
-                  <input matInput type="number" [(ngModel)]="weight">
+                  <input matInput type="number" [(ngModel)]="weight" required>
                   <span matSuffix>kg</span>
               </mat-form-field>
+                <mat-form-field class="example-third-width">
+                    <mat-label>Waist</mat-label>
+                    <input matInput type="number" [(ngModel)]="waist">
+                    <span matSuffix>cm</span>
+                </mat-form-field>
                 <mat-form-field class="example-half-width">
                     <mat-label>Sex</mat-label>
                     <mat-select [(ngModel)]="administrativeGender">
@@ -34,10 +39,12 @@
                 </mat-form-field>
 
             </div>
-          <button mat-raised-button color="accent" (click)="calculate()">Calculate</button>
+          <button mat-raised-button color="accent" (click)="calculate()">Calculate & Save</button>
           <br/>
           <br/>
           <mat-label>{{bmi}}</mat-label>
+          <br/>
+          <mat-label>{{waistratio}} </mat-label>
       </mat-card-content>
 
 </mat-card>

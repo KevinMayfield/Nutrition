@@ -2,10 +2,20 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {client} from "fhirclient";
 import Client from "fhirclient/lib/Client";
-import {Parameters, Patient, QuestionnaireResponse, ValueSet, ValueSetExpansionContains} from "fhir/r4";
+import {
+    Bundle,
+    Observation,
+    Parameters,
+    Patient,
+    QuestionnaireResponse,
+    ValueSet,
+    ValueSetExpansionContains
+} from "fhir/r4";
 import {fhirclient} from "fhirclient/lib/types";
-import RequestOptions = fhirclient.RequestOptions;
 import {HttpClient} from "@angular/common/http";
+import { DatePipe } from '@angular/common';
+// @ts-ignore
+import {v4 as uuidv4} from 'uuid';
 
 @Component({
   selector: 'app-bmi',
@@ -20,6 +30,7 @@ export class BMIComponent implements OnInit {
     ethnicCategory :ValueSetExpansionContains | undefined
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
+    epr: string | undefined
 
     ctx : Client | undefined  = undefined
 
@@ -29,18 +40,63 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
     height: number | undefined;
     age: number| undefined;
     weight: number | undefined;
+    waist: number | undefined;
+    waistratio: string | undefined;
 
     constructor(private route: ActivatedRoute,
                 private http: HttpClient) { }
 
     calculate() {
 
-
-        if (this.weight !== undefined && this.height !== undefined) {
-            var calc = Math.round(this.weight / ((this.height/100) * (this.height/100)))
-            console.log(calc)
-            this.bmi='Your BMI is '+calc
+        var bundle : Bundle = {
+            entry: [], type: "transaction",
+            resourceType: 'Bundle'
         }
+        if (this.weight !== undefined && this.height !== undefined) {
+            var calc = this.weight / ((this.height/100) * (this.height/100))
+            console.log(calc)
+            this.bmi='Your BMI is '+calc.toFixed(1) + ' A BMI calculation in the healthy weight range is between 18.5 to 24.9.'
+            var observation: Observation = {
+                code: {
+                    coding: [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "60621009",
+                            "display": "Body mass index"
+                        }
+                    ]
+                }, resourceType: "Observation", status:"final"
+            }
+            observation.subject = {
+                "reference": "Patient/"+this.patient?.id
+            }
+            observation.effectiveDateTime =this.getFHIRDateString(new Date())
+            observation.valueQuantity = {
+              value: calc,
+                code: 'kg/m2'
+            }
+            bundle.entry?.push({
+                "fullUrl": "urn:uuid:" + uuidv4(),
+                "resource": observation,
+                "request": {
+                    url: "Observation",
+                    method: "POST"
+                }
+            })
+            console.log(bundle)
+        }
+        if (this.height !== undefined && this.waist !== undefined) {
+            var calc = this.waist / this.height
+            console.log(calc)
+            this.waistratio = 'Waist to height ratio '+calc.toFixed(2) + ' A waist to height ratio of 0.5 or higher means you may have increased health risks such as heart disease, type 2 diabetes and stroke.'
+        }
+        // @ts-ignore
+        if (bundle.entry?.length > 0 && this.epr !== undefined ) {
+            this.http.post(this.epr + '/', bundle).subscribe(result => {
+                console.log(result)
+            })
+        }
+
     }
 
     ngOnInit(): void {
@@ -50,6 +106,8 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
                     console.log(params['iss']);
                     console.log(params['patient']);
                     if (params['iss'] !== undefined) {
+
+                        this.epr = params['iss']
                         this.ctx = client({
                             serverUrl: params['iss']
                         });
@@ -110,6 +168,10 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
                                                             // @ts-ignore
                                                             this.weight = item.answer[0].valueQuantity.value
                                                         }
+                                                        if ( item.linkId === '7761181498456') {
+                                                            // @ts-ignore
+                                                            this.waist = item.answer[0].valueQuantity.value
+                                                        }
                                                         if ( item.linkId === '7658017405403' && this.ethnicCategories !== undefined) {
                                                             for (var ethnic of this.ethnicCategories) {
 
@@ -166,5 +228,12 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
 
             }
         }
+    }
+    getFHIRDateString(date : Date) : string {
+        var datePipe = new DatePipe('en-GB');
+        //2023-05-12T13:22:31.964Z
+        var utc = datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss.SSSZZZZZ');
+        if (utc!= null) return utc
+        return date.toISOString()
     }
 }
