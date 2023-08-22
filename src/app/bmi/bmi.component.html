@@ -42,9 +42,26 @@
           <button mat-raised-button color="accent" (click)="calculate()">Calculate & Save</button>
           <br/>
           <br/>
-          <mat-label>{{bmi}}</mat-label>
+          <span *ngIf="bmi !== undefined">
+          <td-message
+                  [label]="bmiLabel"
+                  [sublabel]="bmi"
+                  [color]="bmiColour"
+                  [icon]="bmiIcon"
+          >
+              <button td-message-actions mat-button (click)="showAlert()">View More</button>
+          </td-message>
+              </span>
+
           <br/>
-          <mat-label>{{waistratio}} </mat-label>
+          <span *ngIf="waistratio !== undefined">
+          <td-message
+                  [label]="waistratioLabel"
+                  [sublabel]="waistratio"
+                  [color]="waistratioColour"
+                  [icon]="waistratioIcon"
+          ></td-message>
+              </span>
       </mat-card-content>
 
 </mat-card>

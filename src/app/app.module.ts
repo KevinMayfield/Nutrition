@@ -5,8 +5,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
 import {CovalentLayoutModule} from "@covalent/core/layout";
+import { CovalentMessageModule } from '@covalent/core/message';
 import {CovalentMarkdownModule} from "@covalent/markdown";
 import {CovalentHighlightModule} from "@covalent/highlight";
+import { CovalentDialogsModule } from '@covalent/core/dialogs';
 import { BMIComponent } from './bmi/bmi.component';
 import {MatCardModule} from "@angular/material/card";
 import {MatTableModule} from "@angular/material/table";
@@ -33,6 +35,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     CovalentDynamicFormsModule,
     CovalentHighlightModule,
     CovalentMarkdownModule,
+    CovalentMessageModule,
+    CovalentDialogsModule,
     MatCardModule,
     MatFormFieldModule,
     MatTableModule,
