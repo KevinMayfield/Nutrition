@@ -11,12 +11,12 @@ import {
     ValueSet,
     ValueSetExpansionContains
 } from "fhir/r4";
-import {fhirclient} from "fhirclient/lib/types";
 import {HttpClient} from "@angular/common/http";
 import { DatePipe } from '@angular/common';
 // @ts-ignore
 import {v4 as uuidv4} from 'uuid';
 import { TdDialogService } from '@covalent/core/dialogs';
+import {SmartService} from "../service/smart.service";
 
 @Component({
   selector: 'app-bmi',
@@ -26,20 +26,18 @@ import { TdDialogService } from '@covalent/core/dialogs';
 export class BMIComponent implements OnInit {
     bmi: string | undefined;
 
-    patient : Patient | undefined;
+
     ethnicCategories: ValueSetExpansionContains[] | undefined;
     ethnicCategory :ValueSetExpansionContains | undefined
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
     epr: string | undefined
 
-    ctx : Client | undefined  = undefined
-
     markdown = `This is a mock to demonstrate the launch of application via [SMART Launch](https://www.hl7.org/fhir/smart-app-launch/)
 
 It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/healthy-weight/bmi-calculator/)`
     height: number | undefined;
-    age: number| undefined;
+
     weight: number | undefined;
     waist: number | undefined;
     waistratio: string | undefined;
@@ -49,10 +47,12 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
     waistratioLabel: any;
     waistratioColour: any;
     waistratioIcon: any;
+    age: any;
 
     constructor(private route: ActivatedRoute,
                 private http: HttpClient,
-                private _dialogService: TdDialogService) { }
+                private _dialogService: TdDialogService,
+                private smart: SmartService) { }
 
     calculate() {
 
@@ -67,6 +67,7 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
             this.bmiIcon = "info"
             this.bmiColour="primary"
             this.bmiLabel='Your BMI is '+calc.toFixed(1)
+
             var observation: Observation = {
                 code: {
                     coding: [
@@ -79,7 +80,7 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
                 }, resourceType: "Observation", status:"final"
             }
             observation.subject = {
-                "reference": "Patient/"+this.patient?.id
+                "reference": "Patient/"+this.smart.patient?.id
             }
             observation.effectiveDateTime =this.getFHIRDateString(new Date())
             observation.valueQuantity = {
@@ -115,7 +116,7 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
                 }, resourceType: "Observation", status:"final"
             }
             observation.subject = {
-                "reference": "Patient/"+this.patient?.id
+                "reference": "Patient/"+this.smart.patientId
             }
             observation.effectiveDateTime =this.getFHIRDateString(new Date())
             observation.valueQuantity = {
@@ -140,109 +141,85 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
     }
 
     ngOnInit(): void {
-        this.route.queryParams
-            .subscribe(params => {
-                    console.log(params);
-                    console.log(params['iss']);
-                    console.log(params['patient']);
-                    if (params['iss'] !== undefined) {
+        this.smart.patientChangeEvent.subscribe(patient => {
+            this.age = this.smart.age
+            var parameters: Parameters = {
+                "resourceType": "Parameters",
 
-                        this.epr = params['iss']
-                        this.ctx = client({
-                            serverUrl: params['iss']
-                        });
-                        if (params['patient'] !== undefined) {
-                            this.ctx.request("Patient/" + params['patient']).then(result => {
-                                console.log(result)
-                                if (result.resourceType==='Patient') {
-                                    this.patient = result
-                                    if (this.patient?.birthDate !== undefined) {
-                                        let timeDiff = Math.abs(Date.now() - Date.parse(this.patient.birthDate));
-                                        let age = Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25);
-                                        this.age= age
-                                    }
-                                    this.setSelectAnswers()
-                                }
+                "parameter": [
+                    {
+                        "name": "subject",
+                        "valueReference": {
+                            "reference": "Patient/" + patient.id
+                        }
+                    },
+                    {
+                        "name": "questionnaireRef",
+                        "valueReference": {
+                            "reference": "Questionnaire/b1132517-9aea-4968-910b-ccfa3889c33a"
+                        }
+                    }
+                ]
+            }
 
-                            })
-                            var parameters : Parameters = {
-                                "resourceType" : "Parameters",
+            // @ts-ignore
+            this.http.post(this.smart.epr + '/Questionnaire/$populate', parameters).subscribe(result => {
+                console.log(result)
+                if (result !== undefined) {
 
-                                "parameter" : [
-                                    {
-                                        "name": "subject",
-                                        "valueReference": {
-                                            "reference": "Patient/" + params['patient']
+                    var parameters = result as Parameters
+                    if (parameters.parameter !== undefined) {
+
+                        for (var parameter of parameters.parameter) {
+                            if (parameter.name === 'response') {
+
+                                var questionnaireResponse = parameter.resource as QuestionnaireResponse
+                                if (questionnaireResponse.item !== undefined) {
+
+                                    for (var item of questionnaireResponse.item) {
+                                        if (item.linkId === '9832470915833') {
+                                            // @ts-ignore
+                                            this.height = item.answer[0].valueQuantity.value
                                         }
-                                    },
-                                    {
-                                        "name": "questionnaireRef",
-                                        "valueReference": {
-                                            "reference": "Questionnaire/b1132517-9aea-4968-910b-ccfa3889c33a"
+
+                                        if (item.linkId === '81247982689') {
+                                            // @ts-ignore
+                                            this.weight = item.answer[0].valueQuantity.value
                                         }
-                                    }
-                                ]
-                            }
+                                        if (item.linkId === '7761181498456') {
+                                            // @ts-ignore
+                                            this.waist = item.answer[0].valueQuantity.value
+                                        }
+                                        if (item.linkId === '7658017405403' && this.ethnicCategories !== undefined) {
+                                            for (var ethnic of this.ethnicCategories) {
 
-                            // @ts-ignore
-                            this.http.post(params['iss'] + '/Questionnaire/$populate', parameters).subscribe(result => {
-                                console.log(result)
-                                if (result !== undefined) {
-
-                                    var parameters = result as Parameters
-                                    if (parameters.parameter !== undefined) {
-
-                                        for (var parameter of parameters.parameter) {
-                                            if (parameter.name === 'response') {
-
-                                                var questionnaireResponse = parameter.resource as QuestionnaireResponse
-                                                if (questionnaireResponse.item !== undefined) {
-
-                                                    for (var item of questionnaireResponse.item) {
-                                                        if ( item.linkId === '9832470915833') {
-                                                            // @ts-ignore
-                                                            this.height = item.answer[0].valueQuantity.value
-                                                        }
-
-                                                        if ( item.linkId === '81247982689') {
-                                                            // @ts-ignore
-                                                            this.weight = item.answer[0].valueQuantity.value
-                                                        }
-                                                        if ( item.linkId === '7761181498456') {
-                                                            // @ts-ignore
-                                                            this.waist = item.answer[0].valueQuantity.value
-                                                        }
-                                                        if ( item.linkId === '7658017405403' && this.ethnicCategories !== undefined) {
-                                                            for (var ethnic of this.ethnicCategories) {
-
-                                                                // @ts-ignore
-                                                                if (item.answer[0].valueCoding.code === ethnic.code) {
-                                                                    this.ethnicCategory = ethnic
-                                                                }
-                                                            }
-                                                        }
-                                                    }
+                                                // @ts-ignore
+                                                if (item.answer[0].valueCoding.code === ethnic.code) {
+                                                    this.ethnicCategory = ethnic
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            })
-                            this.http.get(params['iss'] + '/ValueSet/$expand?url=https://fhir.hl7.org.uk/ValueSet/UKCore-EthnicCategory').subscribe(result => {
-                                console.log(result)
-                                this.ethnicCategories = this.getContainsExpansion(result)
-                                this.setSelectAnswers()
-                            })
-                            this.http.get(params['iss'] + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
-                                console.log(result)
-                                this.administrativeGenders = this.getContainsExpansion(result)
-                                this.setSelectAnswers()
-                            })
+                            }
                         }
                     }
                 }
-            );
+            })
+            this.http.get(this.smart.epr + '/ValueSet/$expand?url=https://fhir.hl7.org.uk/ValueSet/UKCore-EthnicCategory').subscribe(result => {
+                console.log(result)
+                this.ethnicCategories = this.getContainsExpansion(result)
+                this.setSelectAnswers()
+            })
+            this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
+                console.log(result)
+                this.administrativeGenders = this.getContainsExpansion(result)
+                this.setSelectAnswers()
+            })
+        }
+        )
     }
+
     getContainsExpansion(resource: any): ValueSetExpansionContains[] {
         const valueSet = resource as ValueSet;
         const contains: ValueSetExpansionContains[] = [];
@@ -255,11 +232,11 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
     }
 
     setSelectAnswers() {
-        if (this.patient !== undefined) {
+        if (this.smart.patient !== undefined) {
             if (this.administrativeGenders !== undefined) {
                 for (var gender of this.administrativeGenders) {
 
-                    if (gender.code === this.patient.gender) {
+                    if (gender.code === this.smart.patient.gender) {
                         this.administrativeGender = gender
                     }
                 }

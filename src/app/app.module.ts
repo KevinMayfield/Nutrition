@@ -18,32 +18,38 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { MainMenuComponent } from './main-menu/main-menu.component';
+import {MatIconModule} from "@angular/material/icon";
+import {MatListModule} from "@angular/material/list";
 
 @NgModule({
   declarations: [
     AppComponent,
-    BMIComponent
+    BMIComponent,
+    MainMenuComponent
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    CovalentLayoutModule,
-      FormsModule,
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        CovalentLayoutModule,
+        FormsModule,
 
-    // (optional) Additional Covalent Modules imports
-    CovalentDynamicFormsModule,
-    CovalentHighlightModule,
-    CovalentMarkdownModule,
-    CovalentMessageModule,
-    CovalentDialogsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatTableModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule
-  ],
+        // (optional) Additional Covalent Modules imports
+        CovalentDynamicFormsModule,
+        CovalentHighlightModule,
+        CovalentMarkdownModule,
+        CovalentMessageModule,
+        CovalentDialogsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatTableModule,
+        MatInputModule,
+        MatSelectModule,
+        MatButtonModule,
+        MatIconModule,
+        MatListModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
