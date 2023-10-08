@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {CovalentDynamicFormsModule} from "@covalent/dynamic-forms";
@@ -25,6 +24,7 @@ import { RestingMetabolicRateComponent } from './resting-metabolic-rate/resting-
 import {SafeHtmlPipe} from "./service/safeHtmlPipe";
 import {SafeUrlPipe} from "./service/safeUrl";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import { StravaComponent } from './strava/strava.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MainMenuComponent,
     RestingMetabolicRateComponent,
       SafeHtmlPipe,
-      SafeUrlPipe
+      SafeUrlPipe,
+      StravaComponent
   ],
     imports: [
         BrowserModule,
