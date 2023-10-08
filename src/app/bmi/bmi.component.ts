@@ -141,11 +141,19 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
     }
 
     ngOnInit(): void {
+        this.http.get(this.smart.epr + '/ValueSet/$expand?url=https://fhir.hl7.org.uk/ValueSet/UKCore-EthnicCategory').subscribe(result => {
+            console.log(result)
+            this.ethnicCategories = this.smart.getContainsExpansion(result)
+        })
+        this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
+            console.log(result)
+            this.administrativeGenders = this.smart.getContainsExpansion(result)
+        })
         this.smart.patientChangeEvent.subscribe(patient => {
             this.age = this.smart.age
+                this.setSelectAnswers()
             var parameters: Parameters = {
                 "resourceType": "Parameters",
-
                 "parameter": [
                     {
                         "name": "subject",
@@ -206,16 +214,7 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
                     }
                 }
             })
-            this.http.get(this.smart.epr + '/ValueSet/$expand?url=https://fhir.hl7.org.uk/ValueSet/UKCore-EthnicCategory').subscribe(result => {
-                console.log(result)
-                this.ethnicCategories = this.smart.getContainsExpansion(result)
-                this.setSelectAnswers()
-            })
-            this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
-                console.log(result)
-                this.administrativeGenders = this.smart.getContainsExpansion(result)
-                this.setSelectAnswers()
-            })
+
         }
         )
     }

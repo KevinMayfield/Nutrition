@@ -88,8 +88,13 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
     ngOnInit(): void {
+        this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
+            console.log(result)
+            this.administrativeGenders = this.smart.getContainsExpansion(result)
+        })
         this.smart.patientChangeEvent.subscribe(patient => {
                 this.age = this.smart.age
+            this.setSelectAnswers()
                 var parameters: Parameters = {
                     "resourceType": "Parameters",
 
@@ -141,15 +146,10 @@ export class RestingMetabolicRateComponent implements OnInit{
                                     }
                                 }
                             }
+
                             this.calculate()
                         }
                     }
-                })
-
-                this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
-                    console.log(result)
-                    this.administrativeGenders = this.smart.getContainsExpansion(result)
-                    this.setSelectAnswers()
                 })
             }
         )

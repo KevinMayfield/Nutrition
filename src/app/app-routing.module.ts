@@ -9,7 +9,7 @@ const routes: Routes = [ {
   children : [
     { path: '', component: RestingMetabolicRateComponent},
     { path: 'bmi', component: BMIComponent},
-    { path: 'rmr', component: RestingMetabolicRateComponent}
+    { path: 'nutrition', component: RestingMetabolicRateComponent}
   ]
 }];
 
