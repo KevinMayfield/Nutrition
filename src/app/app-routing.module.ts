@@ -7,7 +7,7 @@ import {RestingMetabolicRateComponent} from "./resting-metabolic-rate/resting-me
 const routes: Routes = [ {
   path: '', component: MainMenuComponent,
   children : [
-    { path: '', component: BMIComponent},
+    { path: '', component: RestingMetabolicRateComponent},
     { path: 'bmi', component: BMIComponent},
     { path: 'rmr', component: RestingMetabolicRateComponent}
   ]
