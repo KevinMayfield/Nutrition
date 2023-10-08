@@ -3,13 +3,15 @@ import {client} from "fhirclient";
 import Client from "fhirclient/lib/Client";
 import {Patient, ValueSet, ValueSetExpansionContains} from "fhir/r4";
 import {DatePipe} from "@angular/common";
+import {Environment} from "@angular/cli/lib/config/workspace-schema";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SmartService implements OnInit{
 
-  epr: string | undefined
+  epr: string = environment.tieServer
   ctx : Client | undefined  = undefined
   patient : Patient | undefined;
   patientId : string | undefined;
