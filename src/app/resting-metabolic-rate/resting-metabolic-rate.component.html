@@ -84,7 +84,7 @@
                             <th>Recommended Carbohydrate Intake (g)</th>
                             <th></th>
                         </tr>
-                        <tr >
+                        <tr *ngIf="pal == undefined || pal.code === 'very-light'" >
                             <td>Very Light Training (low-intensity or skill-based exercise)</td>
                             <td>3-5 g/kg BW daily</td>
                             <td>{{perkgKCal(3*4)}}-{{perkgKCal(5*4)}} kcal</td>
@@ -95,7 +95,7 @@
                                 </span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="pal == undefined || pal.code === 'moderate'">
                             <td>Moderate-intensity training (approx. 1 h daily)</td>
                             <td>5-7 g/kg BW daily</td>
                              <td>{{perkgKCal(5*4)}}-{{perkgKCal(7*4)}} kcal</td>
@@ -109,7 +109,7 @@
                                 </span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="pal == undefined || pal.code === 'moderate-high'">
                             <td>Moderate-high-intensity training (approx. 1-3 h daily)</td>
                             <td>6-10 g/kg BW daily</td>
                              <td>{{perkgKCal(6*4)}}-{{perkgKCal(10*4)}} kcal</td>
@@ -123,7 +123,7 @@
                                 </span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="pal == undefined || pal.code === 'very-high'">
                             <td>Very high-intensity training (> 4 h daily)</td>
                             <td>8-12 g/kg BW daily</td>
                              <td>{{perkgKCal(8*4)}}-{{perkgKCal(12*4)}} kcal</td>
