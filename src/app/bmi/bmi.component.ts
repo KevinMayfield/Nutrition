@@ -49,7 +49,7 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
     waistratioIcon: any;
     age: any;
 
-    constructor(private route: ActivatedRoute,
+    constructor(
                 private http: HttpClient,
                 private _dialogService: TdDialogService,
                 private smart: SmartService) { }
@@ -82,7 +82,7 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
             observation.subject = {
                 "reference": "Patient/"+this.smart.patient?.id
             }
-            observation.effectiveDateTime =this.getFHIRDateString(new Date())
+            observation.effectiveDateTime =this.smart.getFHIRDateString(new Date())
             observation.valueQuantity = {
               value: calc,
                 code: 'kg/m2'
@@ -118,7 +118,7 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
             observation.subject = {
                 "reference": "Patient/"+this.smart.patientId
             }
-            observation.effectiveDateTime =this.getFHIRDateString(new Date())
+            observation.effectiveDateTime =this.smart.getFHIRDateString(new Date())
             observation.valueQuantity = {
                 value: calc
             }
@@ -208,28 +208,18 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
             })
             this.http.get(this.smart.epr + '/ValueSet/$expand?url=https://fhir.hl7.org.uk/ValueSet/UKCore-EthnicCategory').subscribe(result => {
                 console.log(result)
-                this.ethnicCategories = this.getContainsExpansion(result)
+                this.ethnicCategories = this.smart.getContainsExpansion(result)
                 this.setSelectAnswers()
             })
             this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
                 console.log(result)
-                this.administrativeGenders = this.getContainsExpansion(result)
+                this.administrativeGenders = this.smart.getContainsExpansion(result)
                 this.setSelectAnswers()
             })
         }
         )
     }
 
-    getContainsExpansion(resource: any): ValueSetExpansionContains[] {
-        const valueSet = resource as ValueSet;
-        const contains: ValueSetExpansionContains[] = [];
-        if (valueSet !== undefined && valueSet.expansion !== undefined && valueSet.expansion.contains !== undefined) {
-            for (const concept of valueSet.expansion.contains) {
-                contains.push(concept);
-            }
-        }
-        return contains;
-    }
 
     setSelectAnswers() {
         if (this.smart.patient !== undefined) {
@@ -246,13 +236,7 @@ It is based on [BMI healthy weight calculator](https://www.nhs.uk/live-well/heal
             }
         }
     }
-    getFHIRDateString(date : Date) : string {
-        var datePipe = new DatePipe('en-GB');
-        //2023-05-12T13:22:31.964Z
-        var utc = datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss.SSSZZZZZ');
-        if (utc!= null) return utc
-        return date.toISOString()
-    }
+
 
     showAlert(): void {
         this._dialogService.openAlert({

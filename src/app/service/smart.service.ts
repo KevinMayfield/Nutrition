@@ -1,7 +1,8 @@
 import {EventEmitter, Injectable, OnInit} from '@angular/core';
 import {client} from "fhirclient";
 import Client from "fhirclient/lib/Client";
-import {Patient} from "fhir/r4";
+import {Patient, ValueSet, ValueSetExpansionContains} from "fhir/r4";
+import {DatePipe} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,26 @@ export class SmartService implements OnInit{
       })
     }
   }
+
+  getContainsExpansion(resource: any): ValueSetExpansionContains[] {
+    const valueSet = resource as ValueSet;
+    const contains: ValueSetExpansionContains[] = [];
+    if (valueSet !== undefined && valueSet.expansion !== undefined && valueSet.expansion.contains !== undefined) {
+      for (const concept of valueSet.expansion.contains) {
+        contains.push(concept);
+      }
+    }
+    return contains;
+  }
+
+  getFHIRDateString(date : Date) : string {
+    var datePipe = new DatePipe('en-GB');
+    //2023-05-12T13:22:31.964Z
+    var utc = datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss.SSSZZZZZ');
+    if (utc!= null) return utc
+    return date.toISOString()
+  }
+
 
   ngOnInit(): void {
   }

@@ -2,26 +2,27 @@
     <td-navigation-drawer
             flex
             sidenavTitle="Demo"
-            logo="teradata-dark"
     >
         <mat-nav-list>
-            <a mat-list-item>
-                <mat-icon matListItemIcon>home</mat-icon>
-                Home
+            <a mat-list-item tdLayoutToggle routerLink="/bmi">
+                Body Mass Index
+            </a>
+            <a mat-list-item tdLayoutToggle routerLink="/rmr">
+                Resting Metabolic Rate
             </a>
             <a mat-list-item tdLayoutToggle>
                 <mat-icon matListItemIcon>close</mat-icon>
                 Close Drawer
             </a>
         </mat-nav-list>
-        <div tdNavigationDrawerMenu>
+        <!--<div tdNavigationDrawerMenu>
             <mat-nav-list>
                 <a mat-list-item>
                     <mat-icon matListItemIcon>account_box</mat-icon>
                     Profile
                 </a>
             </mat-nav-list>
-        </div>
+        </div> -->
     </td-navigation-drawer>
     <td-layout-nav
             toolbarTitle="SMART Demo"

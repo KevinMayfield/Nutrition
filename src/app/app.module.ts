@@ -21,12 +21,19 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import {MatIconModule} from "@angular/material/icon";
 import {MatListModule} from "@angular/material/list";
+import { RestingMetabolicRateComponent } from './resting-metabolic-rate/resting-metabolic-rate.component';
+import {SafeHtmlPipe} from "./service/safeHtmlPipe";
+import {SafeUrlPipe} from "./service/safeUrl";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
     AppComponent,
     BMIComponent,
-    MainMenuComponent
+    MainMenuComponent,
+    RestingMetabolicRateComponent,
+      SafeHtmlPipe,
+      SafeUrlPipe
   ],
     imports: [
         BrowserModule,
@@ -48,7 +55,8 @@ import {MatListModule} from "@angular/material/list";
         MatSelectModule,
         MatButtonModule,
         MatIconModule,
-        MatListModule
+        MatListModule,
+        MatTooltipModule
     ],
   providers: [],
   bootstrap: [AppComponent]

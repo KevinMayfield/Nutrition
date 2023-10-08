@@ -1,0 +1,195 @@
+<mat-card xmlns="http://www.w3.org/1999/html">
+    <mat-card-header>
+        <h1>Nutrition</h1>
+    </mat-card-header>
+    <mat-card-content>
+        <div layout="row">
+        <div class="example-form">
+            <mat-form-field class="example-full-width">
+                <mat-label >Height</mat-label>
+                <input matInput type="number" [(ngModel)]="height" required (ngModelChange)="calculate()">
+                <span matSuffix>cm</span>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Age</mat-label>
+                <input matInput type="number" min="18" max="120" [(ngModel)]="age" (ngModelChange)="calculate()">
+                <span matSuffix>years</span>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Weight</mat-label>
+                <input matInput type="number" [(ngModel)]="weight" required (ngModelChange)="calculate()">
+                <span matSuffix>kg</span>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+                <mat-label>Sex</mat-label>
+                <mat-select [(ngModel)]="administrativeGender" (ngModelChange)="calculate()">
+                    <mat-option *ngFor="let gender of administrativeGenders" [value]="gender">{{gender.display}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>How often do you exercise?</mat-label>
+                <mat-select [(ngModel)]="exerciseFrequency" (ngModelChange)="calculate()">
+                    <mat-option *ngFor="let pal of exerciseFrequencies" [value]="pal">{{pal.display}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>How intense is your exercise?</mat-label>
+                <mat-select [(ngModel)]="pal" (ngModelChange)="calculate()">
+                    <mat-option *ngFor="let pal of pals" [value]="pal">{{pal.display}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+        </div>
+           <div style="width: 5%;">
+               &nbsp;
+           </div>
+            <div>
+                <div class="example-full-width">
+                    <h3>Energy</h3>
+                    <table class="mat-elevation-z8">
+                        <tr>
+                            <th></th>
+                            <th>Energy (kcal)</th>
+                            <th></th>
+                        </tr>
+                        <tr *ngIf="rmr !== undefined">
+                            <td>Resting Metabolic Rate</td>
+                            <td> {{round(rmr)}} kcal</td>
+                            <td><span *ngFor="let pizza of pizza(rmr)">
+                                <mat-icon>local_pizza</mat-icon>
+                            </span></td>
+                        </tr>
+                        <tr *ngIf="dailyEnergy !== undefined && rmr !== undefined">
+                            <td>Daily Calorie Needs - {{exerciseFrequency?.display}}</td>
+                            <td>{{round(dailyEnergy)}} kcal</td>
+                            <td><span *ngFor="let pizza of pizza(rmr)">
+                                <mat-icon>local_pizza</mat-icon>
+                            </span>
+                                <span *ngFor="let pizza of pizza(dailyEnergy-rmr)">
+                                <mat-icon color="accent">local_pizza</mat-icon>
+                            </span></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="example-full-width">
+                    <span *ngIf="weight !== undefined">
+                    <h3>Daily Carbohydate Intake</h3>
+                    <table class="mat-elevation-z8" >
+                        <tr>
+                            <th>Activity Level</th>
+                            <th>Recommended Carbohydrate Intake (g/kg BW)</th>
+                             <th>Recommended Energy (kcal)</th>
+                            <th>Recommended Carbohydrate Intake (g)</th>
+                            <th></th>
+                        </tr>
+                        <tr >
+                            <td>Very Light Training (low-intensity or skill-based exercise)</td>
+                            <td>3-5 g/kg BW daily</td>
+                            <td>{{perkgKCal(3*4)}}-{{perkgKCal(5*4)}} kcal</td>
+                            <td>{{perkgKCal(3)}}-{{perkgKCal(5)}} g </td>
+                             <td>
+                                <span *ngFor="let pizza of pizza(perkgKCal(4*4))">
+                                    <mat-icon>local_pizza</mat-icon>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Moderate-intensity training (approx. 1 h daily)</td>
+                            <td>5-7 g/kg BW daily</td>
+                             <td>{{perkgKCal(5*4)}}-{{perkgKCal(7*4)}} kcal</td>
+                            <td>{{perkgKCal(5)}}-{{perkgKCal(7)}} g</td>
+                            <td>
+                                <span *ngFor="let pizza of pizza(perkgKCal(4*4))">
+                                    <mat-icon>local_pizza</mat-icon>
+                                </span>
+                                <span *ngFor="let pizza of pizza(perkgKCal(2*4))">
+                                    <mat-icon color="accent">local_pizza</mat-icon>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Moderate-high-intensity training (approx. 1-3 h daily)</td>
+                            <td>6-10 g/kg BW daily</td>
+                             <td>{{perkgKCal(6*4)}}-{{perkgKCal(10*4)}} kcal</td>
+                            <td>{{perkgKCal(6)}}-{{perkgKCal(10)}} g</td>
+                            <td>
+                                <span *ngFor="let pizza of pizza(perkgKCal(4*4))">
+                                    <mat-icon>local_pizza</mat-icon>
+                                </span>
+                                 <span *ngFor="let pizza of pizza(perkgKCal(4*4))">
+                                    <mat-icon color="accent">local_pizza</mat-icon>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Very high-intensity training (> 4 h daily)</td>
+                            <td>8-12 g/kg BW daily</td>
+                             <td>{{perkgKCal(8*4)}}-{{perkgKCal(12*4)}} kcal</td>
+                            <td>{{perkgKCal(8)}}-{{perkgKCal(12)}} g </td>
+                             <td>
+                                <span *ngFor="let pizza of pizza(perkgKCal(4*4))">
+                                    <mat-icon>local_pizza</mat-icon>
+                                </span>
+                                  <span *ngFor="let pizza of pizza(perkgKCal(6*4))">
+                                    <mat-icon color="accent">local_pizza</mat-icon>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                        </span>
+                </div>
+                <div class="example-full-width">
+                    <h3>Pre and Post Exercise Carbohydrate Intake</h3>
+                    <table class="mat-elevation-z8">
+                        <tr>
+                            <th>Dietary Strategy</th>
+                            <th>When</th>
+                            <th>Recommended Carbohydrate Intake (g/kg BW)</th>
+                            <th>Recommended Carbohydrate Intake (g)</th>
+                            <th>Hydration</th>
+                        </tr>
+                        <tr>
+                            <td>Pre-Exercise Fuelling</td>
+                            <td>Before Exercise >60 min</td>
+                            <td>1-4 g/kg BW consumed 1-4 h before exercise</td>
+                            <td>{{perkgKCal(1)}}-{{perkgKCal(4)}} g</td>
+                            <td>{{perKgMl(5)}}-{{perKgMl(10)}} ml</td>
+                        </tr>
+                        <tr>
+                            <td>During-Exercise Fuelling</td>
+                            <td>0 for < 1 h</td>
+                            <td></td>
+                            <td>> 1 h 30-60 g per h, >3 h 60-90 g per h</td>
+                            <td>Base fluid intake on the amount of fluid lost by sweating and urine loss<mat-icon [matTooltip]="blobby">information</mat-icon></td>
+                        </tr>
+                        <tr>
+                            <td>Post-Exercise Rapid Refuelling</td>
+                            <td>< 8 h recover between two sessions</td>
+                            <td>1.0-1.2 g/kg BW per hour for first 4 h then resume daily fueling needs</td>
+                            <td>{{perkgKCal(1)}}-{{perkgKCal(1.2)}} g per hour</td>
+                        </tr>
+                        <tr>
+                            <td>Carbohydrate Loadig (Refuelling)</td>
+                            <td>For events >90 min of sustained/intermittent exercise</td>
+                            <td>36-38 h of 10-12 g/kg BW/24 h</td>
+                            <td>{{perkgKCal(10)}}-{{perkgKCal(12)}} g
+                                <span *ngFor="let pizza of pizza(perkgKCal(4*4))">
+                                    <mat-icon>local_pizza</mat-icon>
+                                </span>
+                                <span *ngFor="let pizza of pizza(perkgKCal(6*4))">
+                                    <mat-icon color="accent">local_pizza</mat-icon>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                </div>
+        </div>
+        <button mat-raised-button color="accent" (click)="calculate()">Calculate & Save</button>
+
+    </mat-card-content>
+
+</mat-card>
+
