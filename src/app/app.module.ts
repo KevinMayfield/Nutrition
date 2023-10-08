@@ -25,6 +25,8 @@ import {SafeHtmlPipe} from "./service/safeHtmlPipe";
 import {SafeUrlPipe} from "./service/safeUrl";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { StravaComponent } from './strava/strava.component';
+import {MatSortModule} from "@angular/material/sort";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -57,7 +59,9 @@ import { StravaComponent } from './strava/strava.component';
         MatButtonModule,
         MatIconModule,
         MatListModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatSortModule,
+        MatPaginatorModule
     ],
   providers: [],
   bootstrap: [AppComponent]

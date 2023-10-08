@@ -1,9 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Parameters, QuestionnaireResponse, ValueSetExpansionContains} from "fhir/r4";
 import {HttpClient} from "@angular/common/http";
-import {TdDialogService} from "@covalent/core/dialogs";
 import {SmartService} from "../service/smart.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {StravaService} from "../service/strava.service";
+import {Athlete} from "../service/models/athlete";
+import {SummaryActivity} from "../service/models/summary-activity";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {LiveAnnouncer} from "@angular/cdk/a11y";
+import {MatSort, Sort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-resting-metabolic-rate',
@@ -16,6 +22,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     rmr: number | undefined;
     dailyEnergy: number | undefined
     age: any;
+    athlete: Athlete | undefined;
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
     pals: ValueSetExpansionContains[] = [
@@ -37,6 +44,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         }
     ]
     pal :ValueSetExpansionContains | undefined
+    activities : SummaryActivity[] = []
     exerciseFrequencies: ValueSetExpansionContains[] = [
         {
             code: '1.2',
@@ -61,12 +69,19 @@ export class RestingMetabolicRateComponent implements OnInit{
     ]
     exerciseFrequency :ValueSetExpansionContains | undefined
     blobby =  'Weigh yourself before and after an one hour exercise in kilograms. The difference will indicate how much sweat you have lost during exercise. 1 kg =  1000 ml sweat loss, so if you have lost .75 kg you have lost 750 ml of fluid and so you need to drink 750 ml per hour.';
-
+    protected readonly Math = Math;
+    // @ts-ignore
+    dataSource: MatTableDataSource<SummaryActivity> ;
+    @ViewChild(MatSort) sort: MatSort | undefined;
+    @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+    displayedColumns = ['date', 'name', 'kcal', 'duration', 'rate']
     constructor(
         private http: HttpClient,
         private smart: SmartService,
-        protected sanitizer: DomSanitizer) {
-        this.sanitizer.bypassSecurityTrustHtml("<mat-icon>local_pizza</mat-icon>")
+        private strava: StravaService,
+        protected sanitizer: DomSanitizer,
+        private _liveAnnouncer: LiveAnnouncer) {
+       // this.sanitizer.bypassSecurityTrustHtml("<mat-icon>local_pizza</mat-icon>")
     }
     calculate() {
 
@@ -77,7 +92,6 @@ export class RestingMetabolicRateComponent implements OnInit{
             if (this.administrativeGender.code == 'male') {
                 this.rmr = this.rmr - (5 * this.age) + 5
             } else {
-
                 this.rmr = this.rmr - (5 * this.age) - 16
             }
             if (this.exerciseFrequency !== undefined) {
@@ -91,6 +105,27 @@ export class RestingMetabolicRateComponent implements OnInit{
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
             console.log(result)
             this.administrativeGenders = this.smart.getContainsExpansion(result)
+            if (this.athlete !== undefined && this.athlete.sex !== undefined) {
+                for (var gender of this.administrativeGenders) {
+
+                    if (gender.code === 'male' && this.athlete.sex === 'M') {
+                        this.administrativeGender = gender
+                    }
+                    if (gender.code === 'female' && this.athlete.sex === 'F') {
+                        this.administrativeGender = gender
+                    }
+                }
+            }
+        })
+        this.athlete = this.strava.getTokenAthlete()
+        if (this.athlete !== undefined) {
+            if (this.athlete.weight !== undefined) this.weight = this.athlete.weight
+            this.strava.getActivities()
+        }
+        this.strava.loaded.subscribe(activity => {
+            this.activities.push(activity);
+            this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities);
+            this.setSortAndPaginator()
         })
         this.smart.patientChangeEvent.subscribe(patient => {
                 this.age = this.smart.age
@@ -155,6 +190,38 @@ export class RestingMetabolicRateComponent implements OnInit{
         )
     }
 
+    ngAfterViewInit(): void {
+        if (this.sort !== undefined) {
+            this.sort.sortChange.subscribe((event) => {
+                 console.log(event);
+            });
+            // @ts-ignore
+            this.sort.sort(({ id: 'date', start: 'desc'}) as MatSortable);
+            if (this.dataSource !== undefined) this.dataSource.sort = this.sort;
+        } else {
+            console.log('SORT UNDEFINED');
+        }
+    }
+    setSortAndPaginator() {
+        // @ts-ignore
+        this.dataSource.sort = this.sort
+        if (this.paginator !== undefined) this.dataSource.paginator = this.paginator;
+        // @ts-ignore
+        this.dataSource.sortingDataAccessor = (item, property) => {
+            switch (property) {
+                case 'date': {
+                    if (item.start_date !== undefined) {
+                        return item.start_date
+                    }
+                    return undefined;
+                }
+                default: {
+                    return undefined
+                }
+            }
+        };
+    }
+
     setSelectAnswers() {
         if (this.smart.patient !== undefined) {
             if (this.administrativeGenders !== undefined) {
@@ -192,4 +259,23 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
 
+    slicesPerHour(kcal: number | undefined, elapsed_time: number) {
+        if (elapsed_time === undefined || elapsed_time == 0) return undefined
+        if (kcal === undefined) return undefined
+        return Math.round((kcal * (elapsed_time)/3600)/28)/10
+    }
+    slices(kcal: number | undefined) {
+        if (kcal === undefined) return undefined
+        return Math.round(kcal/28)/10
+    }
+
+
+
+    announceSortChange(sortState: Sort) {
+        if (sortState.direction) {
+            this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+        } else {
+            this._liveAnnouncer.announce('Sorting cleared');
+        }
+    }
 }

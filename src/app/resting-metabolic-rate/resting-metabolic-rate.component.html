@@ -140,6 +140,54 @@
                     </table>
                         </span>
                 </div>
+                <div>
+                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+                           matSort (matSortChange)="announceSortChange($event)"
+                           matSortActive="date" matSortDirection="desc">
+
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell mat-sort-header *matHeaderCellDef> Date </th>
+                            <td mat-cell *matCellDef="let activity">
+                                {{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell mat-sort-header *matHeaderCellDef> name </th>
+                            <td mat-cell *matCellDef="let activity">
+                                {{activity.name}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="kcal">
+                            <th mat-header-cell mat-sort-header *matHeaderCellDef> kcal </th>
+                            <td mat-cell *matCellDef="let activity">
+                                {{activity.kcal}}  <span *ngFor="let pizza of pizza(activity.kcal)">
+                                    <mat-icon>local_pizza</mat-icon>
+                                </span>
+                                ({{slices(activity.kcal)}} slices)
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="duration">
+                            <th mat-header-cell mat-sort-header *matHeaderCellDef> duration </th>
+                            <td mat-cell *matCellDef="let activity">
+                                {{round(activity.elapsed_time/60)}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="rate">
+                            <th mat-header-cell mat-sort-header *matHeaderCellDef> rate </th>
+                            <td mat-cell *matCellDef="let activity">
+                                {{slicesPerHour(activity.kcal,activity.elapsed_time) }}
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell" colspan="7">No data matching the filter </td>
+                        </tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[10]" showFirstLastButtons></mat-paginator>
+                </div>
                 <div class="example-full-width">
                     <h3>Pre and Post Exercise Carbohydrate Intake</h3>
                     <table class="mat-elevation-z8">
