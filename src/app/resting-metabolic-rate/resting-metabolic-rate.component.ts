@@ -18,7 +18,8 @@ class activity {
     kcal: number = 0;
     hr_avg?: number;
     hr_max?: number;
-    type?: ActivityType
+    type?: ActivityType;
+    names: string[] = [];
 }
 @Component({
   selector: 'app-resting-metabolic-rate',
@@ -82,6 +83,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     exerciseFrequency :ValueSetExpansionContains | undefined
     fluidAdvice =  'Weigh yourself before and after an one hour exercise in kilograms. The difference will indicate how much sweat you have lost during exercise. 1 kg =  1000 ml sweat loss, so if you have lost .75 kg you have lost 750 ml of fluid and so you need to drink 750 ml per hour.';
     protected readonly Math = Math;
+    maximumHR: string | undefined;
     // @ts-ignore
     dataSource: MatTableDataSource<SummaryActivity> ;
     @ViewChild(MatSort) sort: MatSort | undefined;
@@ -125,7 +127,7 @@ export class RestingMetabolicRateComponent implements OnInit{
 
     ngOnInit(): void {
         var today = new Date();
-        for(var i= 0;i<=this.strava.duration;i++) this.activityArray.push({ duration:0,kcal: 0})
+        for(var i= 0;i<=this.strava.duration;i++) this.activityArray.push({ duration:0,kcal: 0, names: []})
 
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
             this.administrativeGenders = this.smart.getContainsExpansion(result)
@@ -147,11 +149,16 @@ export class RestingMetabolicRateComponent implements OnInit{
             if (activity.kcal !== undefined) {
                 var act : activity = {
                     duration: (activity.elapsed_time + this.activityArray[this.strava.duration - diffDays].duration),
-                    kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal)
+                    kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal),
+                    names: this.activityArray[this.strava.duration - diffDays].names
                 }
                 if (activity.average_heartrate !== undefined) act.hr_avg = activity.average_heartrate
-                if (activity.max_heartrate !== undefined) act.hr_max = activity.max_heartrate
+                // @ts-ignore
+                if (activity.max_heartrate !== undefined && (this.activityArray[this.strava.duration - diffDays].hr_max === undefined || (this.activityArray[this.strava.duration - diffDays].hr_max < activity.max_heartrate))) {
+                    act.hr_max = activity.max_heartrate
+                }
                 if (activity.type !== undefined) act.type = activity.type
+                if (activity.name !== undefined) act.names.push(activity.name)
                 this.activityArray[this.strava.duration - diffDays] = act
                 this.exerciseLevel = 0
                 this.exerciseDurationTotal = 0
@@ -342,6 +349,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         }
     }
 */
+
     dayOfWeek(number: number) {
         var now = new Date();
         var from = new Date();
@@ -354,6 +362,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         if (this.age !== undefined && activity.hr_avg !== undefined) {
             // TODO move to strava HR zones
             let zone = 220 - this.age
+            this.maximumHR = 'maximum heart rate = '+this.round(zone) + " (calculated from age)"
             if ((zone * 0.9) < activity.hr_avg) return "background: lightpink"
             if ((zone * 0.8) < activity.hr_avg) return "background: lightyellow"
             if ((zone * 0.7) < activity.hr_avg) return "background: lightgreen"
@@ -375,5 +384,11 @@ export class RestingMetabolicRateComponent implements OnInit{
             }
         }
         return 'exercise'
+    }
+
+    getNames(activity: activity) {
+        var result = ''
+        for (var name of activity.names) result = result + ' ' + name
+        return result
     }
 }

@@ -39,7 +39,7 @@
                     <mat-option *ngFor="let pal of pals" [value]="pal">{{pal.display}}</mat-option>
                 </mat-select>
             </mat-form-field>
-
+            {{maximumHR}}
 
         </div>
            <div style="width: 5%;">
@@ -56,7 +56,7 @@
                         <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
                         <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
                         <span *ngFor="let activity of activityArray">
-                        <mat-grid-tile *ngIf="activity.kcal >0" [style]="getBackground(activity)" >
+                        <mat-grid-tile *ngIf="activity.kcal >0" [style]="getBackground(activity)" [matTooltip]="getNames(activity)">
                             <div>
                             <span *ngIf="activity.kcal>0">
                                 <span class="material-symbols-outlined">
