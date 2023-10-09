@@ -63,7 +63,9 @@
 timer
 </span>
                                 {{round(activity.duration/60)}} min
-
+ <span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
+{{getType(activity.type)}}
+</span>
                             <br/>
                                  <span *ngFor="let pizza of pizza(activity.kcal)">
                                     <mat-icon>local_pizza</mat-icon>
@@ -77,9 +79,7 @@ timer
 ecg_heart
 </span>
                                 {{round(activity.hr_avg)}} <span *ngIf="activity.hr_max !== undefined">(max {{activity.hr_max}})</span>
-                                <span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
-{{getType(activity.type)}}
-</span>
+
                             </span>
                             </div>
                         </mat-grid-tile >

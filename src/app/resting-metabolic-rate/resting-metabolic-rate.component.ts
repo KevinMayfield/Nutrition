@@ -9,7 +9,7 @@ import {SummaryActivity} from "../service/models/summary-activity";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
-import {MatSort, Sort} from "@angular/material/sort";
+import {MatSort} from "@angular/material/sort";
 import {ActivityType} from "../service/models/activity-type";
 
 
@@ -151,6 +151,7 @@ export class RestingMetabolicRateComponent implements OnInit{
                 }
                 if (activity.average_heartrate !== undefined) act.hr_avg = activity.average_heartrate
                 if (activity.max_heartrate !== undefined) act.hr_max = activity.max_heartrate
+                if (activity.type !== undefined) act.type = activity.type
                 this.activityArray[this.strava.duration - diffDays] = act
                 this.exerciseLevel = 0
                 this.exerciseDurationTotal = 0
@@ -351,13 +352,28 @@ export class RestingMetabolicRateComponent implements OnInit{
 
     getBackground(activity: activity) {
         if (this.age !== undefined && activity.hr_avg !== undefined) {
+            // TODO move to strava HR zones
             let zone = 220 - this.age
-            console.log(zone)
             if ((zone * 0.9) < activity.hr_avg) return "background: lightpink"
             if ((zone * 0.8) < activity.hr_avg) return "background: lightyellow"
             if ((zone * 0.7) < activity.hr_avg) return "background: lightgreen"
             if ((zone * 0.6) < activity.hr_avg) return "background: lightblue"
         }
         return "background: lightgrey"
+    }
+
+    getType(type: ActivityType | undefined) {
+        switch(type) {
+            case ActivityType.Ride, ActivityType.VirtualRide : {
+                return 'directions_bike'
+            }
+            case ActivityType.Walk : {
+                return 'directions_walk'
+            }
+            case ActivityType.Run : {
+                return 'directions_run'
+            }
+        }
+        return 'exercise'
     }
 }
