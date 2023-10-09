@@ -10,13 +10,15 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatSort, Sort} from "@angular/material/sort";
+import {ActivityType} from "../service/models/activity-type";
 
 
 class activity {
     duration: number = 0;
     kcal: number = 0;
     hr_avg?: number;
-    hr_max?: number
+    hr_max?: number;
+    type?: ActivityType
 }
 @Component({
   selector: 'app-resting-metabolic-rate',
