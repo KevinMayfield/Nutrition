@@ -65,7 +65,7 @@ export class StravaService {
      }
      // @ts-ignore
     var token = JSON.parse(tokenStr)
-    console.log(token.athlete)
+    console.log('ta' + token.athlete)
     return token.athlete
   }
 

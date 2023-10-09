@@ -55,19 +55,20 @@
                         <mat-grid-tile>{{dayOfWeek(2)}}</mat-grid-tile>
                         <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
                         <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
-                        <mat-grid-tile *ngFor="let activity of activityArray">
+                        <span *ngFor="let activity of activityArray">
+                        <mat-grid-tile *ngIf="activity.kcal >0" [style]="getBackground(activity)" >
                             <div>
                             <span *ngIf="activity.kcal>0">
                                 <span class="material-symbols-outlined">
 timer
 </span>
-                            {{round(activity.duration/60)}} min
+                                {{round(activity.duration/60)}} min
 
                             <br/>
                                  <span *ngFor="let pizza of pizza(activity.kcal)">
                                     <mat-icon>local_pizza</mat-icon>
                                 </span>
-                            {{activity.kcal}} kcal
+                                {{activity.kcal}} kcal
                                 </span>
 
                             <br/>
@@ -75,11 +76,15 @@ timer
                                                    <span class="material-symbols-outlined">
 ecg_heart
 </span>
-                                {{round(activity.hr_avg)}} <mat-icon>ecg_heart</mat-icon>
+                                {{round(activity.hr_avg)}} <span *ngIf="activity.hr_max !== undefined">(max {{activity.hr_max}})</span>
 
                             </span>
                             </div>
-                        </mat-grid-tile>
+                        </mat-grid-tile >
+                            <mat-grid-tile *ngIf="activity.kcal === 0">
+                            </mat-grid-tile>
+                        </span>
+
                     </mat-grid-list>
                 </div>
                 <div class="example-full-width">

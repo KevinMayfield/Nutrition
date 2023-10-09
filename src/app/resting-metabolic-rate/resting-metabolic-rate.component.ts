@@ -94,7 +94,17 @@ export class RestingMetabolicRateComponent implements OnInit{
        // this.sanitizer.bypassSecurityTrustHtml("<mat-icon>local_pizza</mat-icon>")
     }
     calculate() {
+        if (this.administrativeGenders !== undefined && this.athlete !== undefined && this.athlete.sex !== undefined) {
+            for (var gender of this.administrativeGenders) {
 
+                if (gender.code === 'male' && this.athlete.sex === 'M') {
+                    this.administrativeGender = gender
+                }
+                if (gender.code === 'female' && this.athlete.sex === 'F') {
+                    this.administrativeGender = gender
+                }
+            }
+        }
         if (this.weight != undefined
             && this.height != undefined
             && this.administrativeGender !== undefined) {
@@ -117,20 +127,12 @@ export class RestingMetabolicRateComponent implements OnInit{
 
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
             this.administrativeGenders = this.smart.getContainsExpansion(result)
-            if (this.athlete !== undefined && this.athlete.sex !== undefined) {
-                for (var gender of this.administrativeGenders) {
 
-                    if (gender.code === 'male' && this.athlete.sex === 'M') {
-                        this.administrativeGender = gender
-                    }
-                    if (gender.code === 'female' && this.athlete.sex === 'F') {
-                        this.administrativeGender = gender
-                    }
-                }
-            }
         })
+        this.athlete = this.strava.getTokenAthlete()
         this.strava.getAthlete().subscribe(athlete => {
             if (athlete.weight !== undefined) this.weight = athlete.weight
+            this.athlete = athlete
             this.strava.getActivities()
         })
 
@@ -164,6 +166,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         })
         this.smart.patientChangeEvent.subscribe(patient => {
                 this.age = this.smart.age
+
             this.setSelectAnswers()
                 var parameters: Parameters = {
                     "resourceType": "Parameters",
@@ -306,7 +309,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
     pizza(kcal: number | undefined) {
-        if (kcal === undefined) return undefined
+        if (kcal === undefined || kcal === 0) return undefined
 
         // Using zwift pizza units https://www.bikeradar.com/advice/fitness-and-training/how-to-read-a-zwift-ride-report
         var number= Math.round(kcal/285)
@@ -342,5 +345,17 @@ export class RestingMetabolicRateComponent implements OnInit{
         from.setDate(now.getDate() - number );
         var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
         return days[ from.getDay() ];
+    }
+
+    getBackground(activity: activity) {
+        if (this.age !== undefined && activity.hr_avg !== undefined) {
+            let zone = 220 - this.age
+            console.log(zone)
+            if ((zone * 0.9) < activity.hr_avg) return "background: lightpink"
+            if ((zone * 0.8) < activity.hr_avg) return "background: lightyellow"
+            if ((zone * 0.7) < activity.hr_avg) return "background: lightgreen"
+            if ((zone * 0.6) < activity.hr_avg) return "background: lightblue"
+        }
+        return "background: lightgrey"
     }
 }
