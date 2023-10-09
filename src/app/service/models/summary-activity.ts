@@ -43,4 +43,5 @@ export interface SummaryActivity {
   average_heartrate? : number;
   weighted_average_watts? : number;
   kcal? : number;
+  max_heartrate?: number;
 }

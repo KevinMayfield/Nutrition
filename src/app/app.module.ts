@@ -27,6 +27,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import { StravaComponent } from './strava/strava.component';
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatGridListModule} from "@angular/material/grid-list";
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import {MatPaginatorModule} from "@angular/material/paginator";
         MatListModule,
         MatTooltipModule,
         MatSortModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MatGridListModule
     ],
   providers: [],
   bootstrap: [AppComponent]

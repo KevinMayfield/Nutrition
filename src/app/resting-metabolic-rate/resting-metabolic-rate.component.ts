@@ -11,6 +11,13 @@ import {MatPaginator} from "@angular/material/paginator";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatSort, Sort} from "@angular/material/sort";
 
+
+class activity {
+    duration: number = 0;
+    kcal: number = 0;
+    hr_avg?: number;
+    hr_max?: number
+}
 @Component({
   selector: 'app-resting-metabolic-rate',
   templateUrl: './resting-metabolic-rate.component.html',
@@ -22,13 +29,16 @@ export class RestingMetabolicRateComponent implements OnInit{
     rmr: number | undefined;
     dailyEnergy: number | undefined
     age: any;
+    exerciseLevel: number = 0;
+    exerciseDurationTotal: number = 0;
     athlete: Athlete | undefined;
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
+    activityArray : activity[] = []
     pals: ValueSetExpansionContains[] = [
         {
             code: 'very-light',
-            display: 'Very light training (low intensity or skill based training'
+            display: 'Very light training (low intensity or skill based training)'
         },
         {
             code: 'moderate',
@@ -56,7 +66,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         },
         {
             code: '1.4',
-            display: 'Moderate active (exercise 2-3 x weekly))'
+            display: 'Moderate active (exercise 2-3 x weekly)'
         },
         {
             code: '1.5',
@@ -68,7 +78,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         }
     ]
     exerciseFrequency :ValueSetExpansionContains | undefined
-    blobby =  'Weigh yourself before and after an one hour exercise in kilograms. The difference will indicate how much sweat you have lost during exercise. 1 kg =  1000 ml sweat loss, so if you have lost .75 kg you have lost 750 ml of fluid and so you need to drink 750 ml per hour.';
+    fluidAdvice =  'Weigh yourself before and after an one hour exercise in kilograms. The difference will indicate how much sweat you have lost during exercise. 1 kg =  1000 ml sweat loss, so if you have lost .75 kg you have lost 750 ml of fluid and so you need to drink 750 ml per hour.';
     protected readonly Math = Math;
     // @ts-ignore
     dataSource: MatTableDataSource<SummaryActivity> ;
@@ -102,8 +112,10 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
     ngOnInit(): void {
+        var today = new Date();
+        for(var i= 0;i<=this.strava.duration;i++) this.activityArray.push({ duration:0,kcal: 0})
+
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
-            console.log(result)
             this.administrativeGenders = this.smart.getContainsExpansion(result)
             if (this.athlete !== undefined && this.athlete.sex !== undefined) {
                 for (var gender of this.administrativeGenders) {
@@ -117,15 +129,38 @@ export class RestingMetabolicRateComponent implements OnInit{
                 }
             }
         })
-        this.athlete = this.strava.getTokenAthlete()
-        if (this.athlete !== undefined) {
-            if (this.athlete.weight !== undefined) this.weight = this.athlete.weight
+        this.strava.getAthlete().subscribe(athlete => {
+            if (athlete.weight !== undefined) this.weight = athlete.weight
             this.strava.getActivities()
-        }
+        })
+
         this.strava.loaded.subscribe(activity => {
             this.activities.push(activity);
-            this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities);
-            this.setSortAndPaginator()
+            var activityDate = new Date(activity.start_date)
+            var diff = Math.abs(today.getTime() - activityDate.getTime());
+            var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+
+            if (activity.kcal !== undefined) {
+                var act : activity = {
+                    duration: (activity.elapsed_time + this.activityArray[this.strava.duration - diffDays].duration),
+                    kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal)
+                }
+                if (activity.average_heartrate !== undefined) act.hr_avg = activity.average_heartrate
+                if (activity.max_heartrate !== undefined) act.hr_max = activity.max_heartrate
+                this.activityArray[this.strava.duration - diffDays] = act
+                this.exerciseLevel = 0
+                this.exerciseDurationTotal = 0
+                for(let activity of this.activityArray) {
+                    // be a bit generous on amount of exercise for calculation
+                    if (activity.duration > (40 * 60)) {
+                        this.exerciseLevel++
+                        this.exerciseDurationTotal = this.exerciseDurationTotal + activity.duration
+                    }
+                }
+                this.setSelectAnswers()
+            }
+         //   this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities);
+         //   this.setSortAndPaginator()
         })
         this.smart.patientChangeEvent.subscribe(patient => {
                 this.age = this.smart.age
@@ -202,6 +237,7 @@ export class RestingMetabolicRateComponent implements OnInit{
             console.log('SORT UNDEFINED');
         }
     }
+    /*
     setSortAndPaginator() {
         // @ts-ignore
         this.dataSource.sort = this.sort
@@ -221,7 +257,7 @@ export class RestingMetabolicRateComponent implements OnInit{
             }
         };
     }
-
+*/
     setSelectAnswers() {
         if (this.smart.patient !== undefined) {
             if (this.administrativeGenders !== undefined) {
@@ -232,6 +268,27 @@ export class RestingMetabolicRateComponent implements OnInit{
                     }
                 }
             }
+        }
+        if (this.exerciseLevel > 0) {
+            let level = Math.round(this.exerciseLevel * 7 / (this.strava.duration+1))
+            let duration = this.exerciseDurationTotal / this.exerciseLevel / 60
+            for(let pal of this.exerciseFrequencies) {
+                if (pal.code == '1.2' && level < 1) this.exerciseFrequency = pal
+                if (pal.code == '1.3' && level >= 1 && level <= 2 ) this.exerciseFrequency = pal
+                if (pal.code == '1.4' && level > 2 && level <= 3 ) this.exerciseFrequency = pal
+                if (pal.code == '1.5' && level > 3 && level <= 6 ) this.exerciseFrequency = pal
+                if (pal.code == '1.6' && level > 6  ) this.exerciseFrequency = pal
+            }
+            var pal = 'very-light'
+            if (level >= 4) {
+                if (duration>50) pal = 'moderate'
+                if (duration>65) pal = 'moderate-high'
+                if (duration>180) pal = 'very-high'
+            }
+            for (let actLevel of this.pals) {
+                if (actLevel.code = pal) this.pal = actLevel
+            }
+            this.calculate()
         }
     }
     round(val : number | undefined) {
@@ -270,12 +327,20 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
 
-
+/*
     announceSortChange(sortState: Sort) {
         if (sortState.direction) {
             this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
         } else {
             this._liveAnnouncer.announce('Sorting cleared');
         }
+    }
+*/
+    dayOfWeek(number: number) {
+        var now = new Date();
+        var from = new Date();
+        from.setDate(now.getDate() - number );
+        var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        return days[ from.getDay() ];
     }
 }
