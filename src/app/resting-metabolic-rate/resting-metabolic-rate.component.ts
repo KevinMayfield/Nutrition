@@ -23,6 +23,19 @@ class activityDay {
     hr_max?: number;
     sessions: sessions[] = [];
 }
+class range {
+    min: number = 0;
+    max: number = 0
+}
+class hrZone {
+    calculated?: boolean;
+    maximumHR?: number;
+    z1?: range;
+    z2?: range;
+    z3?: range;
+    z4?: range;
+    z5?: range;
+}
 @Component({
   selector: 'app-resting-metabolic-rate',
   templateUrl: './resting-metabolic-rate.component.html',
@@ -41,6 +54,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
     activityArray : activityDay[] = []
+    hrzones: hrZone | undefined;
     exerciseIntenses: ValueSetExpansionContains[] = [
         {
             code: 'very-light',
@@ -101,6 +115,36 @@ export class RestingMetabolicRateComponent implements OnInit{
        // this.sanitizer.bypassSecurityTrustHtml("<mat-icon>local_pizza</mat-icon>")
     }
     calculate() {
+        if ((this.hrzones === undefined || this.hrzones.calculated) && this.age !== undefined) {
+            let zone = 220 - this.age
+            if (zone !== undefined) {
+                this.hrzones = {
+                    calculated: true,
+                    maximumHR: this.round(zone),
+                    z1: {
+                        min: Math.round(zone * 0.5),
+                        max: Math.round(zone * 0.6)
+                    },
+                    z2: {
+                        min: Math.round(zone * 0.6),
+                        max: Math.round(zone * 0.7)
+                    },
+                    z3: {
+                        min: Math.round(zone * 0.7),
+                        max: Math.round(zone * 0.8)
+                    },
+                    z4: {
+                        min: Math.round(zone * 0.8),
+                        max: Math.round(zone * 0.9)
+                    },
+                    z5: {
+                        min: Math.round(zone * 0.9),
+                        max: Math.round(zone * 1.0)
+                    }
+                }
+            }
+
+        }
         if (this.administrativeGenders !== undefined && this.athlete !== undefined && this.athlete.sex !== undefined) {
             for (var gender of this.administrativeGenders) {
 
@@ -192,6 +236,8 @@ export class RestingMetabolicRateComponent implements OnInit{
         })
         this.smart.patientChangeEvent.subscribe(patient => {
                 this.age = this.smart.age
+
+
 
             this.setSelectAnswers()
                 var parameters: Parameters = {
@@ -394,10 +440,9 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
     getBackground(activity: activityDay) {
-        if (this.age !== undefined && activity.hr_avg !== undefined) {
+        if (this.hrzones !== undefined && this.hrzones.maximumHR !== undefined && activity.hr_avg !== undefined) {
             // TODO move to strava HR zones
-            let zone = 220 - this.age
-            this.maximumHR = this.round(zone)
+            let zone = this.hrzones.maximumHR
             if ((zone * 0.9) < activity.hr_avg) return "background: lightpink"
             if ((zone * 0.8) < activity.hr_avg) return "background: lightyellow"
             if ((zone * 0.7) < activity.hr_avg) return "background: lightgreen"

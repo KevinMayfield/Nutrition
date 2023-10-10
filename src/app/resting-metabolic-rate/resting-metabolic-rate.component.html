@@ -35,27 +35,25 @@
                     <mat-option *ngFor="let pal of exerciseIntenses" [value]="pal">{{pal.display}}</mat-option>
                 </mat-select>
             </mat-form-field>
-
-            <span *ngIf="maximumHR !== undefined">
-                Maximum heart rate (calculated) =  {{maximumHR}}
-                <div style="background: lightpink"><span class="material-symbols-outlined">
+        </div>
+        <span *ngIf="hrzones !== undefined">
+                Maximum heart rate (calculated) =  {{hrzones?.maximumHR}}
+            <div style="background: lightpink"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{round(+maximumHR*0.9)}}-{{round(+maximumHR)}} Z5- Anerobic</div>
+</span>{{hrzones?.z5?.min}}-{{hrzones?.z5?.max}} Z5 - Anerobic</div>
                  <div style="background: lightyellow"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{round(+maximumHR*0.8)}}-{{round(+maximumHR*0.9)}} Z4- Threshold</div>
+</span>{{hrzones?.z4?.min}}-{{hrzones?.z4?.max}} Z4 - Threshold</div>
                  <div style="background: lightgreen"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{round(+maximumHR*0.7)}}-{{round(+maximumHR*0.8)}} Z3- Tempo</div>
+</span>{{hrzones?.z3?.min}}-{{hrzones?.z3?.max}} Z3 - Tempo</div>
                  <div style="background: lightblue"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{round(+maximumHR*0.6)}}-{{round(+maximumHR*0.7)}} Z2 - Endurance</div>
+</span>{{hrzones?.z2?.min}}-{{hrzones?.z2?.max}} Z2 - Endurance</div>
                 <div style="background: lightgrey"><span class="material-symbols-outlined">
 ecg_heart
-</span> {{round(+maximumHR*0.5)}}-{{round(+maximumHR*0.6)}} Z1 - Recovery</div>
+</span> {{hrzones?.z1?.min}}-{{hrzones?.z1?.max}} Z1 - Recovery</div>
             </span>
-
-        </div>
 
     </mat-sidenav>
     <mat-sidenav-content>
