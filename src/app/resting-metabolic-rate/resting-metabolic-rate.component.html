@@ -40,19 +40,19 @@
                 Maximum heart rate (calculated) =  {{maximumHR}}
                 <div style="background: lightpink"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{round(+maximumHR*0.9)}}-{{round(+maximumHR)}} Anerobic</div>
+</span>{{round(+maximumHR*0.9)}}-{{round(+maximumHR)}} Z5- Anerobic</div>
                  <div style="background: lightyellow"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{round(+maximumHR*0.8)}}-{{round(+maximumHR*0.9)}} Threshold</div>
+</span>{{round(+maximumHR*0.8)}}-{{round(+maximumHR*0.9)}} Z4- Threshold</div>
                  <div style="background: lightgreen"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{round(+maximumHR*0.7)}}-{{round(+maximumHR*0.8)}} Tempo</div>
+</span>{{round(+maximumHR*0.7)}}-{{round(+maximumHR*0.8)}} Z3- Tempo</div>
                  <div style="background: lightblue"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{round(+maximumHR*0.6)}}-{{round(+maximumHR*0.7)}} Endurance</div>
+</span>{{round(+maximumHR*0.6)}}-{{round(+maximumHR*0.7)}} Z2 - Endurance</div>
                 <div style="background: lightgrey"><span class="material-symbols-outlined">
 ecg_heart
-</span> {{round(+maximumHR*0.5)}}-{{round(+maximumHR*0.6)}} Recovery</div>
+</span> {{round(+maximumHR*0.5)}}-{{round(+maximumHR*0.6)}} Z1 - Recovery</div>
             </span>
 
         </div>
@@ -126,32 +126,60 @@ ecg_heart
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="name">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef> name </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Name </th>
                         <td mat-cell *matCellDef="let activity">
                             {{activity.name}}
+                            <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><mat-icon>open_in_new</mat-icon></a>
                         </td>
                     </ng-container>
-                    <ng-container matColumnDef="kcal">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef> kcal </th>
+                    <ng-container matColumnDef="Z1">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Z1 </th>
                         <td mat-cell *matCellDef="let activity">
-                            {{activity.kcal}}  <span *ngFor="let pizza of pizza(activity.kcal)">
-                                    <mat-icon>local_pizza</mat-icon>
-                                </span>
-                            ({{slices(activity.kcal)}} slices)
+                             <span *ngIf="getZoneDuration(activity,1); let zoneDuration">
+                                <mat-progress-bar mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                 {{round(zoneDuration/60)}}</span>
                         </td>
                     </ng-container>
+                    <ng-container matColumnDef="Z2">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Z2 </th>
+                        <td mat-cell *matCellDef="let activity">
+                            <span *ngIf="getZoneDuration(activity,2); let zoneDuration">
+                                <mat-progress-bar class="green-progress" color="warn" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                {{round(zoneDuration/60)}}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Z3">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Z3 </th>
+                        <td mat-cell *matCellDef="let activity">
+                            <span *ngIf="getZoneDuration(activity,3); let zoneDuration">
+                                <mat-progress-bar color="warn" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                {{round(zoneDuration/60)}}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Z4">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Z4 </th>
+                        <td mat-cell *matCellDef="let activity">
+                            <span *ngIf="getZoneDuration(activity,4); let zoneDuration">
+                                <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                {{round(zoneDuration/60)}}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Z5">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Z5 </th>
+                        <td mat-cell *matCellDef="let activity">
+                             <span *ngIf="getZoneDuration(activity,5); let zoneDuration">
+                                <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                 {{round(zoneDuration/60)}}</span>
+                        </td>
+                    </ng-container>
+
                     <ng-container matColumnDef="duration">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef> duration </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Duration </th>
                         <td mat-cell *matCellDef="let activity">
                             {{round(activity.elapsed_time/60)}}
                         </td>
                     </ng-container>
-                    <ng-container matColumnDef="rate">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef> rate </th>
-                        <td mat-cell *matCellDef="let activity">
-                            {{slicesPerHour(activity.kcal,activity.elapsed_time) }}
-                        </td>
-                    </ng-container>
+
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -160,7 +188,7 @@ ecg_heart
                         <td class="mat-cell" colspan="7">No data matching the filter </td>
                     </tr>
                 </table>
-                <mat-paginator [pageSizeOptions]="[10]" showFirstLastButtons></mat-paginator>
+                <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
         </mat-tab>
         <!--
 

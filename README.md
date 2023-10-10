@@ -1,4 +1,4 @@
 Demo app 
 
-https://kevinmayfield.github.io/Nutrition/
+https://kevinmayfield.github.io/Wellness/
 

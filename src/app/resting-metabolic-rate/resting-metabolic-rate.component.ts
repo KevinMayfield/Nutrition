@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Parameters, QuestionnaireResponse, ValueSetExpansionContains} from "fhir/r4";
 import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
@@ -26,7 +26,8 @@ class activityDay {
 @Component({
   selector: 'app-resting-metabolic-rate',
   templateUrl: './resting-metabolic-rate.component.html',
-  styleUrls: ['./resting-metabolic-rate.component.scss']
+  styleUrls: ['./resting-metabolic-rate.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class RestingMetabolicRateComponent implements OnInit{
     height: number | undefined;
@@ -90,7 +91,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     dataSource: MatTableDataSource<SummaryActivity> ;
     @ViewChild(MatSort) sort: MatSort | undefined;
     @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
-    displayedColumns = ['date', 'name', 'kcal', 'duration', 'rate']
+    displayedColumns = ['date', 'name', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'duration']
     constructor(
         private http: HttpClient,
         private smart: SmartService,
@@ -140,8 +141,8 @@ export class RestingMetabolicRateComponent implements OnInit{
         })
 
         this.strava.loaded.subscribe(activity => {
+
             var today = new Date();
-            this.activities.push(activity);
             var activityDate = new Date(activity.start_date)
             var diff = Math.abs(today.getTime() - activityDate.getTime());
             var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
@@ -180,10 +181,14 @@ export class RestingMetabolicRateComponent implements OnInit{
                         this.exerciseDurationTotal = this.exerciseDurationTotal + activity.duration
                     }
                 }
+
                 this.setSelectAnswers()
+                // supports activity detail
+                this.activities.push(activity)
+                this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities);
+                this.setSortAndPaginator()
             }
-            this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities);
-            this.setSortAndPaginator()
+
         })
         this.smart.patientChangeEvent.subscribe(patient => {
                 this.age = this.smart.age
@@ -417,5 +422,18 @@ export class RestingMetabolicRateComponent implements OnInit{
         var result = ''
         for (var session of activity.sessions) result = result + ' ' + session.name
         return result
+    }
+
+    getZoneDuration(activity: any, number: number) {
+        if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return undefined
+      //  console.log(activity.zones.length)
+        for (let zone of activity.zones) {
+            if (zone.type ==='heartrate') {
+                if (zone.distribution_buckets.length>4) return zone.distribution_buckets[number-1].time
+            } else {
+                console.log(zone.type)
+            }
+        }
+        return undefined
     }
 }

@@ -4,6 +4,7 @@ import {PolylineMap} from "./polyline-map";
 
 
 export interface SummaryActivity {
+  zones: any[];
   suffer_score?: number;
   id: string;
   external_id: string;
@@ -44,4 +45,6 @@ export interface SummaryActivity {
   weighted_average_watts? : number;
   kcal? : number;
   max_heartrate?: number;
+ // splits_metric?: any[];
+ // splits_standard?: any[];
 }

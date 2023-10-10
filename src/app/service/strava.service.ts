@@ -21,7 +21,7 @@ export class StravaService {
   activityMap = new Map();
   private from: Date | undefined;
   private to: Date | undefined;
-  public duration = 30;
+  public duration = 30; // keep low while developing to avoid hitting rate limits
 
   loaded: EventEmitter<SummaryActivity> = new EventEmitter();
   activity: EventEmitter<SummaryActivity> = new EventEmitter();
@@ -34,7 +34,11 @@ export class StravaService {
     this.activity.subscribe(activity => {
         this.getActivity(activity.id).subscribe(result => {
           activity.kcal = result.calories
-          this.loaded.emit(activity)
+          this.getActivityZone(activity.id).subscribe(zones => {
+            activity.zones = zones
+            this.loaded.emit(activity)
+          })
+
         })
     })
   }
@@ -113,7 +117,11 @@ export class StravaService {
   }
 
   public getActivity(id : string) {
-    let uri = this.url + 'activities/'+id;
+    let uri = this.url + 'activities/'+id //+'?include_all_efforts=';
+    return this.http.get<any>(uri, {headers: this.getHeaders()});
+  }
+  private getActivityZone(id : string) {
+    let uri = this.url + 'activities/'+id + '/zones' //+'?include_all_efforts=';
     return this.http.get<any>(uri, {headers: this.getHeaders()});
   }
 
@@ -253,6 +261,7 @@ export class StravaService {
     }
     return !(date.valueOf() > new Date().valueOf() + offsetSeconds * 1000);
   }
+
 
 
 }
