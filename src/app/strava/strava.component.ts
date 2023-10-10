@@ -19,13 +19,17 @@ export class StravaComponent implements OnInit{
     }
     connectStrava(): void {
         console.log(window.location.origin);
-        this.strava.authorise(window.location.origin + this.getPathName(window.location.pathname) + '/strava/');
+        console.log(window.location.pathname)
+        this.strava.authorise(window.location.origin + this.getPathName(window.location.pathname));
     }
 
 
     getPathName(pathname: string): string {
-        if (pathname.includes('FHIR-R4')) return "/FHIR-R4-Demonstration";
-        return "";
+        localStorage.setItem('wellness',pathname)
+        return pathname;
+
+        /*if (pathname.includes('FHIR-R4')) return "/FHIR-R4-Demonstration";
+        return "/Wellness";*/
     }
 
     ngOnInit(): void {

@@ -282,6 +282,9 @@ export class RestingMetabolicRateComponent implements OnInit{
                     }
                     return undefined;
                 }
+                case 'duration': {
+                   return item.elapsed_time
+                }
                 default: {
                     return undefined
                 }
