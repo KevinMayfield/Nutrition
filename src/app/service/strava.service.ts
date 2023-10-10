@@ -21,7 +21,7 @@ export class StravaService {
   activityMap = new Map();
   private from: Date | undefined;
   private to: Date | undefined;
-  public duration = 20;
+  public duration = 30;
 
   loaded: EventEmitter<SummaryActivity> = new EventEmitter();
   activity: EventEmitter<SummaryActivity> = new EventEmitter();

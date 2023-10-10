@@ -28,6 +28,8 @@ import { StravaComponent } from './strava/strava.component';
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatGridListModule} from "@angular/material/grid-list";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   declarations: [
@@ -63,7 +65,9 @@ import {MatGridListModule} from "@angular/material/grid-list";
         MatTooltipModule,
         MatSortModule,
         MatPaginatorModule,
-        MatGridListModule
+        MatGridListModule,
+        MatSidenavModule,
+        MatTabsModule
     ],
   providers: [],
   bootstrap: [AppComponent]

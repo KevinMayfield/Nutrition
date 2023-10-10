@@ -9,17 +9,19 @@ import {SummaryActivity} from "../service/models/summary-activity";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
-import {MatSort} from "@angular/material/sort";
+import {MatSort, Sort} from "@angular/material/sort";
 import {ActivityType} from "../service/models/activity-type";
 
-
-class activity {
+class sessions {
+    type?: ActivityType;
+    name: string = "";
+}
+class activityDay {
     duration: number = 0;
     kcal: number = 0;
     hr_avg?: number;
     hr_max?: number;
-    type?: ActivityType;
-    names: string[] = [];
+    sessions: sessions[] = [];
 }
 @Component({
   selector: 'app-resting-metabolic-rate',
@@ -37,8 +39,8 @@ export class RestingMetabolicRateComponent implements OnInit{
     athlete: Athlete | undefined;
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
-    activityArray : activity[] = []
-    pals: ValueSetExpansionContains[] = [
+    activityArray : activityDay[] = []
+    exerciseIntenses: ValueSetExpansionContains[] = [
         {
             code: 'very-light',
             display: 'Very light training (low intensity or skill based training)'
@@ -56,7 +58,7 @@ export class RestingMetabolicRateComponent implements OnInit{
             display: 'Very high-intensity training (> 4 h daily)'
         }
     ]
-    pal :ValueSetExpansionContains | undefined
+    exerciseIntense :ValueSetExpansionContains | undefined
     activities : SummaryActivity[] = []
     exerciseFrequencies: ValueSetExpansionContains[] = [
         {
@@ -83,7 +85,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     exerciseFrequency :ValueSetExpansionContains | undefined
     fluidAdvice =  'Weigh yourself before and after an one hour exercise in kilograms. The difference will indicate how much sweat you have lost during exercise. 1 kg =  1000 ml sweat loss, so if you have lost .75 kg you have lost 750 ml of fluid and so you need to drink 750 ml per hour.';
     protected readonly Math = Math;
-    maximumHR: string | undefined;
+    maximumHR: undefined | number;
     // @ts-ignore
     dataSource: MatTableDataSource<SummaryActivity> ;
     @ViewChild(MatSort) sort: MatSort | undefined;
@@ -126,39 +128,48 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
     ngOnInit(): void {
-        var today = new Date();
-        for(var i= 0;i<=this.strava.duration;i++) this.activityArray.push({ duration:0,kcal: 0, names: []})
 
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
             this.administrativeGenders = this.smart.getContainsExpansion(result)
 
         })
-        this.athlete = this.strava.getTokenAthlete()
-        this.strava.getAthlete().subscribe(athlete => {
-            if (athlete.weight !== undefined) this.weight = athlete.weight
-            this.athlete = athlete
-            this.strava.getActivities()
+
+        this.getStrava()
+        this.strava.tokenChange.subscribe(()=> {
+            this.getStrava()
         })
 
         this.strava.loaded.subscribe(activity => {
+            var today = new Date();
             this.activities.push(activity);
             var activityDate = new Date(activity.start_date)
             var diff = Math.abs(today.getTime() - activityDate.getTime());
             var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
 
             if (activity.kcal !== undefined) {
-                var act : activity = {
+                var act : activityDay = {
                     duration: (activity.elapsed_time + this.activityArray[this.strava.duration - diffDays].duration),
                     kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal),
-                    names: this.activityArray[this.strava.duration - diffDays].names
+                    sessions: this.activityArray[this.strava.duration - diffDays].sessions
                 }
-                if (activity.average_heartrate !== undefined) act.hr_avg = activity.average_heartrate
+                if (activity.average_heartrate !== undefined) {
+                    if (this.activityArray[this.strava.duration - diffDays].hr_avg !== undefined) {
+
+                        // @ts-ignore
+                        act.hr_avg = ((activity.average_heartrate * activity.elapsed_time) + (this.activityArray[this.strava.duration - diffDays].hr_avg * this.activityArray[this.strava.duration - diffDays].duration)) / (this.activityArray[this.strava.duration - diffDays].duration + activity.elapsed_time)
+                    } else {
+                        act.hr_avg = activity.average_heartrate
+                    }
+                }
                 // @ts-ignore
                 if (activity.max_heartrate !== undefined && (this.activityArray[this.strava.duration - diffDays].hr_max === undefined || (this.activityArray[this.strava.duration - diffDays].hr_max < activity.max_heartrate))) {
                     act.hr_max = activity.max_heartrate
                 }
-                if (activity.type !== undefined) act.type = activity.type
-                if (activity.name !== undefined) act.names.push(activity.name)
+                var session : sessions = {
+                    name: activity.name
+                }
+                if (activity.type !== undefined) session.type = activity.type
+                act.sessions.push(session)
                 this.activityArray[this.strava.duration - diffDays] = act
                 this.exerciseLevel = 0
                 this.exerciseDurationTotal = 0
@@ -171,8 +182,8 @@ export class RestingMetabolicRateComponent implements OnInit{
                 }
                 this.setSelectAnswers()
             }
-         //   this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities);
-         //   this.setSortAndPaginator()
+            this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities);
+            this.setSortAndPaginator()
         })
         this.smart.patientChangeEvent.subscribe(patient => {
                 this.age = this.smart.age
@@ -239,6 +250,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
     ngAfterViewInit(): void {
+
         if (this.sort !== undefined) {
             this.sort.sortChange.subscribe((event) => {
                  console.log(event);
@@ -249,8 +261,9 @@ export class RestingMetabolicRateComponent implements OnInit{
         } else {
             console.log('SORT UNDEFINED');
         }
+
     }
-    /*
+
     setSortAndPaginator() {
         // @ts-ignore
         this.dataSource.sort = this.sort
@@ -270,7 +283,16 @@ export class RestingMetabolicRateComponent implements OnInit{
             }
         };
     }
-*/
+
+    getStrava(){
+
+        for(var i= 0;i<=this.strava.duration;i++) this.activityArray.push({ duration:0,kcal: 0, sessions: []})
+        this.strava.getAthlete().subscribe(athlete => {
+            if (athlete.weight !== undefined) this.weight = athlete.weight
+            this.athlete = athlete
+            this.strava.getActivities()
+        })
+    }
     setSelectAnswers() {
         if (this.smart.patient !== undefined) {
             if (this.administrativeGenders !== undefined) {
@@ -282,9 +304,11 @@ export class RestingMetabolicRateComponent implements OnInit{
                 }
             }
         }
+
         if (this.exerciseLevel > 0) {
             let level = Math.round(this.exerciseLevel * 7 / (this.strava.duration+1))
             let duration = this.exerciseDurationTotal / this.exerciseLevel / 60
+
             for(let pal of this.exerciseFrequencies) {
                 if (pal.code == '1.2' && level < 1) this.exerciseFrequency = pal
                 if (pal.code == '1.3' && level >= 1 && level <= 2 ) this.exerciseFrequency = pal
@@ -298,8 +322,11 @@ export class RestingMetabolicRateComponent implements OnInit{
                 if (duration>65) pal = 'moderate-high'
                 if (duration>180) pal = 'very-high'
             }
-            for (let actLevel of this.pals) {
-                if (actLevel.code = pal) this.pal = actLevel
+            for (let intense of this.exerciseIntenses) {
+                if (intense.code === pal) {
+
+                    this.exerciseIntense = intense
+                }
             }
             this.calculate()
         }
@@ -340,7 +367,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
 
-/*
+
     announceSortChange(sortState: Sort) {
         if (sortState.direction) {
             this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
@@ -348,7 +375,7 @@ export class RestingMetabolicRateComponent implements OnInit{
             this._liveAnnouncer.announce('Sorting cleared');
         }
     }
-*/
+
 
     dayOfWeek(number: number) {
         var now = new Date();
@@ -358,11 +385,11 @@ export class RestingMetabolicRateComponent implements OnInit{
         return days[ from.getDay() ];
     }
 
-    getBackground(activity: activity) {
+    getBackground(activity: activityDay) {
         if (this.age !== undefined && activity.hr_avg !== undefined) {
             // TODO move to strava HR zones
             let zone = 220 - this.age
-            this.maximumHR = 'maximum heart rate = '+this.round(zone) + " (calculated from age)"
+            this.maximumHR = this.round(zone)
             if ((zone * 0.9) < activity.hr_avg) return "background: lightpink"
             if ((zone * 0.8) < activity.hr_avg) return "background: lightyellow"
             if ((zone * 0.7) < activity.hr_avg) return "background: lightgreen"
@@ -386,9 +413,9 @@ export class RestingMetabolicRateComponent implements OnInit{
         return 'exercise'
     }
 
-    getNames(activity: activity) {
+    getNames(activity: activityDay) {
         var result = ''
-        for (var name of activity.names) result = result + ' ' + name
+        for (var session of activity.sessions) result = result + ' ' + session.name
         return result
     }
 }
