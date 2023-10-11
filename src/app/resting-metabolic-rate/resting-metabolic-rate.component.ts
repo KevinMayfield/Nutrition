@@ -109,7 +109,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     @ViewChild(MatSort) sort: MatSort | null | undefined;
     @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
     displayedColumnsHR = ['date', 'type','duration', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'avghr', 'peakhr', 'kcal']
-    displayedColumnsKJ = ['date', 'type','duration', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'Z6', 'Z7']
+    displayedColumnsKJ = ['date', 'type','duration', 'z1', 'z2', 'z3', 'z4','z5', 'z6', 'z7', 'z8', 'z9', 'z10', "kJ"]
     opened: boolean = true;
     hasPowerData: boolean = false;
     constructor(
@@ -352,7 +352,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     setSort() {
 
         // @ts-ignore
-        this.dataSource.sort = this.sort
+        this.dataSourceHR.sort = this.sort
 
         this.dataSourceHR.sortingDataAccessor = (item, property) => {
             switch (property) {
@@ -522,9 +522,9 @@ export class RestingMetabolicRateComponent implements OnInit{
         //  console.log(activity.zones.length)
         for (let zone of activity.zones) {
             if (zone.type ==='power') {
-                if (zone.distribution_buckets.length>4) return zone.distribution_buckets[number-1].time
+                if (zone.distribution_buckets.length>4) return zone.distribution_buckets[number].time
             } else {
-                console.log(zone.type)
+          //      console.log(zone.type)
             }
         }
         return undefined
@@ -534,7 +534,7 @@ export class RestingMetabolicRateComponent implements OnInit{
 
     getZone(activity: any) {
         if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return
-        //  console.log(activity.zones.length)
+        console.log(activity.zones)
 
         for (let zone of activity.zones) {
             if (zone.type ==='heartrate') {
