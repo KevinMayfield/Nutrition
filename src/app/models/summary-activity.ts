@@ -45,6 +45,7 @@ export interface SummaryActivity {
   weighted_average_watts? : number;
   kcal? : number;
   max_heartrate?: number;
+  device_watts?: boolean;
  // splits_metric?: any[];
  // splits_standard?: any[];
 }

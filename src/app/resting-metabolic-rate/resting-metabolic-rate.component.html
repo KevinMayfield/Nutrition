@@ -119,7 +119,7 @@ ecg_heart
 
 
         </mat-tab>
-        <mat-tab label="Physical Activity Detail">
+        <mat-tab label="Physical Activity Detail (HR)">
             <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Activity-based Measures"
@@ -128,7 +128,7 @@ ecg_heart
                 <button td-message-actions mat-button (click)="viewPA()">View More</button>
             </td-message>
 
-                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+                <table mat-table [dataSource]="dataSourceHR" class="mat-elevation-z8"
                        matSort (matSortChange)="announceSortChange($event)"
                        matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
@@ -162,7 +162,7 @@ ecg_heart
                     <ng-container matColumnDef="Z1">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef  style="width: 12%;background: lightgrey"> Z1 </th>
                         <td mat-cell *matCellDef="let activity">
-                             <span *ngIf="getZoneDuration(activity,1); let zoneDuration">
+                             <span *ngIf="getZoneHRDuration(activity,1); let zoneDuration">
                                 <mat-progress-bar mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
                                  {{round(zoneDuration/60)}}</span>
                         </td>
@@ -170,7 +170,7 @@ ecg_heart
                     <ng-container matColumnDef="Z2">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;background: lightblue"> Z2 </th>
                         <td mat-cell *matCellDef="let activity">
-                            <span *ngIf="getZoneDuration(activity,2); let zoneDuration">
+                            <span *ngIf="getZoneHRDuration(activity,2); let zoneDuration">
                                 <mat-progress-bar class="green-progress" color="warn" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
                                 {{round(zoneDuration/60)}}</span>
                         </td>
@@ -178,7 +178,7 @@ ecg_heart
                     <ng-container matColumnDef="Z3">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;background: lightgreen"> Z3 </th>
                         <td mat-cell *matCellDef="let activity">
-                            <span *ngIf="getZoneDuration(activity,3); let zoneDuration">
+                            <span *ngIf="getZoneHRDuration(activity,3); let zoneDuration">
                                 <mat-progress-bar color="warn" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
                                 {{round(zoneDuration/60)}}</span>
                         </td>
@@ -186,7 +186,7 @@ ecg_heart
                     <ng-container matColumnDef="Z4">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;background: lightyellow"> Z4 </th>
                         <td mat-cell *matCellDef="let activity">
-                            <span *ngIf="getZoneDuration(activity,4); let zoneDuration">
+                            <span *ngIf="getZoneHRDuration(activity,4); let zoneDuration">
                                 <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
                                 {{round(zoneDuration/60)}}</span>
                         </td>
@@ -194,7 +194,7 @@ ecg_heart
                     <ng-container matColumnDef="Z5">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%; background: lightpink"> Z5 </th>
                         <td mat-cell *matCellDef="let activity">
-                             <span *ngIf="getZoneDuration(activity,5); let zoneDuration">
+                             <span *ngIf="getZoneHRDuration(activity,5); let zoneDuration">
                                 <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
                                  {{round(zoneDuration/60)}}</span>
                         </td>
@@ -236,14 +236,114 @@ bolt
                     </ng-container>
 
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHR"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHR;"></tr>
 
                     <tr class="mat-row" *matNoDataRow>
                         <td class="mat-cell" colspan="7">No data matching the filter </td>
                     </tr>
                 </table>
                 <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+        </mat-tab>
+        <mat-tab *ngIf="hasPowerData" label="Physical Activity Detail (Power)">
+            <table mat-table [dataSource]="dataSourceKJ" class="mat-elevation-z8"
+                   matSort (matSortChange)="announceSortChange($event)"
+                   matSortActive="date" matSortDirection="desc" matSortDisableClear>
+
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef> Date </th>
+                    <td mat-cell *matCellDef="let activity">
+                        {{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="type">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Type </th>
+                    <td mat-cell *matCellDef="let activity" [matTooltip]="activity.name">
+                        <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
+                                    {{getType(activity.type)}}
+                            </span></a>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="link">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Link </th>
+                    <td mat-cell *matCellDef="let activity">
+                        <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><mat-icon>open_in_new</mat-icon></a>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Z1">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef  style="width: 12%;background: lightgrey"> Z1 </th>
+                    <td mat-cell *matCellDef="let activity">
+                             <span *ngIf="getZoneKJDuration(activity,7); let zoneDuration">
+                                <mat-progress-bar mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                 {{round(zoneDuration/60)}}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="Z2">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;background: lightblue"> Z2 </th>
+                    <td mat-cell *matCellDef="let activity">
+                            <span *ngIf="getZoneKJDuration(activity,6); let zoneDuration">
+                                <mat-progress-bar class="green-progress" color="warn" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                {{round(zoneDuration/60)}}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="Z3">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;background: lightgreen"> Z3 </th>
+                    <td mat-cell *matCellDef="let activity">
+                            <span *ngIf="getZoneKJDuration(activity,5); let zoneDuration">
+                                <mat-progress-bar color="warn" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                {{round(zoneDuration/60)}}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="Z4">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;background: lightyellow"> Z4 </th>
+                    <td mat-cell *matCellDef="let activity">
+                            <span *ngIf="getZoneKJDuration(activity,4); let zoneDuration">
+                                <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                {{round(zoneDuration/60)}}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="Z5">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%; background: lightsalmon"> Z5 </th>
+                    <td mat-cell *matCellDef="let activity">
+                             <span *ngIf="getZoneKJDuration(activity,3); let zoneDuration">
+                                <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                 {{round(zoneDuration/60)}}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="Z6">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%; background: lightpink"> Z6 </th>
+                    <td mat-cell *matCellDef="let activity">
+                             <span *ngIf="getZoneKJDuration(activity,2); let zoneDuration">
+                                <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                 {{round(zoneDuration/60)}}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="Z7">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%; background: lightcoral"> Z7 </th>
+                    <td mat-cell *matCellDef="let activity">
+                             <span *ngIf="getZoneKJDuration(activity,1); let zoneDuration">
+                                <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
+                                 {{round(zoneDuration/60)}}</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="duration">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef> Duration </th>
+                    <td mat-cell *matCellDef="let activity">
+                        {{round(activity.elapsed_time/60)}}
+                    </td>
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsKJ"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsKJ;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="7">No data matching the filter </td>
+                </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
         </mat-tab>
         <!--
 

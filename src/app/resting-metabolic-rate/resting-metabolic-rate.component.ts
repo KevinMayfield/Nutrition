@@ -75,6 +75,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     ]
     exerciseIntense :ValueSetExpansionContains | undefined
     activities : SummaryActivity[] = []
+    powerActivities: SummaryActivity[] = [];
     exerciseFrequencies: ValueSetExpansionContains[] = [
         {
             code: '1.2',
@@ -102,11 +103,15 @@ export class RestingMetabolicRateComponent implements OnInit{
     protected readonly Math = Math;
     maximumHR: undefined | number;
     // @ts-ignore
-    dataSource: MatTableDataSource<SummaryActivity> ;
+    dataSourceHR: MatTableDataSource<SummaryActivity> ;
+    // @ts-ignore
+    dataSourceKJ: MatTableDataSource<SummaryActivity> ;
     @ViewChild(MatSort) sort: MatSort | null | undefined;
     @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
-    displayedColumns = ['date', 'type','duration', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'avghr', 'peakhr', 'kcal']
+    displayedColumnsHR = ['date', 'type','duration', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'avghr', 'peakhr', 'kcal']
+    displayedColumnsKJ = ['date', 'type','duration', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'Z6', 'Z7']
     opened: boolean = true;
+    hasPowerData: boolean = false;
     constructor(
         private http: HttpClient,
         private smart: SmartService,
@@ -233,7 +238,22 @@ export class RestingMetabolicRateComponent implements OnInit{
                 this.setSelectAnswers()
                 // supports activity detail
                 this.activities.push(activity)
-                this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities.sort((a,b) =>{
+                if (activity.device_watts) {
+                    this.hasPowerData = true
+                    this.powerActivities.push(activity)
+                    this.dataSourceKJ = new MatTableDataSource<SummaryActivity>(this.powerActivities.sort((a,b) =>{
+                        if (a.start_date < b.start_date) {
+                            return 1;
+                        }
+
+                        if (a.start_date > b.start_date) {
+                            return -1;
+                        }
+
+                        return 0;
+                    }));
+                }
+                this.dataSourceHR = new MatTableDataSource<SummaryActivity>(this.activities.sort((a,b) =>{
                     if (a.start_date < b.start_date) {
                         return 1;
                     }
@@ -322,7 +342,7 @@ export class RestingMetabolicRateComponent implements OnInit{
             });
             // @ts-ignore
             this.sort.sort(({ id: 'date', start: 'desc'}) as MatSortable);
-            if (this.dataSource !== undefined) this.dataSource.sort = this.sort;
+            if (this.dataSourceHR !== undefined) this.dataSourceHR.sort = this.sort;
         } else {
             console.log('SORT UNDEFINED');
         }
@@ -334,7 +354,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         // @ts-ignore
         this.dataSource.sort = this.sort
 
-        this.dataSource.sortingDataAccessor = (item, property) => {
+        this.dataSourceHR.sortingDataAccessor = (item, property) => {
             switch (property) {
                 case 'date': {
                     if (item.start_date !== undefined) {
@@ -485,7 +505,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         return result
     }
 
-    getZoneDuration(activity: any, number: number) {
+    getZoneHRDuration(activity: any, number: number) {
         if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return undefined
       //  console.log(activity.zones.length)
         for (let zone of activity.zones) {
@@ -497,6 +517,21 @@ export class RestingMetabolicRateComponent implements OnInit{
         }
         return undefined
     }
+    getZoneKJDuration(activity: any, number: number) {
+        if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return undefined
+        //  console.log(activity.zones.length)
+        for (let zone of activity.zones) {
+            if (zone.type ==='power') {
+                if (zone.distribution_buckets.length>4) return zone.distribution_buckets[number-1].time
+            } else {
+                console.log(zone.type)
+            }
+        }
+        return undefined
+    }
+
+
+
     getZone(activity: any) {
         if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return
         //  console.log(activity.zones.length)
