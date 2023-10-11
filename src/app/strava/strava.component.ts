@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {StravaService} from "../service/strava.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Athlete} from "../service/models/athlete";
+import {Athlete} from "../models/athlete";
 
 @Component({
   selector: 'app-strava',

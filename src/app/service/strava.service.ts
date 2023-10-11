@@ -2,8 +2,8 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable, Subscription} from 'rxjs';
 import {environment} from '../../environments/environment';
-import {Athlete} from "./models/athlete";
-import {SummaryActivity} from "./models/summary-activity";
+import {Athlete} from "../models/athlete";
+import {SummaryActivity} from "../models/summary-activity";
 
 
 

@@ -1,5 +1,5 @@
 <mat-sidenav-container class="example-container">
-    <mat-sidenav mode="side" opened>
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened">
         <div class="example-form">
             <mat-form-field class="example-full-width">
                 <mat-label >Height</mat-label>
@@ -37,7 +37,7 @@
             </mat-form-field>
         </div>
         <span *ngIf="hrzones !== undefined">
-                Maximum heart rate (calculated) =  {{hrzones?.maximumHR}}
+                Maximum heart rate <span *ngIf="hrzones?.calculated">(calculated)</span><span *ngIf="!hrzones?.calculated">(strava)</span> =  {{hrzones?.maximumHR}}
             <div style="background: lightpink"><span class="material-symbols-outlined">
 ecg_heart
 </span>{{hrzones?.z5?.min}}-{{hrzones?.z5?.max}} Z5 - Anerobic</div>
@@ -61,6 +61,13 @@ ecg_heart
     <mat-card-content>
     <mat-tab-group>
         <mat-tab label="Physical Activity Summary">
+            <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
+                        label="Information"
+                        sublabel="This screen is based on US Physical Activity - Time-based Measures"
+                        color="primary"
+                        icon="info">
+                <button td-message-actions mat-button (click)="viewPA()">View More</button>
+            </td-message>
             <mat-grid-list cols="7" rowHeight="30px">
                 <mat-grid-tile>{{dayOfWeek(6)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(5)}}</mat-grid-tile>
@@ -70,10 +77,10 @@ ecg_heart
                 <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
             </mat-grid-list>
-                    <mat-grid-list cols="7" rowHeight="140px">
+                    <mat-grid-list cols="7" rowHeight="100px">
 
                         <span *ngFor="let activity of activityArray">
-                        <mat-grid-tile *ngIf="activity.kcal >0" [style]="getBackground(activity)" [matTooltip]="getNames(activity)">
+                        <mat-grid-tile *ngIf="activity.kcal >0" [style]="getBackground(activity.average_heartrate)" [matTooltip]="getNames(activity)">
                             <div>
                             <span *ngIf="activity.kcal>0">
                                 <span class="material-symbols-outlined">
@@ -94,14 +101,14 @@ timer
                                 {{activity.kcal}} kcal
                                 </span>
 
-                            <br/>
+                           <!-- <br/>
                             <span *ngIf="activity.hr_avg !== undefined">
                                                    <span class="material-symbols-outlined">
 ecg_heart
 </span>
                                 {{round(activity.hr_avg)}} <span *ngIf="activity.hr_max !== undefined">(max {{activity.hr_max}})</span>
 
-                            </span>
+                            </span> -->
                             </div>
                         </mat-grid-tile >
                             <mat-grid-tile *ngIf="activity.kcal === 0">
@@ -113,14 +120,36 @@ ecg_heart
 
         </mat-tab>
         <mat-tab label="Physical Activity Detail">
+            <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
+                        label="Information"
+                        sublabel="This screen is based on US Physical Activity - Activity-based Measures"
+                        color="primary"
+                        icon="info">
+                <button td-message-actions mat-button (click)="viewPA()">View More</button>
+            </td-message>
+
                 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
                        matSort (matSortChange)="announceSortChange($event)"
-                       matSortActive="date" matSortDirection="desc">
+                       matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
                     <ng-container matColumnDef="date">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef> Date </th>
                         <td mat-cell *matCellDef="let activity">
                             {{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Type </th>
+                        <td mat-cell *matCellDef="let activity" [matTooltip]="activity.name">
+                            <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
+                                    {{getType(activity.type)}}
+                            </span></a>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="link">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Link </th>
+                        <td mat-cell *matCellDef="let activity">
+                            <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><mat-icon>open_in_new</mat-icon></a>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="name">
@@ -131,7 +160,7 @@ ecg_heart
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="Z1">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef  style="width: 12%;"> Z1 </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef  style="width: 12%;background: lightgrey"> Z1 </th>
                         <td mat-cell *matCellDef="let activity">
                              <span *ngIf="getZoneDuration(activity,1); let zoneDuration">
                                 <mat-progress-bar mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
@@ -139,7 +168,7 @@ ecg_heart
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="Z2">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;"> Z2 </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;background: lightblue"> Z2 </th>
                         <td mat-cell *matCellDef="let activity">
                             <span *ngIf="getZoneDuration(activity,2); let zoneDuration">
                                 <mat-progress-bar class="green-progress" color="warn" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
@@ -147,7 +176,7 @@ ecg_heart
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="Z3">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;"> Z3 </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;background: lightgreen"> Z3 </th>
                         <td mat-cell *matCellDef="let activity">
                             <span *ngIf="getZoneDuration(activity,3); let zoneDuration">
                                 <mat-progress-bar color="warn" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
@@ -155,7 +184,7 @@ ecg_heart
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="Z4">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;"> Z4 </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;background: lightyellow"> Z4 </th>
                         <td mat-cell *matCellDef="let activity">
                             <span *ngIf="getZoneDuration(activity,4); let zoneDuration">
                                 <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
@@ -163,7 +192,7 @@ ecg_heart
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="Z5">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%;"> Z5 </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 12%; background: lightpink"> Z5 </th>
                         <td mat-cell *matCellDef="let activity">
                              <span *ngIf="getZoneDuration(activity,5); let zoneDuration">
                                 <mat-progress-bar color="accent" mode="determinate" value="{{100*(zoneDuration/activity.elapsed_time)}}"></mat-progress-bar>
@@ -175,6 +204,34 @@ ecg_heart
                         <th mat-header-cell mat-sort-header *matHeaderCellDef> Duration </th>
                         <td mat-cell *matCellDef="let activity">
                             {{round(activity.elapsed_time/60)}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="avghr">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Avg.  <span class="material-symbols-outlined">
+ecg_heart
+</span> </th>
+                        <td mat-cell *matCellDef="let activity">
+                            <div [style]="getBackground(activity.average_heartrate)">
+                                {{round(activity.average_heartrate)}}
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="peakhr">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Max. <span class="material-symbols-outlined">
+ecg_heart
+</span> </th>
+                        <td mat-cell *matCellDef="let activity">
+                            <div [style]="getBackground(activity.max_heartrate)">
+                            {{round(activity.max_heartrate)}}
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="kcal">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> kcal <span class="material-symbols-outlined">
+bolt
+</span> </th>
+                        <td mat-cell *matCellDef="let activity">
+                            {{round(activity.kcal)}}
                         </td>
                     </ng-container>
 
@@ -196,7 +253,14 @@ ecg_heart
         <mat-tab label="Nutrition">
             <div class="example-full-width">
                 <h3>Energy</h3>
-                <table class="mat-elevation-z8">
+                <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
+                        label="Information"
+                        sublabel="Gender, Height and Weight is required to estimate energy intake."
+                            color="primary"
+                        icon="info">
+                    <button td-message-actions mat-button >View More</button>
+                </td-message>
+                <table *ngIf="dailyEnergy !== undefined || rmr !== undefined" class="mat-elevation-z8">
                     <tr>
                         <th></th>
                         <th>Energy (kcal)</th>
@@ -346,7 +410,7 @@ ecg_heart
 
     </mat-card-content>
     <mat-card-actions>
-        <button mat-raised-button color="accent" (click)="calculate()">Share with NHS or Social Provider</button>
+        <button mat-raised-button color="accent" (click)="calculate()" disabled>Share with NHS or Social Provider</button>
     </mat-card-actions>
 
 </mat-card>

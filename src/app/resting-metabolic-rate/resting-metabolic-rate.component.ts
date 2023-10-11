@@ -4,13 +4,13 @@ import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {StravaService} from "../service/strava.service";
-import {Athlete} from "../service/models/athlete";
-import {SummaryActivity} from "../service/models/summary-activity";
+import {Athlete} from "../models/athlete";
+import {SummaryActivity} from "../models/summary-activity";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatSort, Sort} from "@angular/material/sort";
-import {ActivityType} from "../service/models/activity-type";
+import {ActivityType} from "../models/activity-type";
 
 class sessions {
     type?: ActivityType;
@@ -19,7 +19,7 @@ class sessions {
 class activityDay {
     duration: number = 0;
     kcal: number = 0;
-    hr_avg?: number;
+    average_heartrate?: number;
     hr_max?: number;
     sessions: sessions[] = [];
 }
@@ -103,9 +103,10 @@ export class RestingMetabolicRateComponent implements OnInit{
     maximumHR: undefined | number;
     // @ts-ignore
     dataSource: MatTableDataSource<SummaryActivity> ;
-    @ViewChild(MatSort) sort: MatSort | undefined;
+    @ViewChild(MatSort) sort: MatSort | null | undefined;
     @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
-    displayedColumns = ['date', 'name', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'duration']
+    displayedColumns = ['date', 'type','duration', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'avghr', 'peakhr', 'kcal']
+    opened: boolean = true;
     constructor(
         private http: HttpClient,
         private smart: SmartService,
@@ -198,12 +199,12 @@ export class RestingMetabolicRateComponent implements OnInit{
                     sessions: this.activityArray[this.strava.duration - diffDays].sessions
                 }
                 if (activity.average_heartrate !== undefined) {
-                    if (this.activityArray[this.strava.duration - diffDays].hr_avg !== undefined) {
+                    if (this.activityArray[this.strava.duration - diffDays].average_heartrate !== undefined) {
 
                         // @ts-ignore
-                        act.hr_avg = ((activity.average_heartrate * activity.elapsed_time) + (this.activityArray[this.strava.duration - diffDays].hr_avg * this.activityArray[this.strava.duration - diffDays].duration)) / (this.activityArray[this.strava.duration - diffDays].duration + activity.elapsed_time)
+                        act.average_heartrate = ((activity.average_heartrate * activity.elapsed_time) + (this.activityArray[this.strava.duration - diffDays].average_heartrate * this.activityArray[this.strava.duration - diffDays].duration)) / (this.activityArray[this.strava.duration - diffDays].duration + activity.elapsed_time)
                     } else {
-                        act.hr_avg = activity.average_heartrate
+                        act.average_heartrate = activity.average_heartrate
                     }
                 }
                 // @ts-ignore
@@ -212,6 +213,9 @@ export class RestingMetabolicRateComponent implements OnInit{
                 }
                 var session : sessions = {
                     name: activity.name
+                }
+                if (activity.zones !== undefined && (this.hrzones === undefined || this.hrzones?.calculated)) {
+                    this.getZone(activity)
                 }
                 if (activity.type !== undefined) session.type = activity.type
                 act.sessions.push(session)
@@ -229,8 +233,18 @@ export class RestingMetabolicRateComponent implements OnInit{
                 this.setSelectAnswers()
                 // supports activity detail
                 this.activities.push(activity)
-                this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities);
-                this.setSortAndPaginator()
+                this.dataSource = new MatTableDataSource<SummaryActivity>(this.activities.sort((a,b) =>{
+                    if (a.start_date < b.start_date) {
+                        return 1;
+                    }
+
+                    if (a.start_date > b.start_date) {
+                        return -1;
+                    }
+
+                    return 0;
+                }));
+                this.setSort()
             }
 
         })
@@ -302,7 +316,7 @@ export class RestingMetabolicRateComponent implements OnInit{
 
     ngAfterViewInit(): void {
 
-        if (this.sort !== undefined) {
+        if (this.sort !== undefined && this.sort !== null) {
             this.sort.sortChange.subscribe((event) => {
                  console.log(event);
             });
@@ -315,24 +329,24 @@ export class RestingMetabolicRateComponent implements OnInit{
 
     }
 
-    setSortAndPaginator() {
+    setSort() {
+
         // @ts-ignore
         this.dataSource.sort = this.sort
-        if (this.paginator !== undefined) this.dataSource.paginator = this.paginator;
-        // @ts-ignore
+
         this.dataSource.sortingDataAccessor = (item, property) => {
             switch (property) {
                 case 'date': {
                     if (item.start_date !== undefined) {
-                        return item.start_date
+                        return item.start_date.getDate()
                     }
-                    return undefined;
+                    return 0;
                 }
                 case 'duration': {
                    return item.elapsed_time
                 }
                 default: {
-                    return undefined
+                    return 0
                 }
             }
         };
@@ -404,7 +418,7 @@ export class RestingMetabolicRateComponent implements OnInit{
 
         // Using zwift pizza units https://www.bikeradar.com/advice/fitness-and-training/how-to-read-a-zwift-ride-report
         var number= Math.round(kcal/285)
-
+        if (number === undefined || number === 0) return undefined
         return new Array(number).fill(0)
             .map((n, index) => index + 1);
     }
@@ -439,14 +453,13 @@ export class RestingMetabolicRateComponent implements OnInit{
         return days[ from.getDay() ];
     }
 
-    getBackground(activity: activityDay) {
-        if (this.hrzones !== undefined && this.hrzones.maximumHR !== undefined && activity.hr_avg !== undefined) {
-            // TODO move to strava HR zones
-            let zone = this.hrzones.maximumHR
-            if ((zone * 0.9) < activity.hr_avg) return "background: lightpink"
-            if ((zone * 0.8) < activity.hr_avg) return "background: lightyellow"
-            if ((zone * 0.7) < activity.hr_avg) return "background: lightgreen"
-            if ((zone * 0.6) < activity.hr_avg) return "background: lightblue"
+    getBackground(heartrate: number | undefined) {
+
+        if (this.hrzones !== undefined && this.hrzones.maximumHR !== undefined && heartrate !== undefined) {
+            if (this.hrzones.z5 !== undefined && this.hrzones.z5?.min < heartrate) return "background: lightpink"
+            if (this.hrzones.z4 !== undefined && this.hrzones.z4?.min < heartrate) return "background: lightyellow"
+            if (this.hrzones.z3 !== undefined && this.hrzones.z3?.min < heartrate) return "background: lightgreen"
+            if (this.hrzones.z2 !== undefined && this.hrzones.z2?.min < heartrate) return "background: lightblue"
         }
         return "background: lightgrey"
     }
@@ -483,5 +496,47 @@ export class RestingMetabolicRateComponent implements OnInit{
             }
         }
         return undefined
+    }
+    getZone(activity: any) {
+        if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return
+        //  console.log(activity.zones.length)
+
+        for (let zone of activity.zones) {
+            if (zone.type ==='heartrate') {
+                console.log(zone)
+                this.hrzones = {
+                    calculated: false,
+                    maximumHR: Math.round(1.034 * zone.distribution_buckets[4].min)
+                }
+                console.log(zone.distribution_buckets[4].min)
+                this.hrzones.z1 = {
+                    min : zone.distribution_buckets[0].min,
+                    max: zone.distribution_buckets[0].max
+                }
+                this.hrzones.z2 = {
+                    min : zone.distribution_buckets[1].min,
+                    max: zone.distribution_buckets[1].max
+                }
+                this.hrzones.z3 = {
+                    min : zone.distribution_buckets[2].min,
+                    max: zone.distribution_buckets[2].max
+                }
+                this.hrzones.z4 = {
+                    min : zone.distribution_buckets[3].min,
+                    max: zone.distribution_buckets[3].max
+                }
+                this.hrzones.z5 = {
+                    min : zone.distribution_buckets[4].min,
+                    max: zone.distribution_buckets[4].max
+                }
+
+            } else {
+                console.log(zone.type)
+            }
+        }
+    }
+
+    viewPA() {
+        window.open("https://build.fhir.org/ig/HL7/physical-activity/measures.html", "_blank")
     }
 }
