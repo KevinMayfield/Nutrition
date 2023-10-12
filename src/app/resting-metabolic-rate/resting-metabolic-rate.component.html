@@ -36,23 +36,23 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        <span *ngIf="hrzones !== undefined">
-                Maximum heart rate <span *ngIf="hrzones?.calculated">(calculated)</span><span *ngIf="!hrzones?.calculated">(strava)</span> =  {{hrzones?.maximumHR}}
+        <span *ngIf="zoneHR !== undefined">
+                Maximum heart rate <span *ngIf="zoneHR?.calculated">(calculated)</span><span *ngIf="!zoneHR?.calculated">(strava)</span> =  {{zoneHR?.maximumHR}}
             <div style="background: lightpink"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{hrzones?.z5?.min}}-{{hrzones?.z5?.max}} Z5 - Anerobic</div>
+</span>{{zoneHR?.z5?.min}}-{{zoneHR?.z5?.max}} Z5 - Anerobic</div>
                  <div style="background: lightyellow"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{hrzones?.z4?.min}}-{{hrzones?.z4?.max}} Z4 - Threshold</div>
+</span>{{zoneHR?.z4?.min}}-{{zoneHR?.z4?.max}} Z4 - Threshold</div>
                  <div style="background: lightgreen"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{hrzones?.z3?.min}}-{{hrzones?.z3?.max}} Z3 - Tempo</div>
+</span>{{zoneHR?.z3?.min}}-{{zoneHR?.z3?.max}} Z3 - Tempo</div>
                  <div style="background: lightblue"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{hrzones?.z2?.min}}-{{hrzones?.z2?.max}} Z2 - Endurance</div>
+</span>{{zoneHR?.z2?.min}}-{{zoneHR?.z2?.max}} Z2 - Endurance</div>
                 <div style="background: lightgrey"><span class="material-symbols-outlined">
 ecg_heart
-</span> {{hrzones?.z1?.min}}-{{hrzones?.z1?.max}} Z1 - Recovery</div>
+</span> {{zoneHR?.z1?.min}}-{{zoneHR?.z1?.max}} Z1 - Recovery</div>
             </span>
 
     </mat-sidenav>
@@ -61,7 +61,7 @@ ecg_heart
     <mat-card-content>
     <mat-tab-group>
         <mat-tab label="Physical Activity Summary">
-            <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
+            <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Time-based Measures"
                         color="primary"
@@ -77,7 +77,7 @@ ecg_heart
                 <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
             </mat-grid-list>
-                    <mat-grid-list cols="7" rowHeight="100px">
+                    <mat-grid-list cols="7" rowHeight="110px">
 
                         <span *ngFor="let activity of activityArray">
                         <mat-grid-tile *ngIf="activity.kcal >0" [style]="getBackground(activity.average_heartrate)" [matTooltip]="getNames(activity)">
@@ -120,7 +120,7 @@ ecg_heart
 
         </mat-tab>
         <mat-tab label="Physical Activity Detail (HR)">
-            <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
+            <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Activity-based Measures"
                         color="primary"
@@ -246,6 +246,13 @@ bolt
                 <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
         </mat-tab>
         <mat-tab *ngIf="hasPowerData" label="Physical Activity Detail (Power)">
+            <td-message
+                        label="Information"
+                        sublabel="For detailed breakdown of power data see power-meter.cc"
+                        color="primary"
+                        icon="info">
+                <button td-message-actions mat-button (click)="viewPower()">Power-Meter.cc</button>
+            </td-message>
             <table mat-table [dataSource]="dataSourceKJ" class="mat-elevation-z8"
                    matSort (matSortChange)="announceSortChange($event)"
                    matSortActive="date" matSortDirection="desc" matSortDisableClear>
@@ -541,7 +548,7 @@ bolt
 
     </mat-card-content>
     <mat-card-actions>
-        <button mat-raised-button color="accent" (click)="calculate()" disabled>Share with NHS or Social Provider</button>
+        <button mat-raised-button color="accent" (click)="calculate()" disabled>Share with NHS or Other Practitioner</button>
     </mat-card-actions>
 
 </mat-card>

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {StravaService} from "../service/strava.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Athlete} from "../models/athlete";
+import {Person} from "../models/person";
 
 @Component({
   selector: 'app-strava',
@@ -12,7 +12,7 @@ export class StravaComponent implements OnInit{
 
     stravaConnect = true;
     stravaComplete = false;
-    athlete: Athlete | undefined;
+    athlete: Person | undefined;
     constructor(public strava: StravaService,
                 private router: Router,
                 private route: ActivatedRoute,) {

@@ -4,13 +4,14 @@ import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {StravaService} from "../service/strava.service";
-import {Athlete} from "../models/athlete";
+import {hrZone, Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatSort, Sort} from "@angular/material/sort";
 import {ActivityType} from "../models/activity-type";
+import {EPRService} from "../service/epr.service";
 
 class sessions {
     type?: ActivityType;
@@ -23,19 +24,8 @@ class activityDay {
     hr_max?: number;
     sessions: sessions[] = [];
 }
-class range {
-    min: number = 0;
-    max: number = 0
-}
-class hrZone {
-    calculated?: boolean;
-    maximumHR?: number;
-    z1?: range;
-    z2?: range;
-    z3?: range;
-    z4?: range;
-    z5?: range;
-}
+
+
 @Component({
   selector: 'app-resting-metabolic-rate',
   templateUrl: './resting-metabolic-rate.component.html',
@@ -50,11 +40,11 @@ export class RestingMetabolicRateComponent implements OnInit{
     age: any;
     exerciseLevel: number = 0;
     exerciseDurationTotal: number = 0;
-    athlete: Athlete | undefined;
+    zoneHR: hrZone | undefined
+
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
     activityArray : activityDay[] = []
-    hrzones: hrZone | undefined;
     exerciseIntenses: ValueSetExpansionContains[] = [
         {
             code: 'very-light',
@@ -114,6 +104,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     hasPowerData: boolean = false;
     constructor(
         private http: HttpClient,
+        private epr: EPRService,
         private smart: SmartService,
         private strava: StravaService,
         protected sanitizer: DomSanitizer,
@@ -121,10 +112,17 @@ export class RestingMetabolicRateComponent implements OnInit{
        // this.sanitizer.bypassSecurityTrustHtml("<mat-icon>local_pizza</mat-icon>")
     }
     calculate() {
-        if ((this.hrzones === undefined || this.hrzones.calculated) && this.age !== undefined) {
+        if (this.age !== undefined && this.age !== this.epr.person.age) {
+            this.epr.setAge(this.age)
+        }
+        if (this.height !== undefined && this.height !== this.epr.person.height) {
+            this.epr.setHeight(this.height)
+        }
+
+        if (((this.epr.person.hrzones === undefined || this.epr.person.hrzones.calculated)) && this.age !== undefined) {
             let zone = 220 - this.age
             if (zone !== undefined) {
-                this.hrzones = {
+                this.epr.setHRZone( {
                     calculated: true,
                     maximumHR: this.round(zone),
                     z1: {
@@ -147,17 +145,17 @@ export class RestingMetabolicRateComponent implements OnInit{
                         min: Math.round(zone * 0.9),
                         max: Math.round(zone * 1.0)
                     }
-                }
+                })
             }
 
         }
-        if (this.administrativeGenders !== undefined && this.athlete !== undefined && this.athlete.sex !== undefined) {
+        if (this.administrativeGenders !== undefined && this.epr.person.sex !== undefined) {
             for (var gender of this.administrativeGenders) {
 
-                if (gender.code === 'male' && this.athlete.sex === 'M') {
+                if (gender.code === 'male' && this.epr.person.sex === 'M') {
                     this.administrativeGender = gender
                 }
-                if (gender.code === 'female' && this.athlete.sex === 'F') {
+                if (gender.code === 'female' && this.epr.person.sex === 'F') {
                     this.administrativeGender = gender
                 }
             }
@@ -182,9 +180,22 @@ export class RestingMetabolicRateComponent implements OnInit{
 
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
             this.administrativeGenders = this.smart.getContainsExpansion(result)
-
         })
-
+        this.zoneHR = this.epr.person.hrzones
+        this.epr.zoneChange.subscribe(zone => {
+            console.log('hr zone change')
+            this.zoneHR = zone
+        })
+        if (this.epr.person.age !== undefined) {
+            this.age = this.epr.person.age
+        }
+        if (this.epr.person.height !== undefined) {
+            this.height = this.epr.person.height
+        }
+        if (this.epr.person.weight !== undefined) {
+            this.weight = this.epr.person.weight
+        }
+        if (this.height !== undefined || this.weight !== undefined) this.calculate()
         this.getStrava()
         this.strava.tokenChange.subscribe(()=> {
             this.getStrava()
@@ -219,7 +230,7 @@ export class RestingMetabolicRateComponent implements OnInit{
                 var session : sessions = {
                     name: activity.name
                 }
-                if (activity.zones !== undefined && (this.hrzones === undefined || this.hrzones?.calculated)) {
+                if (activity.zones !== undefined && (this.epr.person.hrzones === undefined || this.epr.person.hrzones?.calculated)) {
                     this.getZone(activity)
                 }
                 if (activity.type !== undefined) session.type = activity.type
@@ -270,8 +281,6 @@ export class RestingMetabolicRateComponent implements OnInit{
         })
         this.smart.patientChangeEvent.subscribe(patient => {
                 this.age = this.smart.age
-
-
 
             this.setSelectAnswers()
                 var parameters: Parameters = {
@@ -340,8 +349,7 @@ export class RestingMetabolicRateComponent implements OnInit{
             this.sort.sortChange.subscribe((event) => {
                  console.log(event);
             });
-            // @ts-ignore
-            this.sort.sort(({ id: 'date', start: 'desc'}) as MatSortable);
+
             if (this.dataSourceHR !== undefined) this.dataSourceHR.sort = this.sort;
         } else {
             console.log('SORT UNDEFINED');
@@ -358,12 +366,47 @@ export class RestingMetabolicRateComponent implements OnInit{
             switch (property) {
                 case 'date': {
                     if (item.start_date !== undefined) {
+                        try {
                         return item.start_date.getDate()
+                        }
+                        catch (e) {
+                            console.log(item.start_date)
+                            return new Date(item.start_date).getDate()
+
+                        }
+
                     }
                     return 0;
                 }
                 case 'duration': {
                    return item.elapsed_time
+                }
+                case 'type': {
+                    return item.type
+                }
+                case 'Z1': {
+                    return this.getZoneHRDuration(item,1)
+                }
+                case 'Z2': {
+                    return this.getZoneHRDuration(item,2)
+                }
+                case 'Z3': {
+                    return this.getZoneHRDuration(item,3)
+                }
+                case 'Z4': {
+                    return this.getZoneHRDuration(item,4)
+                }
+                case 'Z5': {
+                    return this.getZoneHRDuration(item,5)
+                }
+                case 'avghr': {
+                    return item.average_heartrate
+                }
+                case 'peakhr': {
+                    return item.max_heartrate
+                }
+                case 'kcal': {
+                    return item.kcal
                 }
                 default: {
                     return 0
@@ -373,11 +416,10 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
     getStrava(){
-
         for(var i= 0;i<=this.strava.duration;i++) this.activityArray.push({ duration:0,kcal: 0, sessions: []})
         this.strava.getAthlete().subscribe(athlete => {
             if (athlete.weight !== undefined) this.weight = athlete.weight
-            this.athlete = athlete
+            this.epr.setPerson(athlete)
             this.strava.getActivities()
         })
     }
@@ -438,7 +480,7 @@ export class RestingMetabolicRateComponent implements OnInit{
 
         // Using zwift pizza units https://www.bikeradar.com/advice/fitness-and-training/how-to-read-a-zwift-ride-report
         var number= Math.round(kcal/285)
-        if (number === undefined || number === 0) return undefined
+        if (number === undefined || number === 0 || isNaN(+number)) return undefined
         return new Array(number).fill(0)
             .map((n, index) => index + 1);
     }
@@ -474,14 +516,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
     getBackground(heartrate: number | undefined) {
-
-        if (this.hrzones !== undefined && this.hrzones.maximumHR !== undefined && heartrate !== undefined) {
-            if (this.hrzones.z5 !== undefined && this.hrzones.z5?.min < heartrate) return "background: lightpink"
-            if (this.hrzones.z4 !== undefined && this.hrzones.z4?.min < heartrate) return "background: lightyellow"
-            if (this.hrzones.z3 !== undefined && this.hrzones.z3?.min < heartrate) return "background: lightgreen"
-            if (this.hrzones.z2 !== undefined && this.hrzones.z2?.min < heartrate) return "background: lightblue"
-        }
-        return "background: lightgrey"
+        return this.epr.getBackground(heartrate)
     }
 
     getType(type: ActivityType | undefined) {
@@ -534,37 +569,35 @@ export class RestingMetabolicRateComponent implements OnInit{
 
     getZone(activity: any) {
         if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return
-        console.log(activity.zones)
-
         for (let zone of activity.zones) {
             if (zone.type ==='heartrate') {
                 console.log(zone)
-                this.hrzones = {
+                var hrzones : hrZone = {
                     calculated: false,
                     maximumHR: Math.round(1.034 * zone.distribution_buckets[4].min)
                 }
-                console.log(zone.distribution_buckets[4].min)
-                this.hrzones.z1 = {
+                hrzones.z1 = {
                     min : zone.distribution_buckets[0].min,
                     max: zone.distribution_buckets[0].max
                 }
-                this.hrzones.z2 = {
+                hrzones.z2 = {
                     min : zone.distribution_buckets[1].min,
                     max: zone.distribution_buckets[1].max
                 }
-                this.hrzones.z3 = {
+                hrzones.z3 = {
                     min : zone.distribution_buckets[2].min,
                     max: zone.distribution_buckets[2].max
                 }
-                this.hrzones.z4 = {
+                hrzones.z4 = {
                     min : zone.distribution_buckets[3].min,
                     max: zone.distribution_buckets[3].max
                 }
-                this.hrzones.z5 = {
+                hrzones.z5 = {
                     min : zone.distribution_buckets[4].min,
                     max: zone.distribution_buckets[4].max
                 }
-
+                console.log('I don this shit')
+                this.epr.setHRZone(hrzones)
             } else {
                 console.log(zone.type)
             }
@@ -573,5 +606,9 @@ export class RestingMetabolicRateComponent implements OnInit{
 
     viewPA() {
         window.open("https://build.fhir.org/ig/HL7/physical-activity/measures.html", "_blank")
+    }
+
+    viewPower() {
+        window.open("https://power-meter.cc/", "_blank")
     }
 }

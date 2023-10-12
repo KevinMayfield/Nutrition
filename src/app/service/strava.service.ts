@@ -2,7 +2,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable, Subscription} from 'rxjs';
 import {environment} from '../../environments/environment';
-import {Athlete} from "../models/athlete";
+import {Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 
 
@@ -16,7 +16,7 @@ export class StravaService {
   private accessToken = undefined;
   private refreshingToken = false;
   tokenChange: EventEmitter<any> = new EventEmitter();
-  private athlete?: Athlete = undefined;
+  private athlete?: Person = undefined;
   athleteChange: EventEmitter<any> = new EventEmitter();
   activityMap = new Map();
   private from: Date | undefined;
@@ -53,16 +53,16 @@ export class StravaService {
     return headers;
   }
 
-  public getAthlete(): Observable<Athlete> {
-    return this.http.get<Athlete>(this.url + 'athlete', {headers: this.getHeaders()});
+  public getAthlete(): Observable<Person> {
+    return this.http.get<Person>(this.url + 'athlete', {headers: this.getHeaders()});
   }
 
-  public setAthlete(athlete: Athlete): void {
+  public setAthlete(athlete: Person): void {
     this.athlete = athlete;
     this.athleteChange.emit(athlete);
   }
 
-  public getTokenAthlete(): Athlete | undefined {
+  public getTokenAthlete(): Person | undefined {
      var tokenStr = localStorage.getItem('stravaAccessToken')
      if (tokenStr === undefined) {
        return undefined
