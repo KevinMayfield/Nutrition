@@ -69,13 +69,14 @@ ecg_heart
                 <button td-message-actions mat-button (click)="viewPA()">View More</button>
             </td-message>
             <mat-grid-list cols="7" rowHeight="30px">
+                <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
+                <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(6)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(5)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(4)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(3)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(2)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
+
             </mat-grid-list>
                     <mat-grid-list cols="7" rowHeight="110px">
 
