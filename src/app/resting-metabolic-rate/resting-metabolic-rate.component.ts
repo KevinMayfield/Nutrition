@@ -24,7 +24,13 @@ class activityDay {
     hr_max?: number;
     sessions: sessions[] = [];
 }
-
+class activityWeek {
+    avg_duration: number = 0;
+    avg_kcal: number = 0;
+    average_heartrate?: number;
+    hr_max?: number;
+    num_activities: number = 0;
+}
 
 @Component({
   selector: 'app-resting-metabolic-rate',
@@ -92,6 +98,9 @@ export class RestingMetabolicRateComponent implements OnInit{
     fluidAdvice =  'Weigh yourself before and after an one hour exercise in kilograms. The difference will indicate how much sweat you have lost during exercise. 1 kg =  1000 ml sweat loss, so if you have lost .75 kg you have lost 750 ml of fluid and so you need to drink 750 ml per hour.';
     protected readonly Math = Math;
     maximumHR: undefined | number;
+    activitiesWeek : activityWeek[] = Array(5)
+    // @ts-ignore
+    dataSourceWeek: MatTableDataSource<activityWeek>;
     // @ts-ignore
     dataSourceHR: MatTableDataSource<SummaryActivity> ;
     // @ts-ignore
@@ -100,6 +109,8 @@ export class RestingMetabolicRateComponent implements OnInit{
     @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
     displayedColumnsHR = ['date', 'type','duration', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'avghr', 'peakhr', 'kcal']
     displayedColumnsKJ = ['date', 'type','duration', 'z1', 'z2', 'z3', 'z4','z5', 'z6', 'z7', 'z8', 'z9', 'z10', "kJ"]
+    displayedColumnsWeek = [ "kJ", "duration", "hr", "activeDay"]
+
     opened: boolean = true;
     hasPowerData: boolean = false;
     constructor(
@@ -110,6 +121,12 @@ export class RestingMetabolicRateComponent implements OnInit{
         protected sanitizer: DomSanitizer,
         private _liveAnnouncer: LiveAnnouncer) {
        // this.sanitizer.bypassSecurityTrustHtml("<mat-icon>local_pizza</mat-icon>")
+        for (let i = 0; i < this.activitiesWeek.length; i++) {
+            this.activitiesWeek[i] = {
+                avg_duration: 0, avg_kcal: 0, num_activities: 0
+            }
+        }
+        console.log(this.activitiesWeek)
     }
     calculate() {
         if (this.age !== undefined && this.age !== this.epr.person.age) {
@@ -181,6 +198,8 @@ export class RestingMetabolicRateComponent implements OnInit{
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
             this.administrativeGenders = this.smart.getContainsExpansion(result)
         })
+
+
         this.zoneHR = this.epr.person.hrzones
         this.epr.zoneChange.subscribe(zone => {
             console.log('hr zone change')
@@ -209,6 +228,22 @@ export class RestingMetabolicRateComponent implements OnInit{
             var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
 
             if (activity.kcal !== undefined) {
+                let week = Math.floor((this.strava.duration - diffDays) / 7)
+                console.log(week)
+
+
+                  // @ts-ignore
+                if (activity.max_heartrate !== undefined && (this.activitiesWeek[week].hr_max === undefined || this.activitiesWeek[week].hr_max < activity.max_heartrate)) {
+                      this.activitiesWeek[week].hr_max = activity.max_heartrate
+                  }
+                this.activitiesWeek[week].avg_duration = ((this.activitiesWeek[week].avg_duration * this.activitiesWeek[week].num_activities) + activity.elapsed_time) / (this.activitiesWeek[week].num_activities + 1)
+                this.activitiesWeek[week].avg_kcal = ((this.activitiesWeek[week].avg_kcal * this.activitiesWeek[week].num_activities) + activity.kcal) / (this.activitiesWeek[week].num_activities + 1)
+                if (this.activityArray[this.strava.duration - diffDays].duration ===0 ) {
+                    this.activitiesWeek[week].num_activities = 1 + this.activitiesWeek[week].num_activities
+                }
+                  console.log(this.activitiesWeek)
+                this.dataSourceWeek = new MatTableDataSource<activityWeek>(this.activitiesWeek)
+
                 var act : activityDay = {
                     duration: (activity.elapsed_time + this.activityArray[this.strava.duration - diffDays].duration),
                     kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal),
@@ -227,6 +262,8 @@ export class RestingMetabolicRateComponent implements OnInit{
                 if (activity.max_heartrate !== undefined && (this.activityArray[this.strava.duration - diffDays].hr_max === undefined || (this.activityArray[this.strava.duration - diffDays].hr_max < activity.max_heartrate))) {
                     act.hr_max = activity.max_heartrate
                 }
+
+
                 var session : sessions = {
                     name: activity.name
                 }
@@ -510,7 +547,7 @@ export class RestingMetabolicRateComponent implements OnInit{
     dayOfWeek(number: number) {
         var now = new Date();
         var from = new Date();
-        from.setDate(now.getDate() - number );
+        from.setDate(now.getDate() - this.strava.duration + number );
         var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
         return days[ from.getDay() ];
     }

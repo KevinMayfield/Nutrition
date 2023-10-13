@@ -69,14 +69,13 @@ ecg_heart
                 <button td-message-actions mat-button (click)="viewPA()">View More</button>
             </td-message>
             <mat-grid-list cols="7" rowHeight="30px">
-                <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(6)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(5)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(4)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(3)}}</mat-grid-tile>
+                <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
                 <mat-grid-tile>{{dayOfWeek(2)}}</mat-grid-tile>
-
+                <mat-grid-tile>{{dayOfWeek(3)}}</mat-grid-tile>
+                <mat-grid-tile>{{dayOfWeek(4)}}</mat-grid-tile>
+                <mat-grid-tile>{{dayOfWeek(5)}}</mat-grid-tile>
+                <mat-grid-tile>{{dayOfWeek(6)}}</mat-grid-tile>
             </mat-grid-list>
                     <mat-grid-list cols="7" rowHeight="110px">
 
@@ -117,7 +116,42 @@ ecg_heart
                         </span>
 
                     </mat-grid-list>
+            <table mat-table [dataSource]="dataSourceWeek" class="mat-elevation-z8">
 
+                <ng-container matColumnDef="kJ">
+                    <th mat-header-cell *matHeaderCellDef > Avg Work (kJ) </th>
+                    <td mat-cell *matCellDef="let week">
+
+                        {{round(week.avg_kcal)}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="duration">
+                    <th mat-header-cell  *matHeaderCellDef> Duration </th>
+                    <td mat-cell *matCellDef="let week">
+                        {{round(week.avg_duration/60)}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="hr">
+                    <th mat-header-cell  *matHeaderCellDef> Max HR </th>
+                    <td mat-cell *matCellDef="let week">
+                        {{round(week.hr_max)}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="activeDay">
+                    <th mat-header-cell  *matHeaderCellDef> Active Days </th>
+                    <td mat-cell *matCellDef="let week">
+                        {{round(week.num_activities)}}
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsWeek"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsWeek;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="7">No data matching the filter </td>
+                </tr>
+            </table>
 
         </mat-tab>
         <mat-tab label="Physical Activity Detail (HR)">
