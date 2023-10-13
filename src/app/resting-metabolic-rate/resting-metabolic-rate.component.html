@@ -37,22 +37,22 @@
             </mat-form-field>
         </div>
         <span *ngIf="zoneHR !== undefined">
-                Maximum heart rate <span *ngIf="zoneHR?.calculated">(calculated)</span><span *ngIf="!zoneHR?.calculated">(strava)</span> =  {{zoneHR?.maximumHR}}
+                Maximum heart rate <span *ngIf="zoneHR.calculated">(calculated)</span><span *ngIf="!zoneHR.calculated">(strava)</span> =  {{zoneHR.maximumHR}}
             <div style="background: lightpink"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{zoneHR?.z5?.min}}-{{zoneHR?.z5?.max}} Z5 - Anerobic</div>
+</span>{{zoneHR.z5?.min}}-{{zoneHR.z5?.max}} Z5 - Anerobic</div>
                  <div style="background: lightyellow"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{zoneHR?.z4?.min}}-{{zoneHR?.z4?.max}} Z4 - Threshold</div>
+</span>{{zoneHR.z4?.min}}-{{zoneHR.z4?.max}} Z4 - Threshold</div>
                  <div style="background: lightgreen"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{zoneHR?.z3?.min}}-{{zoneHR?.z3?.max}} Z3 - Tempo</div>
+</span>{{zoneHR.z3?.min}}-{{zoneHR.z3?.max}} Z3 - Tempo</div>
                  <div style="background: lightblue"><span class="material-symbols-outlined">
 ecg_heart
-</span>{{zoneHR?.z2?.min}}-{{zoneHR?.z2?.max}} Z2 - Endurance</div>
+</span>{{zoneHR.z2?.min}}-{{zoneHR.z2?.max}} Z2 - Endurance</div>
                 <div style="background: lightgrey"><span class="material-symbols-outlined">
 ecg_heart
-</span> {{zoneHR?.z1?.min}}-{{zoneHR?.z1?.max}} Z1 - Recovery</div>
+</span> {{zoneHR.z1?.min}}-{{zoneHR.z1?.max}} Z1 - Recovery</div>
             </span>
 
     </mat-sidenav>
@@ -114,18 +114,22 @@ ecg_heart
                             <mat-grid-tile *ngIf="activity.kcal === 0">
                             </mat-grid-tile>
                         </span>
-
                     </mat-grid-list>
             <table mat-table [dataSource]="dataSourceWeek" class="mat-elevation-z8">
 
                 <ng-container matColumnDef="kJ">
-                    <th mat-header-cell *matHeaderCellDef > Avg Work (kJ) </th>
+                    <th mat-header-cell *matHeaderCellDef > Avg kcal</th>
                     <td mat-cell *matCellDef="let week">
 
                         {{round(week.avg_kcal)}}
                     </td>
                 </ng-container>
-
+                <ng-container matColumnDef="week">
+                    <th mat-header-cell  *matHeaderCellDef> Week </th>
+                    <td mat-cell *matCellDef="let week">
+                        {{week.week}}
+                    </td>
+                </ng-container>
                 <ng-container matColumnDef="duration">
                     <th mat-header-cell  *matHeaderCellDef> Duration </th>
                     <td mat-cell *matCellDef="let week">
