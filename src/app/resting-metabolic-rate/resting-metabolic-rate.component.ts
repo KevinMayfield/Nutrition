@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {StravaService} from "../service/strava.service";
-import {hrZone, Person} from "../models/person";
+import {hrZone} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -107,7 +107,8 @@ export class RestingMetabolicRateComponent implements OnInit{
     // @ts-ignore
     dataSourceKJ: MatTableDataSource<SummaryActivity> ;
     @ViewChild(MatSort) sort: MatSort | null | undefined;
-    @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+    @ViewChild('paginatorHR',) paginatorHR: MatPaginator | undefined;
+    @ViewChild('paginatorKJ',) paginatorKJ: MatPaginator | undefined;
     displayedColumnsHR = ['date', 'type','duration',
         //'Z1', 'Z2', 'Z3', 'Z4','Z5',
         'heart',
@@ -223,6 +224,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         if (this.height !== undefined || this.weight !== undefined) this.calculate()
         this.getStrava()
         this.strava.tokenChange.subscribe(()=> {
+
             this.getStrava()
         })
 
@@ -401,7 +403,8 @@ export class RestingMetabolicRateComponent implements OnInit{
 
         // @ts-ignore
         this.dataSourceHR.sort = this.sort
-
+        if (this.paginatorHR !== undefined) this.dataSourceHR.paginator = this.paginatorHR
+        if (this.paginatorKJ !== undefined && this.dataSourceKJ !== undefined) this.dataSourceKJ.paginator = this.paginatorKJ
         this.dataSourceHR.sortingDataAccessor = (item, property) => {
             switch (property) {
                 case 'date': {
@@ -456,6 +459,8 @@ export class RestingMetabolicRateComponent implements OnInit{
     }
 
     getStrava(){
+        // token changed so clear results
+        this.activityArray = []
         for(var i= 0;i<=this.strava.duration;i++) this.activityArray.push({ duration:0,kcal: 0, sessions: []})
         this.strava.getAthlete().subscribe(athlete => {
             if (athlete.weight !== undefined) this.weight = athlete.weight

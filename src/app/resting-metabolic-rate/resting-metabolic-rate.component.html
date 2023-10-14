@@ -294,7 +294,7 @@ bolt
                         <td class="mat-cell" colspan="7">No data matching the filter </td>
                     </tr>
                 </table>
-                <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+                <mat-paginator #paginatorHR [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
         </mat-tab>
         <mat-tab *ngIf="hasPowerData" label="Physical Activity Detail (Power)">
             <td-message
@@ -445,7 +445,7 @@ bolt
                     <td class="mat-cell" colspan="7">No data matching the filter </td>
                 </tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+            <mat-paginator #paginatorKJ [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
         </mat-tab>
         <!--
 

@@ -36,6 +36,13 @@ export class HeartGraphComponent implements OnInit{
 
     if (this.activity !== undefined) {
       var single = []
+      if (this.activity.elapsed_time < 120*60 ) {
+        var height = 40
+        let ratio = Math.round((this.activity.elapsed_time * 4) / (60 * 120))
+
+        this.view = [350, height + (ratio * 40) ]
+      }
+      else this.view = [350, 80]
       for(let zone of this.activity.zones) {
         if (zone.type === 'heartrate') {
           for (let res of zone.distribution_buckets) {
