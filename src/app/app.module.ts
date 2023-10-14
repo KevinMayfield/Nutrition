@@ -31,6 +31,10 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import { PowerGraphComponent } from './charts/power-graph/power-graph.component';
+import {BarChartModule} from "@swimlane/ngx-charts";
+import { HeartGraphComponent } from './charts/heart-graph/heart-graph.component';
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
   declarations: [
@@ -40,7 +44,9 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     RestingMetabolicRateComponent,
       SafeHtmlPipe,
       SafeUrlPipe,
-      StravaComponent
+      StravaComponent,
+      PowerGraphComponent,
+      HeartGraphComponent
   ],
     imports: [
         BrowserModule,
@@ -69,7 +75,9 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
         MatGridListModule,
         MatSidenavModule,
         MatTabsModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        BarChartModule,
+        MatChipsModule
     ],
   providers: [],
   bootstrap: [AppComponent]

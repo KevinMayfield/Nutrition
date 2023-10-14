@@ -45,12 +45,12 @@ export class EPRService {
   getBackground(heartrate: number | undefined) {
 
     if (this.person.hrzones !== undefined && this.person.hrzones.maximumHR !== undefined && heartrate !== undefined) {
-      if (this.person.hrzones.z5 !== undefined && this.person.hrzones.z5?.min < heartrate) return "background: lightpink"
-      if (this.person.hrzones.z4 !== undefined && this.person.hrzones.z4?.min < heartrate) return "background: lightyellow"
-      if (this.person.hrzones.z3 !== undefined && this.person.hrzones.z3?.min < heartrate) return "background: lightgreen"
-      if (this.person.hrzones.z2 !== undefined && this.person.hrzones.z2?.min < heartrate) return "background: lightblue"
+      if (this.person.hrzones.z5 !== undefined && this.person.hrzones.z5?.min < heartrate) return "lightpink"
+      if (this.person.hrzones.z4 !== undefined && this.person.hrzones.z4?.min < heartrate) return "lightsalmon"
+      if (this.person.hrzones.z3 !== undefined && this.person.hrzones.z3?.min < heartrate) return "lightgreen"
+      if (this.person.hrzones.z2 !== undefined && this.person.hrzones.z2?.min < heartrate) return "lightblue"
     }
-    return "background: lightgrey"
+    return "lightgrey"
   }
 
   setAge(age: any) {

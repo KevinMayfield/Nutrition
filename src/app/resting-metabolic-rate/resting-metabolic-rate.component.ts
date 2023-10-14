@@ -108,8 +108,14 @@ export class RestingMetabolicRateComponent implements OnInit{
     dataSourceKJ: MatTableDataSource<SummaryActivity> ;
     @ViewChild(MatSort) sort: MatSort | null | undefined;
     @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
-    displayedColumnsHR = ['date', 'type','duration', 'Z1', 'Z2', 'Z3', 'Z4','Z5', 'avghr', 'peakhr', 'kcal']
-    displayedColumnsKJ = ['date', 'type','duration', 'z1', 'z2', 'z3', 'z4','z5', 'z6', 'z7', 'z8', 'z9', 'z10', "kJ"]
+    displayedColumnsHR = ['date', 'type','duration',
+        //'Z1', 'Z2', 'Z3', 'Z4','Z5',
+        'heart',
+        'avghr', 'peakhr', 'kcal']
+    displayedColumnsKJ = ['date', 'type','duration',
+        //'z1', 'z2', 'z3', 'z4','z5', 'z6', 'z7', 'z8', 'z9', 'z10',
+        "power",
+        "kJ", "ratio"]
     displayedColumnsWeek = [ "week", "kJ", "duration", "hr", "activeDay"]
 
     opened: boolean = true;
@@ -127,7 +133,6 @@ export class RestingMetabolicRateComponent implements OnInit{
                 week: i, avg_duration: 0, avg_kcal: 0, num_activities: 0
             }
         }
-        console.log(this.activitiesWeek)
     }
     calculate() {
         if (this.age !== undefined && this.age !== this.epr.person.age) {
@@ -230,9 +235,6 @@ export class RestingMetabolicRateComponent implements OnInit{
 
             if (activity.kcal !== undefined) {
                 let week = Math.floor((this.strava.duration - diffDays) / 7)
-                console.log(week)
-
-
                   // @ts-ignore
                 if (activity.max_heartrate !== undefined && (this.activitiesWeek[week].hr_max === undefined || this.activitiesWeek[week].hr_max < activity.max_heartrate)) {
                       this.activitiesWeek[week].hr_max = activity.max_heartrate
@@ -242,7 +244,7 @@ export class RestingMetabolicRateComponent implements OnInit{
                 if (this.activityArray[this.strava.duration - diffDays].duration ===0 ) {
                     this.activitiesWeek[week].num_activities = 1 + this.activitiesWeek[week].num_activities
                 }
-                  console.log(this.activitiesWeek)
+
                 this.dataSourceWeek = new MatTableDataSource<activityWeek>(this.activitiesWeek)
 
                 var act : activityDay = {
@@ -342,7 +344,7 @@ export class RestingMetabolicRateComponent implements OnInit{
 
                 // @ts-ignore
                 this.http.post(this.smart.epr + '/Questionnaire/$populate', parameters).subscribe(result => {
-                    console.log(result)
+
                     if (result !== undefined) {
 
                         var parameters = result as Parameters
@@ -609,7 +611,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return
         for (let zone of activity.zones) {
             if (zone.type ==='heartrate') {
-                console.log(zone)
+
                 var hrzones : hrZone = {
                     calculated: false,
                     maximumHR: Math.round(1.034 * zone.distribution_buckets[4].min)
