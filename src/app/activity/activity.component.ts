@@ -35,11 +35,11 @@ class activityWeek {
 
 @Component({
   selector: 'app-resting-metabolic-rate',
-  templateUrl: './resting-metabolic-rate.component.html',
-  styleUrls: ['./resting-metabolic-rate.component.scss'],
+  templateUrl: './activity.component.html',
+  styleUrls: ['./activity.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class RestingMetabolicRateComponent implements OnInit{
+export class ActivityComponent implements OnInit{
     height: number | undefined;
     weight: number | undefined;
     rmr: number | undefined;
@@ -96,8 +96,7 @@ export class RestingMetabolicRateComponent implements OnInit{
         }
     ]
     exerciseFrequency :ValueSetExpansionContains | undefined
-    fluidAdvice =  'Weigh yourself before and after an one hour exercise in kilograms. The difference will indicate how much sweat you have lost during exercise. 1 kg =  1000 ml sweat loss, so if you have lost .75 kg you have lost 750 ml of fluid and so you need to drink 750 ml per hour.';
-    protected readonly Math = Math;
+   protected readonly Math = Math;
     maximumHR: undefined | number;
     activitiesWeek : activityWeek[] = Array(5)
     // @ts-ignore
@@ -511,23 +510,16 @@ export class RestingMetabolicRateComponent implements OnInit{
         return Math.round(val)
     }
 
-    perkgKCal(number: number) {
-        if (this.weight === undefined) return undefined
-        return Math.round(number * this.weight)
+    perKgKCal(number: number): number | undefined {
+       return this.epr.perKgKCal(number)
     }
-    perKgMl(number: number) {
-        if (this.weight === undefined) return undefined
-        return Math.round(number * this.weight)
+    perKgMl(number: number): number | undefined {
+        return this.epr.perKgMl(number)
     }
+
 
     pizza(kcal: number | undefined) {
-        if (kcal === undefined || kcal === 0) return undefined
-
-        // Using zwift pizza units https://www.bikeradar.com/advice/fitness-and-training/how-to-read-a-zwift-ride-report
-        var number= Math.round(kcal/285)
-        if (number === undefined || number === 0 || isNaN(+number)) return undefined
-        return new Array(number).fill(0)
-            .map((n, index) => index + 1);
+      return this.epr.pizza(kcal)
     }
 
 

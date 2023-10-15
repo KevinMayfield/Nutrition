@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {JwtHelperService} from "@auth0/angular-jwt";
-import {StravaService} from "./service/strava.service";
+import {StravaService} from "./strava.service";
 
 @Injectable({
   providedIn: 'root'

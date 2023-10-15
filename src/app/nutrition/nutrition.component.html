@@ -1,0 +1,121 @@
+<mat-card>
+    <mat-card-title>Nutrition</mat-card-title>
+    <mat-card-content>
+<div class="example-full-width">
+    <h3>Pre Exercise</h3>
+    <table class="mat-elevation-z8">
+        <tr>
+            <th>Exercise Duration</th>
+            <th>Recommended carbohydrate</th>
+        </tr>
+        <tr>
+            <td>3-4 hours before exercise</td>
+            <td>
+                <ul>
+                    <li>Baked potato with cheese, beans, tuna, humus or chicken and vegtables</li>
+                    <li>Pasta with tomato sauce, cheese/lentils and vegatables</li>
+                    <li>Rice with cheese/lentils and vegatables</li>
+                    <li>Chicken or prawn stir fry with noodles</li>
+                    <li>Sandwich with chicken/fish/cheese/egg/falafel/peanut butter and salad</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>30-60 mins before exercise</td>
+            <td>
+                <ul>
+                    <li>Banana or other fresh fruit</li>
+                    <li>Handful of fruit and nuts or seeds</li>
+                    <li>Smoothie</li>
+                    <li>Fruit and nut bars</li>
+                    <li>Oat or granola bars</li>
+                    <li>Porridge, cereal or wholegrain cereal with milk</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+    <h3>During Exercise</h3>
+    <table class="mat-elevation-z8">
+        <tr>
+            <th>Exercise Duration</th>
+            <th>Recommended carbohydrate</th>
+            <th>Type of carbohydrate</th>
+        </tr>
+        <tr>
+            <td><45 mins</td>
+            <td>None</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>45-75 mins</td>
+            <td>Very small amounts (mouth rinse)</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>1-2.5 hours</td>
+            <td>30-60g per hour</td>
+            <td>Portions providing 30g of carbohydrate
+                <ul>
+                    <li>Isotonic sports drink (6g/100ml) - 500ml</li>
+                    <li>Diluted fruit juice (50:50) - 500ml</li>
+                    <li>Banana</li>
+                    <li>Raisins - 40g</li>
+                    <li>Medjool dates - 2</li>
+                    <li>Energy Bar</li>
+                    <li>Energy Gel</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>>2.5 hours</td>
+            <td>Up to 90g per hour</td>
+            <td>Multiple transportable types. (Pick three of above per hour)</td>
+        </tr>
+    </table>
+    <h3>Pre and Post Exercise Carbohydrate Intake</h3>
+    <table class="mat-elevation-z8">
+        <tr>
+            <th>Dietary Strategy</th>
+            <th>When</th>
+            <th>Recommended Carbohydrate Intake (g/kg BW)</th>
+            <th>Recommended Carbohydrate Intake (g)</th>
+            <th>Hydration</th>
+        </tr>
+        <tr>
+            <td>Pre-Exercise Fuelling</td>
+            <td>Before Exercise >60 min</td>
+            <td>1-4 g/kg BW consumed 1-4 h before exercise</td>
+            <td>{{perKgKCal(1)}}-{{perKgKCal(4)}} g</td>
+            <td>{{perKgMl(5)}}-{{perKgMl(10)}} ml</td>
+        </tr>
+        <tr>
+            <td>During-Exercise Fuelling</td>
+            <td>0 for < 1 h</td>
+            <td></td>
+            <td>> 1 h 30-60 g per h, >3 h 60-90 g per h</td>
+            <td>Base fluid intake on the amount of fluid lost by sweating and urine loss<mat-icon [matTooltip]="fluidAdvice">information</mat-icon></td>
+        </tr>
+        <tr>
+            <td>Post-Exercise Rapid Refuelling</td>
+            <td>< 8 h recover between two sessions</td>
+            <td>1.0-1.2 g/kg BW per hour for first 4 h then resume daily fueling needs</td>
+            <td>{{perKgKCal(1)}}-{{perKgKCal(1.2)}} g per hour</td>
+        </tr>
+        <tr>
+            <td>Carbohydrate Loading (Refuelling)</td>
+            <td>For events >90 min of sustained/intermittent exercise</td>
+            <td>36-38 h of 10-12 g/kg BW/24 h</td>
+            <td>{{perKgKCal(10)}}-{{perKgKCal(12)}} g
+                <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
+                                    <mat-icon>local_pizza</mat-icon>
+                                </span>
+                <span *ngFor="let pizza of pizza(perKgKCal(6*4))">
+                                    <mat-icon color="accent">local_pizza</mat-icon>
+                                </span>
+            </td>
+        </tr>
+    </table>
+</div>
+    </mat-card-content>
+</mat-card>

@@ -62,4 +62,23 @@ export class EPRService {
     this.person.height = height
     this.setPerson(this.person)
   }
+  perKgKCal(number: number): number | undefined {
+    if (this.person.weight === undefined) return undefined
+    return Math.round(number * this.person.weight)
+  }
+
+  perKgMl(number: number): number | undefined {
+    if (this.person.weight === undefined) return undefined
+    return Math.round(number * this.person.weight)
+  }
+
+  pizza(kcal: number | undefined) {
+    if (kcal === undefined || kcal === 0) return undefined
+
+    // Using zwift pizza units https://www.bikeradar.com/advice/fitness-and-training/how-to-read-a-zwift-ride-report
+    var number= Math.round(kcal/285)
+    if (number === undefined || number === 0 || isNaN(+number)) return undefined
+    return new Array(number).fill(0)
+        .map((n, index) => index + 1);
+  }
 }

@@ -20,7 +20,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import {MatIconModule} from "@angular/material/icon";
 import {MatListModule} from "@angular/material/list";
-import { RestingMetabolicRateComponent } from './resting-metabolic-rate/resting-metabolic-rate.component';
+import { ActivityComponent } from './activity/activity.component';
 import {SafeHtmlPipe} from "./service/safeHtmlPipe";
 import {SafeUrlPipe} from "./service/safeUrl";
 import {MatTooltipModule} from "@angular/material/tooltip";
@@ -35,18 +35,20 @@ import { PowerGraphComponent } from './charts/power-graph/power-graph.component'
 import {BarChartModule} from "@swimlane/ngx-charts";
 import { HeartGraphComponent } from './charts/heart-graph/heart-graph.component';
 import {MatChipsModule} from "@angular/material/chips";
+import { NutritionComponent } from './nutrition/nutrition.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BMIComponent,
     MainMenuComponent,
-    RestingMetabolicRateComponent,
+    ActivityComponent,
       SafeHtmlPipe,
       SafeUrlPipe,
       StravaComponent,
       PowerGraphComponent,
-      HeartGraphComponent
+      HeartGraphComponent,
+      NutritionComponent
   ],
     imports: [
         BrowserModule,

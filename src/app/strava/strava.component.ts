@@ -71,7 +71,7 @@ export class StravaComponent implements OnInit{
         this.strava.tokenChange.subscribe(
             () => {
                 console.log('Token emit')
-                this.router.navigateByUrl('/nutrition');
+                this.router.navigateByUrl('/activity');
             }
         );
         // this will emit a change when the token is retrieved
