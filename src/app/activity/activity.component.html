@@ -60,7 +60,7 @@ ecg_heart
 <mat-card xmlns="http://www.w3.org/1999/html">
     <mat-card-content>
     <mat-tab-group>
-        <mat-tab label="Nutrition and Activity Summary">
+        <mat-tab label="Summary">
             <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Time-based Measures"
@@ -270,6 +270,11 @@ ecg_heart
                 </tr>
             </table>
         </mat-tab>
+        <!--
+
+        HEART RATE
+
+        -->
         <mat-tab label="Physical Activity Detail (HR)">
             <td-message
                         label="Information"
@@ -311,10 +316,16 @@ ecg_heart
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="heart">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 20%;"> HR Zones </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> HR Zones </th>
                         <td mat-cell *matCellDef="let activity">
                             <app-heart-graph [activity]="activity"></app-heart-graph>
                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="cadence">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Cadence </th>
+                        <td mat-cell *matCellDef="let activity">
+                            {{round(activity.average_cadence)}}
+                        </td>
                     </ng-container>
                     <!--
                     <ng-container matColumnDef="Z1">
@@ -375,7 +386,7 @@ ecg_heart
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="peakhr">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Max. <span class="material-symbols-outlined">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Max. <span class="material-symbols-outlined">
 ecg_heart
 </span> </th>
                         <td mat-cell *matCellDef="let activity">

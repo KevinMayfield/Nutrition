@@ -111,7 +111,7 @@ export class ActivityComponent implements OnInit{
     displayedColumnsHR = ['date', 'type','duration',
         //'Z1', 'Z2', 'Z3', 'Z4','Z5',
         'heart',
-        'avghr', 'peakhr', 'kcal']
+        'avghr', 'peakhr', 'kcal', 'cadence']
     displayedColumnsKJ = ['date', 'type','duration',
         //'z1', 'z2', 'z3', 'z4','z5', 'z6', 'z7', 'z8', 'z9', 'z10',
         "power",

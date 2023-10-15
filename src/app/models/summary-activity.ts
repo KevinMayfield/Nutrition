@@ -46,6 +46,7 @@ export interface SummaryActivity {
   kcal? : number;
   max_heartrate?: number;
   device_watts?: boolean;
+  average_cadence?: number;
  // splits_metric?: any[];
  // splits_standard?: any[];
 }

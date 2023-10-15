@@ -2,6 +2,13 @@
     <mat-card-title>Nutrition</mat-card-title>
     <mat-card-content>
 <div class="example-full-width">
+    <td-message
+            label="Information"
+            sublabel="This is my own personnel Aide-mémoire."
+            color="primary"
+            icon="info">
+       <!-- <button td-message-actions mat-button (click)="viewPA()">View More</button> -->
+    </td-message>
     <h3>Pre Exercise</h3>
     <table class="mat-elevation-z8">
         <tr>
@@ -36,6 +43,7 @@
     </table>
 
     <h3>During Exercise</h3>
+
     <table class="mat-elevation-z8">
         <tr>
             <th>Exercise Duration</th>
@@ -43,7 +51,7 @@
             <th>Type of carbohydrate</th>
         </tr>
         <tr>
-            <td><45 mins</td>
+            <td> < 45 mins</td>
             <td>None</td>
             <td></td>
         </tr>
@@ -68,11 +76,19 @@
             </td>
         </tr>
         <tr>
-            <td>>2.5 hours</td>
+            <td> > 2.5 hours</td>
             <td>Up to 90g per hour</td>
-            <td>Multiple transportable types. (Pick three of above per hour)</td>
+            <td>Multiple transportable types. (Take three portions of above per hour)</td>
         </tr>
     </table>
+    <br/>
+    <td-message
+            label="Hydration"
+            sublabel="Base fluid intake on the amount of fluid lost by sweating and urine loss. This should be determined beforehand. For example: {{fluidAdvice}}"
+            color="primary"
+            icon="info">
+        <!-- <button td-message-actions mat-button (click)="viewPA()">View More</button> -->
+    </td-message>
     <h3>Pre and Post Exercise Carbohydrate Intake</h3>
     <table class="mat-elevation-z8">
         <tr>
