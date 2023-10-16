@@ -73,7 +73,7 @@ export class PowerGraphComponent implements OnInit{
              let ratio = Math.round((this.activity.elapsed_time * 4) / (60 * 120))
              this.view = [500, height + (ratio * 40) ]
          }
-         else this.view = [500, 300]
+         else this.view = [500, 240]
          var single = []
         for(let zone of this.activity.zones) {
             if (zone.type === 'power') {

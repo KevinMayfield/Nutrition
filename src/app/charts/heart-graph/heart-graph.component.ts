@@ -42,7 +42,7 @@ export class HeartGraphComponent implements OnInit{
 
         this.view = [350, height + (ratio * 40) ]
       }
-      else this.view = [350, 80]
+      else this.view = [350, 240]
       for(let zone of this.activity.zones) {
         if (zone.type === 'heartrate') {
           for (let res of zone.distribution_buckets) {

@@ -83,9 +83,9 @@ ecg_heart
                         <span *ngFor="let activity of activityArray">
                         <mat-grid-tile *ngIf="activity.kcal >0"  [matTooltip]="getNames(activity)" >
 
-                            <span *ngIf="activity.kcal>0" layout-align="center center">
+                            <div *ngIf="activity.kcal>0" layout-align="center center">
 
-                                    <mat-chip style="background: {{getBackground(activity.average_heartrate)}};">
+                                    <mat-chip style="background:{{getBackground(activity.average_heartrate)}};">
                                           <span class="material-symbols-outlined">
                                         timer
                                         </span>
@@ -99,12 +99,13 @@ ecg_heart
                                     {{getType(act.type)}}
                                     </span>
                                 </span>
+                                {{activity.kcal}} kcal
                                 <br/>
                                 <span *ngFor="let pizza of pizza(activity.kcal)">
-                                    <mat-icon>local_pizza</mat-icon>
+                                     <span class="material-symbols-outlined">local_pizza</span>
                                 </span>
-                                <span> {{activity.kcal}} kcal</span>
-                            </span>
+
+                            </div>
 
                            <!-- <br/>
                             <span *ngIf="activity.hr_avg !== undefined">
@@ -145,7 +146,7 @@ ecg_heart
                         <td>Resting Metabolic Rate</td>
                         <td> {{round(rmr)}} kcal</td>
                         <td><span *ngFor="let pizza of pizza(rmr)">
-                                <mat-icon>local_pizza</mat-icon>
+                             <mat-icon>local_pizza</mat-icon>
                             </span></td>
                     </tr>
                     <tr *ngIf="dailyEnergy !== undefined && rmr !== undefined">
@@ -155,7 +156,7 @@ ecg_heart
                                 <mat-icon>local_pizza</mat-icon>
                             </span>
                             <span *ngFor="let pizza of pizza(dailyEnergy-rmr)">
-                                <mat-icon color="accent">local_pizza</mat-icon>
+                                <span class="material-symbols-outlined">local_pizza</span>
                             </span></td>
                     </tr>
                 </table>
@@ -192,7 +193,7 @@ ecg_heart
                                     <mat-icon>local_pizza</mat-icon>
                                 </span>
                                 <span *ngFor="let pizza of pizza(perKgKCal(2*4))">
-                                    <mat-icon color="accent">local_pizza</mat-icon>
+                                    <span class="material-symbols-outlined">local_pizza</span>
                                 </span>
                             </td>
                         </tr>
@@ -206,7 +207,7 @@ ecg_heart
                                     <mat-icon>local_pizza</mat-icon>
                                 </span>
                                  <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
-                                    <mat-icon color="accent">local_pizza</mat-icon>
+                                   <span class="material-symbols-outlined">local_pizza</span>
                                 </span>
                             </td>
                         </tr>
@@ -220,7 +221,7 @@ ecg_heart
                                     <mat-icon>local_pizza</mat-icon>
                                 </span>
                                   <span *ngFor="let pizza of pizza(perKgKCal(6*4))">
-                                    <mat-icon color="accent">local_pizza</mat-icon>
+                                  <span class="material-symbols-outlined">local_pizza</span>
                                 </span>
                             </td>
                         </tr>
