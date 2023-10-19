@@ -37,4 +37,6 @@ export interface Person {
   hrzones?: hrZone;
   age?: number;
   height?: number;
+  waist?: number;
+  ethnic?: string;
 }

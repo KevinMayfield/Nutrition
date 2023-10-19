@@ -1,45 +1,50 @@
+<mat-sidenav-container class="example-container" xmlns="http://www.w3.org/1999/html">
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened">
+        <div class="example-form">
+            <mat-form-field class="example-full-width">
+                <mat-label >Height</mat-label>
+                <input matInput type="number" [(ngModel)]="height" required (ngModelChange)="calculate()">
+                <span matSuffix>cm</span>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Age</mat-label>
+                <input matInput type="number" min="18" max="120" [(ngModel)]="age" required (ngModelChange)="calculate()">
+                <span matSuffix>years</span>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Weight</mat-label>
+                <input matInput type="number" [(ngModel)]="weight" required (ngModelChange)="calculate()">
+                <span matSuffix>kg</span>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Waist</mat-label>
+                <input matInput type="number" [(ngModel)]="waist" (ngModelChange)="calculate()">
+                <span matSuffix>cm</span>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Sex</mat-label>
+                <mat-select [(ngModel)]="administrativeGender" required (ngModelChange)="calculate()">
+                    <mat-option *ngFor="let gender of administrativeGenders" [value]="gender">{{gender.display}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="example-full-width" >
+                <mat-label>Ethnic Category</mat-label>
+                <mat-select [(ngModel)]="ethnicCategory" (ngModelChange)="calculate()">
+                    <mat-option *ngFor="let ethnic of ethnicCategories" [value]="ethnic">{{ethnic.display}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </div>
+        <button mat-raised-button color="accent" (click)="calculate()">Calculate & Save</button>
+    </mat-sidenav>
+    <mat-sidenav-content>
 <mat-card xmlns="http://www.w3.org/1999/html">
     <mat-card-header>
         <h1>BMI healthy weight calculator (BMI)</h1>
     </mat-card-header>
       <mat-card-content>
           <td-markdown>{{ markdown }}</td-markdown>
-            <div class="example-form">
-              <mat-form-field class="example-third-width">
-                  <mat-label >Height</mat-label>
-                  <input matInput type="number" [(ngModel)]="height" required>
-                  <span matSuffix>cm</span>
-              </mat-form-field>
-              <mat-form-field class="example-third-width">
-                  <mat-label>Age</mat-label>
-                  <input matInput type="number" min="18" max="120" [(ngModel)]="age">
-                  <span matSuffix>years</span>
-              </mat-form-field>
-              <mat-form-field class="example-third-width">
-                  <mat-label>Weight</mat-label>
-                  <input matInput type="number" [(ngModel)]="weight" required>
-                  <span matSuffix>kg</span>
-              </mat-form-field>
-                <mat-form-field class="example-third-width">
-                    <mat-label>Waist</mat-label>
-                    <input matInput type="number" [(ngModel)]="waist">
-                    <span matSuffix>cm</span>
-                </mat-form-field>
-                <mat-form-field class="example-half-width">
-                    <mat-label>Sex</mat-label>
-                    <mat-select [(ngModel)]="administrativeGender">
-                        <mat-option *ngFor="let gender of administrativeGenders" [value]="gender">{{gender.display}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field class="example-half-width">
-                    <mat-label>Ethnic Category</mat-label>
-                    <mat-select [(ngModel)]="ethnicCategory">
-                        <mat-option *ngFor="let ethnic of ethnicCategories" [value]="ethnic">{{ethnic.display}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
 
-            </div>
-          <button mat-raised-button color="accent" (click)="calculate()">Calculate & Save</button>
           <br/>
           <br/>
           <span *ngIf="bmi !== undefined">
@@ -65,3 +70,5 @@
       </mat-card-content>
 
 </mat-card>
+    </mat-sidenav-content>
+</mat-sidenav-container>

@@ -68,64 +68,11 @@ ecg_heart
                         icon="info">
                 <button td-message-actions mat-button (click)="viewPA()">View More</button>
             </td-message>
-            <mat-grid-list cols="7" rowHeight="30px">
-
-                <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(2)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(3)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(4)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(5)}}</mat-grid-tile>
-                <mat-grid-tile>{{dayOfWeek(6)}}</mat-grid-tile>
-            </mat-grid-list>
-                    <mat-grid-list cols="7" rowHeight="110px">
-
-                        <span *ngFor="let activity of activityArray">
-                        <mat-grid-tile *ngIf="activity.kcal >0"  [matTooltip]="getNames(activity)" >
-
-                            <div *ngIf="activity.kcal>0" layout-align="center center">
-
-                                    <mat-chip style="background:{{getBackground(activity.average_heartrate)}};">
-                                          <span class="material-symbols-outlined">
-                                        timer
-                                        </span>
-                                        {{round(activity.duration/60)}} min
-                                    </mat-chip>
-
-
-                                <br/>
-                                 <span *ngFor="let act of activity.sessions">
-                                     <span *ngIf="act.type !== undefined" class="material-symbols-outlined">
-                                    {{getType(act.type)}}
-                                    </span>
-                                </span>
-                                {{activity.kcal}} kcal
-                                <br/>
-                                <span *ngFor="let pizza of pizza(activity.kcal)">
-                                     <span class="material-symbols-outlined">local_pizza</span>
-                                </span>
-
-                            </div>
-
-                           <!-- <br/>
-                            <span *ngIf="activity.hr_avg !== undefined">
-                                                   <span class="material-symbols-outlined">
-ecg_heart
-</span>
-                                {{round(activity.hr_avg)}} <span *ngIf="activity.hr_max !== undefined">(max {{activity.hr_max}})</span>
-
-                            </span> -->
-
-                        </mat-grid-tile >
-                            <mat-grid-tile *ngIf="activity.kcal === 0">
-                            </mat-grid-tile>
-                        </span>
-                    </mat-grid-list>
             <!--
 
-   NUTRITION
+             NUTRITION
 
-   -->
+             -->
 
             <div class="example-full-width">
                 <h3>Energy</h3>
@@ -170,64 +117,120 @@ ecg_heart
                             <th>Recommended Carbohydrate Intake (g/kg BW)</th>
                              <th>Recommended Energy (kcal)</th>
                             <th>Recommended Carbohydrate Intake (g)</th>
-                            <th></th>
+                          <!--  <th></th> -->
                         </tr>
                         <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-light'" >
                             <td>Very Light Training (low-intensity or skill-based exercise)</td>
                             <td>3-5 g/kg BW daily</td>
                             <td>{{perKgKCal(3*4)}}-{{perKgKCal(5*4)}} kcal</td>
                             <td>{{perKgKCal(3)}}-{{perKgKCal(5)}} g </td>
-                             <td>
-                                <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
-                                    <mat-icon>local_pizza</mat-icon>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate'">
-                            <td>Moderate-intensity training (approx. 1 h daily)</td>
-                            <td>5-7 g/kg BW daily</td>
-                             <td>{{perKgKCal(5*4)}}-{{perKgKCal(7*4)}} kcal</td>
-                            <td>{{perKgKCal(5)}}-{{perKgKCal(7)}} g</td>
-                            <td>
-                                <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
-                                    <mat-icon>local_pizza</mat-icon>
-                                </span>
-                                <span *ngFor="let pizza of pizza(perKgKCal(2*4))">
-                                    <span class="material-symbols-outlined">local_pizza</span>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate-high'">
-                            <td>Moderate-high-intensity training (approx. 1-3 h daily)</td>
-                            <td>6-10 g/kg BW daily</td>
-                             <td>{{perKgKCal(6*4)}}-{{perKgKCal(10*4)}} kcal</td>
-                            <td>{{perKgKCal(6)}}-{{perKgKCal(10)}} g</td>
-                            <td>
-                                <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
-                                    <mat-icon>local_pizza</mat-icon>
-                                </span>
+                            <!--    <td>
                                  <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
+                                     <mat-icon>local_pizza</mat-icon>
+                                 </span>
+                             </td>-->
+                         </tr>
+                         <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate'">
+                             <td>Moderate-intensity training (approx. 1 h daily)</td>
+                             <td>5-7 g/kg BW daily</td>
+                              <td>{{perKgKCal(5*4)}}-{{perKgKCal(7*4)}} kcal</td>
+                             <td>{{perKgKCal(5)}}-{{perKgKCal(7)}} g</td>
+                          <!--     <td>
+                                 <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
+                                     <mat-icon>local_pizza</mat-icon>
+                                 </span>
+                                 <span *ngFor="let pizza of pizza(perKgKCal(2*4))">
+                                     <span class="material-symbols-outlined">local_pizza</span>
+                                 </span>
+                             </td>-->
+                         </tr>
+                         <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate-high'">
+                             <td>Moderate-high-intensity training (approx. 1-3 h daily)</td>
+                             <td>6-10 g/kg BW daily</td>
+                              <td>{{perKgKCal(6*4)}}-{{perKgKCal(10*4)}} kcal</td>
+                             <td>{{perKgKCal(6)}}-{{perKgKCal(10)}} g</td>
+                    <!--           <td>
+                                 <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
+                                     <mat-icon>local_pizza</mat-icon>
+                                 </span>
+                                  <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
+                                    <span class="material-symbols-outlined">local_pizza</span>
+                                 </span>
+                             </td>-->
+                         </tr>
+                         <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-high'">
+                             <td>Very high-intensity training (> 4 h daily)</td>
+                             <td>8-12 g/kg BW daily</td>
+                              <td>{{perKgKCal(8*4)}}-{{perKgKCal(12*4)}} kcal</td>
+                             <td>{{perKgKCal(8)}}-{{perKgKCal(12)}} g </td>
+                      <!--          <td>
+                                 <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
+                                     <mat-icon>local_pizza</mat-icon>
+                                 </span>
+                                   <span *ngFor="let pizza of pizza(perKgKCal(6*4))">
                                    <span class="material-symbols-outlined">local_pizza</span>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-high'">
-                            <td>Very high-intensity training (> 4 h daily)</td>
-                            <td>8-12 g/kg BW daily</td>
-                             <td>{{perKgKCal(8*4)}}-{{perKgKCal(12*4)}} kcal</td>
-                            <td>{{perKgKCal(8)}}-{{perKgKCal(12)}} g </td>
-                             <td>
-                                <span *ngFor="let pizza of pizza(perKgKCal(4*4))">
-                                    <mat-icon>local_pizza</mat-icon>
-                                </span>
-                                  <span *ngFor="let pizza of pizza(perKgKCal(6*4))">
-                                  <span class="material-symbols-outlined">local_pizza</span>
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
+                                 </span>
+                             </td> -->
+                         </tr>
+                     </table>
+                         </span>
+             </div>
+
+             <h3>Activity Summary</h3>
+             <mat-grid-list cols="7" rowHeight="30px">
+
+                 <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
+                 <mat-grid-tile>{{dayOfWeek(1)}}</mat-grid-tile>
+                 <mat-grid-tile>{{dayOfWeek(2)}}</mat-grid-tile>
+                 <mat-grid-tile>{{dayOfWeek(3)}}</mat-grid-tile>
+                 <mat-grid-tile>{{dayOfWeek(4)}}</mat-grid-tile>
+                 <mat-grid-tile>{{dayOfWeek(5)}}</mat-grid-tile>
+                 <mat-grid-tile>{{dayOfWeek(6)}}</mat-grid-tile>
+             </mat-grid-list>
+                     <mat-grid-list cols="7" rowHeight="110px">
+
+                         <span *ngFor="let activity of activityArray">
+                         <mat-grid-tile *ngIf="activity.kcal >0"  [matTooltip]="getNames(activity)" >
+
+                             <div *ngIf="activity.kcal>0" layout-align="center center">
+
+                                     <mat-chip style="background:{{getBackground(activity.average_heartrate)}};">
+                                           <span class="material-symbols-outlined">
+                                         timer
+                                         </span>
+                                         {{round(activity.duration/60)}} min
+                                     </mat-chip>
+
+
+                                 <br/>
+                                  <span *ngFor="let act of activity.sessions">
+                                      <span *ngIf="act.type !== undefined" class="material-symbols-outlined">
+                                     {{getType(act.type)}}
+                                     </span>
+                                 </span>
+                                 {{activity.kcal}} kcal
+                                 <br/>
+                                 <span *ngFor="let pizza of pizza(activity.kcal)">
+                                      <span class="material-symbols-outlined">local_pizza</span>
+                                 </span>
+
+                             </div>
+
+                            <!-- <br/>
+                             <span *ngIf="activity.hr_avg !== undefined">
+                                                    <span class="material-symbols-outlined">
+ ecg_heart
+ </span>
+                                 {{round(activity.hr_avg)}} <span *ngIf="activity.hr_max !== undefined">(max {{activity.hr_max}})</span>
+
+                             </span> -->
+
+                        </mat-grid-tile >
+                            <mat-grid-tile *ngIf="activity.kcal === 0">
+                            </mat-grid-tile>
                         </span>
-            </div>
+                    </mat-grid-list>
+
             <h3>Weekly Activity Rates</h3>
             <table mat-table [dataSource]="dataSourceWeek" class="mat-elevation-z8">
 

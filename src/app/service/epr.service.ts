@@ -29,6 +29,12 @@ export class EPRService {
     if (athlete.height === undefined && this.person.height !== undefined) {
       athlete.height = this.person.height
     }
+    if (athlete.waist === undefined && this.person.waist !== undefined) {
+      athlete.waist = this.person.waist
+    }
+    if (athlete.ethnic === undefined && this.person.ethnic !== undefined) {
+      athlete.ethnic = this.person.ethnic
+    }
 
     this.person = athlete
     localStorage.setItem('activityPerson', JSON.stringify(this.person))
@@ -60,6 +66,14 @@ export class EPRService {
 
   setHeight(height: number) {
     this.person.height = height
+    this.setPerson(this.person)
+  }
+  setWaist(waist: number) {
+    this.person.waist = waist
+    this.setPerson(this.person)
+  }
+  setEthnic(ethnic: string) {
+    this.person.ethnic = ethnic
     this.setPerson(this.person)
   }
   perKgKCal(number: number): number | undefined {
