@@ -1,0 +1,47 @@
+<ngx-charts-bar-vertical-stacked *ngIf="single!==undefined"
+                         [view]="view"
+                         [scheme]="colorScheme"
+                         [results]="single"
+                         [gradient]="gradient"
+                         [xAxis]="showXAxis"
+                         [yAxis]="showYAxis"
+                         [legend]="showLegend"
+                         [showXAxisLabel]="showXAxisLabel"
+                         [showYAxisLabel]="showYAxisLabel"
+                         [xAxisLabel]="xAxisLabel"
+                         [yAxisLabel]="yAxisLabel"
+                         (select)="onSelect($event)"
+                            [animations]="false">
+    <ng-template #tooltipTemplate let-model="model">
+      <!--  {{model|json}} -->
+        <span *ngFor="let pizza of pizza(model.value)">
+                                      <span class="material-symbols-outlined">local_pizza</span>
+                                 </span>
+        <span class="material-symbols-outlined">local_pizza</span>
+        {{model.value}} kcal
+        <br/>
+        <span *ngIf="model.extra !== undefined && model.extra.session !== undefined">
+
+            <span *ngFor="let act of model.extra.session">
+
+                      <span *ngIf="act.type !== undefined" class="material-symbols-outlined">
+                     {{getType(act.type)}}
+                     </span>
+                    <span class="material-symbols-outlined">
+                        ecg_heart
+                    </span>{{act.activity.average_heartrate}}
+                    <span class="material-symbols-outlined">
+                                             timer
+                                             </span>
+                    {{round(act.activity.elapsed_time/60)}} min
+                    <br/>
+                </span>
+        </span>
+
+    </ng-template>
+
+ <!--   <ng-template #seriesTooltipTemplate let-model="model">
+        This is vertical line tooltip template
+        <pre>{{model|json}}</pre>
+    </ng-template> -->
+</ngx-charts-bar-vertical-stacked>

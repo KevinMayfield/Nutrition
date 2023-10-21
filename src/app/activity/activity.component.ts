@@ -12,18 +12,8 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatSort, Sort} from "@angular/material/sort";
 import {ActivityType} from "../models/activity-type";
 import {EPRService} from "../service/epr.service";
+import {ActivityDay, ActivitySession} from "../models/activity-day";
 
-class sessions {
-    type?: ActivityType;
-    name: string = "";
-}
-class activityDay {
-    duration: number = 0;
-    kcal: number = 0;
-    average_heartrate?: number;
-    hr_max?: number;
-    sessions: sessions[] = [];
-}
 class activityWeek {
     week?: number;
     avg_duration: number = 0;
@@ -51,7 +41,7 @@ export class ActivityComponent implements OnInit{
 
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
-    activityArray : activityDay[] = []
+    activityArray : ActivityDay[] = []
     exerciseIntenses: ValueSetExpansionContains[] = [
         {
             code: 'very-light',
@@ -248,7 +238,7 @@ export class ActivityComponent implements OnInit{
 
                 this.dataSourceWeek = new MatTableDataSource<activityWeek>(this.activitiesWeek)
 
-                var act : activityDay = {
+                var act : ActivityDay = {
                     duration: (activity.elapsed_time + this.activityArray[this.strava.duration - diffDays].duration),
                     kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal),
                     sessions: this.activityArray[this.strava.duration - diffDays].sessions
@@ -268,8 +258,9 @@ export class ActivityComponent implements OnInit{
                 }
 
 
-                var session : sessions = {
-                    name: activity.name
+                var session : ActivitySession = {
+                    name: activity.name,
+                    activity: activity
                 }
                 if (activity.zones !== undefined && (this.epr.person.hrzones === undefined || this.epr.person.hrzones?.calculated)) {
                     this.getZone(activity)
@@ -305,6 +296,11 @@ export class ActivityComponent implements OnInit{
                         return 0;
                     }));
                 }
+                // force a change
+                var tempAct: any[] = []
+                for (let temp of this.activityArray) tempAct.push(temp)
+                this.activityArray = tempAct
+
                 this.dataSourceHR = new MatTableDataSource<SummaryActivity>(this.activities.sort((a,b) =>{
                     if (a.start_date < b.start_date) {
                         return 1;
@@ -571,7 +567,7 @@ export class ActivityComponent implements OnInit{
         return 'exercise'
     }
 
-    getNames(activity: activityDay) {
+    getNames(activity: ActivityDay) {
         var result = ''
         for (var session of activity.sessions) result = result + ' ' + session.name
         return result

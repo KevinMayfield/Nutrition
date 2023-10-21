@@ -36,6 +36,7 @@ import {BarChartModule} from "@swimlane/ngx-charts";
 import { HeartGraphComponent } from './charts/heart-graph/heart-graph.component';
 import {MatChipsModule} from "@angular/material/chips";
 import { NutritionComponent } from './nutrition/nutrition.component';
+import { SummaryGraphComponent } from './charts/summary-graph/summary-graph.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { NutritionComponent } from './nutrition/nutrition.component';
       StravaComponent,
       PowerGraphComponent,
       HeartGraphComponent,
-      NutritionComponent
+      NutritionComponent,
+      SummaryGraphComponent
   ],
     imports: [
         BrowserModule,

@@ -175,8 +175,10 @@ ecg_heart
                      </table>
                          </span>
              </div>
+            <h3>Activity Summary</h3>
+            <app-summary-graph [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
 
-             <h3>Activity Summary</h3>
+          <!--
              <mat-grid-list cols="7" rowHeight="30px">
 
                  <mat-grid-tile>{{dayOfWeek(0)}}</mat-grid-tile>
@@ -216,21 +218,12 @@ ecg_heart
 
                              </div>
 
-                            <!-- <br/>
-                             <span *ngIf="activity.hr_avg !== undefined">
-                                                    <span class="material-symbols-outlined">
- ecg_heart
- </span>
-                                 {{round(activity.hr_avg)}} <span *ngIf="activity.hr_max !== undefined">(max {{activity.hr_max}})</span>
-
-                             </span> -->
-
                         </mat-grid-tile >
                             <mat-grid-tile *ngIf="activity.kcal === 0">
                             </mat-grid-tile>
                         </span>
                     </mat-grid-list>
-
+-->
             <h3>Weekly Activity Rates</h3>
             <table mat-table [dataSource]="dataSourceWeek" class="mat-elevation-z8">
 
