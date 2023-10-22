@@ -50,7 +50,7 @@ export class SummaryGraphComponent implements OnChanges {
   constructor(
       private epr: EPRService,
       private strava: StravaService){
-    this.view = [innerWidth / this.widthQuota, 300];
+    this.view = [innerWidth / this.widthQuota, this.view[1]];
   }
   onSelect(event: any) {
     console.log(event);
@@ -169,6 +169,6 @@ export class SummaryGraphComponent implements OnChanges {
     return Math.round(val)
   }
   onResize(event: any) {
-    this.view = [event.target.innerWidth / this.widthQuota, 400];
+    this.view = [event.target.innerWidth / this.widthQuota, this.view[1]];
   }
 }

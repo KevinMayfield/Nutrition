@@ -1,7 +1,26 @@
-<ngx-charts-bar-vertical-stacked *ngIf="single!==undefined"
-                                 [view]="view"
+<h4>Weekly Average</h4>
+<ngx-charts-bar-vertical *ngIf="single!==undefined"
+                                 [view]="viewSingle"
                                  [scheme]="colorScheme"
                                  [results]="single"
+                                 [gradient]="gradient"
+                                 [xAxis]="showXAxis"
+                                 [yAxis]="showYAxis"
+                                 [legend]="showLegend"
+                                 [showXAxisLabel]="showXAxisLabel"
+                                 [showYAxisLabel]="showYAxisLabel"
+                                 [xAxisLabel]="xAxisLabel"
+                                 [yAxisLabel]="yAxisLabel"
+                                 (select)="onSelect($event)"
+                                 [animations]="false"
+                                 (window:resize)="onResize($event)">
+
+</ngx-charts-bar-vertical>
+<h4>Weekly Total</h4>
+<ngx-charts-bar-vertical-stacked *ngIf="stacked!==undefined"
+                                 [view]="viewStacked"
+                                 [scheme]="colorScheme"
+                                 [results]="stacked"
                                  [gradient]="gradient"
                                  [xAxis]="showXAxis"
                                  [yAxis]="showYAxis"

@@ -43,9 +43,11 @@ export class WeeklyGraphComponent {
   @Input()
   zoneHR: hrZone | undefined
 
+  stacked: any[] | undefined;
   single: any[] | undefined;
 
-  view: [number, number] = [800, 300];
+  viewSingle: [number, number] = [800, 200];
+  viewStacked: [number, number] = [800, 300];
 
   colorScheme: Color = {
     domain: [
@@ -66,7 +68,8 @@ export class WeeklyGraphComponent {
   constructor(
       private epr: EPRService,
       private strava: StravaService){
-      this.view = [innerWidth / this.widthQuota, 300];
+      this.viewSingle = [innerWidth / this.widthQuota, this.viewSingle[1]];
+     this.viewStacked = [innerWidth / this.widthQuota, this.viewStacked[1]];
   }
   onSelect(event: any) {
     console.log(event);
@@ -142,7 +145,9 @@ export class WeeklyGraphComponent {
           }
         }
       }
+      this.stacked = undefined
       this.single = undefined
+      var stacked = []
       var single = []
 
       for (let wk of this.activitiesWeek) {
@@ -162,6 +167,8 @@ export class WeeklyGraphComponent {
           }
           // @ts-ignore
           entry.series.push(ser)
+
+
         }
         for (let zone of wk.zones) {
           if (zone.zone !== undefined) {
@@ -174,15 +181,30 @@ export class WeeklyGraphComponent {
             }
           }
         }
-        single.push(entry)
+        stacked.push(entry)
+
+        var entrySingle = {"name": wk.week + ' ' + iso,value: 0
+        }
+        // @ts-ignore
+        let diff = Math.abs(((new Date().getTime()) - this.getSundayFromWeekNum(wk.week).getTime()))
+        var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+
+        if (diffDays > 7) {
+          entrySingle.value = Math.round(wk.kcal / 7)
+        } else {
+          if (+diffDays > 0) entrySingle.value = Math.round(wk.kcal / diffDays)
+        }
+        single.push(entrySingle)
 
       }
-      this.single = single
+      this.stacked  = stacked
+      this.single  = single
     }
   }
 
   onResize(event: any) {
-    this.view = [event.target.innerWidth / this.widthQuota, 400];
+    this.viewSingle = [event.target.innerWidth / this.widthQuota, this.viewSingle[1]];
+    this.viewStacked = [event.target.innerWidth / this.widthQuota, this.viewStacked[1]];
   }
 
   getWeekNumber(d : Date) {
