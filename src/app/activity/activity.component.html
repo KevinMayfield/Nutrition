@@ -225,47 +225,7 @@ ecg_heart
                     </mat-grid-list>
 -->
             <h3>Weekly Activity Rates</h3>
-            <table mat-table [dataSource]="dataSourceWeek" class="mat-elevation-z8">
-
-                <ng-container matColumnDef="kJ">
-                    <th mat-header-cell *matHeaderCellDef > Avg kcal</th>
-                    <td mat-cell *matCellDef="let week">
-
-                        {{round(week.avg_kcal)}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="week">
-                    <th mat-header-cell  *matHeaderCellDef> Week </th>
-                    <td mat-cell *matCellDef="let week">
-                        {{week.week}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="duration">
-                    <th mat-header-cell  *matHeaderCellDef> Duration </th>
-                    <td mat-cell *matCellDef="let week">
-                        {{round(week.avg_duration/60)}}
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="hr">
-                    <th mat-header-cell  *matHeaderCellDef> Max HR </th>
-                    <td mat-cell *matCellDef="let week">
-                        {{round(week.hr_max)}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="activeDay">
-                    <th mat-header-cell  *matHeaderCellDef> Active Days </th>
-                    <td mat-cell *matCellDef="let week">
-                        {{round(week.num_activities)}}
-                    </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumnsWeek"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumnsWeek;"></tr>
-
-                <tr class="mat-row" *matNoDataRow>
-                    <td class="mat-cell" colspan="7">No data matching the filter </td>
-                </tr>
-            </table>
+            <app-weekly-graph [dayActivity]="activityArray" ></app-weekly-graph>
         </mat-tab>
         <!--
 

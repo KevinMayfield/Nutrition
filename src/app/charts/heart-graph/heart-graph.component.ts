@@ -8,6 +8,7 @@ import {Color, ScaleType} from "@swimlane/ngx-charts";
   styleUrls: ['./heart-graph.component.scss']
 })
 export class HeartGraphComponent implements OnInit{
+
   @Input()
   activity: SummaryActivity | undefined
 
@@ -28,6 +29,13 @@ export class HeartGraphComponent implements OnInit{
   xAxisLabel = 'Range';
   showYAxisLabel = false;
   yAxisLabel = 'Duration';
+
+  @Input()
+  widthQuota: number = 4;
+
+  constructor() {
+    this.view = [innerWidth / this.widthQuota, this.view[1]];
+  }
   onSelect(event: any) {
     console.log(event);
   }
@@ -40,9 +48,9 @@ export class HeartGraphComponent implements OnInit{
         var height = 40
         let ratio = Math.round((this.activity.elapsed_time * 4) / (60 * 120))
 
-        this.view = [350, height + (ratio * 40) ]
+        this.view = [innerWidth / this.widthQuota, height + (ratio * 40) ]
       }
-      else this.view = [350, 240]
+      else this.view = [innerWidth / this.widthQuota, 240]
       for(let zone of this.activity.zones) {
         if (zone.type === 'heartrate') {
           for (let res of zone.distribution_buckets) {
@@ -57,6 +65,9 @@ export class HeartGraphComponent implements OnInit{
 
       this.single = single
     }
+  }
+  onResize(event: any) {
+    this.view = [event.target.innerWidth / this.widthQuota, this.view[1]];
   }
 
 }

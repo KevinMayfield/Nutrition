@@ -16,8 +16,11 @@ export class SummaryGraphComponent implements OnChanges {
   @Input()
   activity: ActivityDay[] | undefined
 
+  @Input()
+  widthQuota: number = 1.35;
+
   @Input() set dayActivity(activity: ActivityDay[]) {
-    console.log('set activity');
+
     this.activity = activity
     this.refreshActivity()
   }
@@ -46,9 +49,12 @@ export class SummaryGraphComponent implements OnChanges {
 
   constructor(
       private epr: EPRService,
-      private strava: StravaService){}
+      private strava: StravaService){
+    this.view = [innerWidth / this.widthQuota, 300];
+  }
   onSelect(event: any) {
     console.log(event);
+
   }
 /*
   @HostListener('activity') logChange() {
@@ -161,5 +167,8 @@ export class SummaryGraphComponent implements OnChanges {
   round(val : number | undefined) {
     if (val == undefined) return undefined
     return Math.round(val)
+  }
+  onResize(event: any) {
+    this.view = [event.target.innerWidth / this.widthQuota, 400];
   }
 }

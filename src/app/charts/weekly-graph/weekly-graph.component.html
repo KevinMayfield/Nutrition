@@ -1,0 +1,17 @@
+<ngx-charts-bar-vertical-stacked *ngIf="single!==undefined"
+                                 [view]="view"
+                                 [scheme]="colorScheme"
+                                 [results]="single"
+                                 [gradient]="gradient"
+                                 [xAxis]="showXAxis"
+                                 [yAxis]="showYAxis"
+                                 [legend]="showLegend"
+                                 [showXAxisLabel]="showXAxisLabel"
+                                 [showYAxisLabel]="showYAxisLabel"
+                                 [xAxisLabel]="xAxisLabel"
+                                 [yAxisLabel]="yAxisLabel"
+                                 (select)="onSelect($event)"
+                                 [animations]="false"
+                                 (window:resize)="onResize($event)">
+
+</ngx-charts-bar-vertical-stacked>

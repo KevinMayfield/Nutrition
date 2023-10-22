@@ -37,6 +37,7 @@ import { HeartGraphComponent } from './charts/heart-graph/heart-graph.component'
 import {MatChipsModule} from "@angular/material/chips";
 import { NutritionComponent } from './nutrition/nutrition.component';
 import { SummaryGraphComponent } from './charts/summary-graph/summary-graph.component';
+import { WeeklyGraphComponent } from './charts/weekly-graph/weekly-graph.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { SummaryGraphComponent } from './charts/summary-graph/summary-graph.comp
       PowerGraphComponent,
       HeartGraphComponent,
       NutritionComponent,
-      SummaryGraphComponent
+      SummaryGraphComponent,
+      WeeklyGraphComponent
   ],
     imports: [
         BrowserModule,

@@ -14,14 +14,7 @@ import {ActivityType} from "../models/activity-type";
 import {EPRService} from "../service/epr.service";
 import {ActivityDay, ActivitySession} from "../models/activity-day";
 
-class activityWeek {
-    week?: number;
-    avg_duration: number = 0;
-    avg_kcal: number = 0;
-    average_heartrate?: number;
-    hr_max?: number;
-    num_activities: number = 0;
-}
+
 
 @Component({
   selector: 'app-resting-metabolic-rate',
@@ -88,9 +81,7 @@ export class ActivityComponent implements OnInit{
     exerciseFrequency :ValueSetExpansionContains | undefined
    protected readonly Math = Math;
     maximumHR: undefined | number;
-    activitiesWeek : activityWeek[] = Array(5)
-    // @ts-ignore
-    dataSourceWeek: MatTableDataSource<activityWeek>;
+
     // @ts-ignore
     dataSourceHR: MatTableDataSource<SummaryActivity> ;
     // @ts-ignore
@@ -106,7 +97,6 @@ export class ActivityComponent implements OnInit{
         //'z1', 'z2', 'z3', 'z4','z5', 'z6', 'z7', 'z8', 'z9', 'z10',
         "power",
         "kJ", "ratio"]
-    displayedColumnsWeek = [ "week", "kJ", "duration", "hr", "activeDay"]
 
     opened: boolean = true;
     hasPowerData: boolean = false;
@@ -118,11 +108,7 @@ export class ActivityComponent implements OnInit{
         protected sanitizer: DomSanitizer,
         private _liveAnnouncer: LiveAnnouncer) {
        // this.sanitizer.bypassSecurityTrustHtml("<mat-icon>local_pizza</mat-icon>")
-        for (let i = 0; i < this.activitiesWeek.length; i++) {
-            this.activitiesWeek[i] = {
-                week: i, avg_duration: 0, avg_kcal: 0, num_activities: 0
-            }
-        }
+
     }
     calculate() {
         if (this.age !== undefined && this.age !== this.epr.person.age) {
@@ -225,23 +211,12 @@ export class ActivityComponent implements OnInit{
             var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
 
             if (activity.kcal !== undefined) {
-                let week = Math.floor((this.strava.duration - diffDays) / 7)
-                  // @ts-ignore
-                if (activity.max_heartrate !== undefined && (this.activitiesWeek[week].hr_max === undefined || this.activitiesWeek[week].hr_max < activity.max_heartrate)) {
-                      this.activitiesWeek[week].hr_max = activity.max_heartrate
-                  }
-                this.activitiesWeek[week].avg_duration = ((this.activitiesWeek[week].avg_duration * this.activitiesWeek[week].num_activities) + activity.elapsed_time) / (this.activitiesWeek[week].num_activities + 1)
-                this.activitiesWeek[week].avg_kcal = ((this.activitiesWeek[week].avg_kcal * this.activitiesWeek[week].num_activities) + activity.kcal) / (this.activitiesWeek[week].num_activities + 1)
-                if (this.activityArray[this.strava.duration - diffDays].duration ===0 ) {
-                    this.activitiesWeek[week].num_activities = 1 + this.activitiesWeek[week].num_activities
-                }
-
-                this.dataSourceWeek = new MatTableDataSource<activityWeek>(this.activitiesWeek)
 
                 var act : ActivityDay = {
                     duration: (activity.elapsed_time + this.activityArray[this.strava.duration - diffDays].duration),
                     kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal),
-                    sessions: this.activityArray[this.strava.duration - diffDays].sessions
+                    sessions: this.activityArray[this.strava.duration - diffDays].sessions,
+                    day: activityDate
                 }
                 if (activity.average_heartrate !== undefined) {
                     if (this.activityArray[this.strava.duration - diffDays].average_heartrate !== undefined) {
@@ -640,6 +615,8 @@ export class ActivityComponent implements OnInit{
     viewPA() {
         window.open("https://build.fhir.org/ig/HL7/physical-activity/measures.html", "_blank")
     }
+
+
 
     viewPower() {
         window.open("https://power-meter.cc/", "_blank")

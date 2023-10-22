@@ -32,9 +32,13 @@ export class PowerGraphComponent implements OnInit{
   xAxisLabel = 'Range';
   showYAxisLabel = false;
   yAxisLabel = 'Duration';
+    @Input()
+    widthQuota: number = 2;
 
     constructor(
-        private epr: EPRService){}
+        private epr: EPRService){
+        this.view = [innerWidth / this.widthQuota, this.view[1]];
+    }
   onSelect(event: any) {
     console.log(event);
   }
@@ -89,4 +93,7 @@ export class PowerGraphComponent implements OnInit{
         this.single = single
      }
   }
+    onResize(event: any) {
+        this.view = [event.target.innerWidth / this.widthQuota, this.view[1]];
+    }
 }

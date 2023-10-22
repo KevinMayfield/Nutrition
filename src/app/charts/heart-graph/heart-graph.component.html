@@ -10,5 +10,6 @@
                          [showYAxisLabel]="showYAxisLabel"
                          [xAxisLabel]="xAxisLabel"
                          [yAxisLabel]="yAxisLabel"
-                         (select)="onSelect($event)">
+                         (select)="onSelect($event)"
+                         (window:resize)="onResize($event)">
 </ngx-charts-bar-vertical>
