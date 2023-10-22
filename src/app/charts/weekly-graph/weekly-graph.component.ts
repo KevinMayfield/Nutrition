@@ -152,7 +152,9 @@ export class WeeklyGraphComponent {
 
       for (let wk of this.activitiesWeek) {
         // @ts-ignore
-        let iso = this.getSundayFromWeekNum(wk.week).toISOString().split('T')[0]
+        let isoDate = this.getSundayFromWeekNum(wk.week)
+        let iso= isoDate.toLocaleDateString()
+
         // @ts-ignore
         var entry = {"name": wk.week + ' ' + iso,
           "series": []
@@ -186,9 +188,7 @@ export class WeeklyGraphComponent {
         var entrySingle = {"name": wk.week + ' ' + iso,value: 0
         }
         // @ts-ignore
-        let diff = Math.abs(((new Date().getTime()) - this.getSundayFromWeekNum(wk.week).getTime()))
-        var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-
+        let diffDays =this.epr.getDateAbs(new Date()) - this.epr.getDateAbs(this.getSundayFromWeekNum(wk.week))
         if (diffDays > 7) {
           entrySingle.value = Math.round(wk.kcal / 7)
         } else {
@@ -210,15 +210,14 @@ export class WeeklyGraphComponent {
   getWeekNumber(d : Date) {
     // Copy date so don't modify original
     let onejan = new Date(d.getFullYear(), 0, 1);
-    let week = Math.ceil((((d.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7);
+    let week = Math.ceil((this.epr.getDateAbs(d) - this.epr.getDateAbs(onejan) + onejan.getDay() + 1) / 7);
     // Return array of year and week number
     return week;
   }
   getSundayFromWeekNum(weekNum : number) {
-  //  console.log(new Date().getFullYear())
     var sunday = new Date(new Date().getFullYear(), 0, (1 + (weekNum - 1) * 7));
     while (sunday.getDay() !== 0) {
-      sunday.setDate(sunday.getDate() - 1);
+      sunday.setDate(sunday.getDate() + 1);
     }
     return sunday;
   }

@@ -48,6 +48,10 @@ export class EPRService {
      this.zoneChange.emit(param)
   }
 
+  getDateAbs(time: Date) {
+    return Math.floor(time.getTime() / (1000 * 3600 * 24));
+  }
+
   getBackground(heartrate: number | undefined) {
 
     if (this.person.hrzones !== undefined && this.person.hrzones.maximumHR !== undefined && heartrate !== undefined) {

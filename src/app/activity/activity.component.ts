@@ -207,8 +207,7 @@ export class ActivityComponent implements OnInit{
 
             var today = new Date();
             var activityDate = new Date(activity.start_date)
-            var diff = Math.abs(today.getTime() - activityDate.getTime());
-            var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+            var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
 
             if (activity.kcal !== undefined) {
 
