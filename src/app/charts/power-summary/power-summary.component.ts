@@ -12,11 +12,15 @@ import {StravaService} from "../../service/strava.service";
 })
 export class PowerSummaryComponent implements OnInit {
 
-  @Input()
+
   activity: ActivityDay[] | undefined
 
+
   @Input()
-  widthQuota: number = 1.35;
+  thisWeek : boolean = true
+
+  @Input()
+  widthQuota: number = 3;
 
   @Input() set dayActivity(activity: ActivityDay[]) {
 
@@ -115,9 +119,9 @@ export class PowerSummaryComponent implements OnInit {
     }
     this.multi = multi
     // Now get results for specific week
-    this.getWeek(42)
-
-
+    var week = this.epr.getWeekNumber(new Date())
+    if (!this.thisWeek) week = week-1
+    this.getWeek(week)
   }
   getWeek(weekNo : number) {
     this.single = undefined

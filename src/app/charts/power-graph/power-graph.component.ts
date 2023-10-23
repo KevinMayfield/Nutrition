@@ -12,6 +12,9 @@ export class PowerGraphComponent implements OnInit{
   @Input()
   activity: SummaryActivity | undefined
 
+    @Input()
+    thisWeek : boolean = true
+
   single: any[] | undefined;
 
   view: [number, number] = [500, 100];

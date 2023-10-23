@@ -49,7 +49,7 @@ ecg_heart
 <mat-card xmlns="http://www.w3.org/1999/html">
     <mat-card-content>
     <mat-tab-group>
-        <mat-tab label="Summary">
+        <mat-tab label="Summary (Energy/kcal)">
             <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Time-based Measures"
@@ -234,7 +234,7 @@ ecg_heart
         HEART RATE
 
         -->
-        <mat-tab label="Physical Activity Detail (HR)">
+        <mat-tab label="Physical Activity (Heart Rate)">
             <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Activity-based Measures"
@@ -373,7 +373,7 @@ bolt
                 </table>
                 <mat-paginator #paginatorHR [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
         </mat-tab>
-        <mat-tab *ngIf="hasPowerData" label="Physical Activity Detail (Power)">
+        <mat-tab *ngIf="hasPowerData" label="Physical Activity (Power)">
             <td-message
                         label="Information"
                         sublabel="For detailed breakdown of power data see power-meter.cc"
@@ -381,7 +381,17 @@ bolt
                         icon="info">
                 <button td-message-actions mat-button (click)="viewPower()">Power-Meter.cc</button>
             </td-message>
-            <app-power-summary [dayActivity]="activityArray"></app-power-summary>
+            <div class="example-form2">
+                <span>
+                    <h3>This week</h3>
+                    <app-power-summary [dayActivity]="activityArray"></app-power-summary>
+                </span>
+                <span>
+                    <h3>Last week</h3>
+                    <app-power-summary [dayActivity]="activityArray" [thisWeek]="false"></app-power-summary>
+                </span>
+            </div>
+            <h3>Activity Logs</h3>
             <table mat-table [dataSource]="dataSourceKJ" class="mat-elevation-z8"
                    matSort (matSortChange)="announceSortChange($event)"
                    matSortActive="date" matSortDirection="desc" matSortDisableClear>
