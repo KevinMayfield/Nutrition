@@ -49,7 +49,13 @@ export class WeeklyGraphComponent {
   viewSingle: [number, number] = [800, 200];
   viewStacked: [number, number] = [800, 300];
 
-  colorScheme: Color = {
+  colorStacked: Color = {
+    domain: [
+      'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
+    ], group: ScaleType.Ordinal, name: "", selectable: false
+  }
+
+  colorSingle: Color = {
     domain: [
       'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
     ], group: ScaleType.Ordinal, name: "", selectable: false
@@ -147,8 +153,10 @@ export class WeeklyGraphComponent {
       }
       this.stacked = undefined
       this.single = undefined
+      this.colorSingle.domain = []
       var stacked = []
       var single = []
+      var domain = []
 
       for (let wk of this.activitiesWeek) {
         // @ts-ignore
@@ -164,13 +172,11 @@ export class WeeklyGraphComponent {
             name: (f+1),
             value: 0,
             extra: {
-              session: []
+              wk: {}
             }
           }
           // @ts-ignore
           entry.series.push(ser)
-
-
         }
         for (let zone of wk.zones) {
           if (zone.zone !== undefined) {
@@ -179,13 +185,17 @@ export class WeeklyGraphComponent {
               // @ts-ignore
               ent.value = ent.value + Math.round(zone.kcal)
               // @ts-ignore
-              ent.extra.session.push(zone)
+              ent.extra.wk = zone
+
             }
           }
         }
         stacked.push(entry)
 
-        var entrySingle = {"name": wk.week + ' ' + iso,value: 0
+        var entrySingle = {"name": wk.week + ' ' + iso,value: 0,
+          'extra': {
+              'wk': wk
+          }
         }
         // @ts-ignore
         let diffDays =this.epr.getDateAbs(new Date()) - this.epr.getDateAbs(this.getSundayFromWeekNum(wk.week))
@@ -195,10 +205,16 @@ export class WeeklyGraphComponent {
           if (+diffDays > 0) entrySingle.value = Math.round(wk.kcal / diffDays)
         }
         single.push(entrySingle)
-
+        let avg_dur = Math.round(wk.duration / (7 *60))
+        if (avg_dur < 20) {  domain.push('lightgrey') }
+        else if (avg_dur < 40 ) { domain.push('lightblue') }
+        else if (avg_dur < 60 ) {  domain.push('lightgreen') }
+        else if (avg_dur < 240 ) {   domain.push('lightsalmon') }
+        else  {   domain.push('lightpink') }
       }
       this.stacked  = stacked
       this.single  = single
+      this.colorSingle.domain = domain
     }
   }
 
@@ -243,6 +259,13 @@ export class WeeklyGraphComponent {
       return 4
     }
     return 5
+  }
+  round(val : number | undefined) {
+    if (val == undefined) return undefined
+    return Math.round(val)
+  }
+  pizza(kcal: number | undefined) {
+    return this.epr.pizza(kcal)
   }
   /*
 

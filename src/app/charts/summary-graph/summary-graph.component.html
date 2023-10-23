@@ -25,12 +25,14 @@
 
             <span *ngFor="let act of model.extra.session">
 
-                      <span *ngIf="act.type !== undefined" class="material-symbols-outlined">
+                    Activities  <span *ngIf="act.type !== undefined" class="material-symbols-outlined">
                      {{getType(act.type)}}
                      </span>
+                    <br/>
                     <span class="material-symbols-outlined">
                         ecg_heart
-                    </span>{{act.activity.average_heartrate}}
+                    </span> avg {{act.activity.average_heartrate}} beats/min
+                <br/>
                     <span class="material-symbols-outlined">
                                              timer
                                              </span>

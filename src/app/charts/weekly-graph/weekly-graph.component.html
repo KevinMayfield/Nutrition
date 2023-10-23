@@ -1,7 +1,7 @@
-<h4>Weekly Average</h4>
+<h4>Daily Average (per week)</h4>
 <ngx-charts-bar-vertical *ngIf="single!==undefined"
                                  [view]="viewSingle"
-                                 [scheme]="colorScheme"
+                                 [scheme]="colorSingle"
                                  [results]="single"
                                  [gradient]="gradient"
                                  [xAxis]="showXAxis"
@@ -14,12 +14,20 @@
                                  (select)="onSelect($event)"
                                  [animations]="false"
                                  (window:resize)="onResize($event)">
-
+    <ng-template #tooltipTemplate let-model="model">
+          <span *ngFor="let pizza of pizza(model.value)">
+                                      <span class="material-symbols-outlined">local_pizza</span>
+                                 </span>
+        <span class="material-symbols-outlined">local_pizza</span>
+        {{model.value}} kcal
+        <br/>
+        <span class="material-symbols-outlined">timer</span> {{round(model.extra.wk.duration/(7*60))}} mins per day
+    </ng-template>
 </ngx-charts-bar-vertical>
-<h4>Weekly Total</h4>
+<h4>Weekly Totals</h4>
 <ngx-charts-bar-vertical-stacked *ngIf="stacked!==undefined"
                                  [view]="viewStacked"
-                                 [scheme]="colorScheme"
+                                 [scheme]="colorStacked"
                                  [results]="stacked"
                                  [gradient]="gradient"
                                  [xAxis]="showXAxis"
@@ -32,5 +40,15 @@
                                  (select)="onSelect($event)"
                                  [animations]="false"
                                  (window:resize)="onResize($event)">
-
+    <ng-template #tooltipTemplate let-model="model">
+          <span *ngFor="let pizza of pizza(model.value)">
+                                      <span class="material-symbols-outlined">local_pizza</span>
+                                 </span>
+        <span class="material-symbols-outlined">local_pizza</span>
+        {{model.value}} kcal
+        <br/>
+        <span class="material-symbols-outlined">timer</span> {{round(model.extra.wk.duration/60)}} mins
+        <br/>
+        Activities {{model.extra.wk.num_activities}}
+    </ng-template>
 </ngx-charts-bar-vertical-stacked>

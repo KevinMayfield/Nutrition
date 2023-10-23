@@ -23,18 +23,7 @@
                     <mat-option *ngFor="let gender of administrativeGenders" [value]="gender">{{gender.display}}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="example-full-width">
-                <mat-label>How often do you exercise?</mat-label>
-                <mat-select [(ngModel)]="exerciseFrequency" (ngModelChange)="calculate()">
-                    <mat-option *ngFor="let pal of exerciseFrequencies" [value]="pal">{{pal.display}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-                <mat-label>How intense is your exercise?</mat-label>
-                <mat-select [(ngModel)]="exerciseIntense" (ngModelChange)="calculate()">
-                    <mat-option *ngFor="let pal of exerciseIntenses" [value]="pal">{{pal.display}}</mat-option>
-                </mat-select>
-            </mat-form-field>
+
         </div>
         <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" *ngIf="zoneHR !== undefined">
                 Maximum heart rate <span *ngIf="zoneHR.calculated">(calculated)</span><span *ngIf="!zoneHR.calculated">(strava)</span> =  {{zoneHR.maximumHR}}
@@ -73,7 +62,20 @@ ecg_heart
              NUTRITION
 
              -->
-
+            <div class="example-form2">
+                <mat-form-field class="example-half-width">
+                    <mat-label>How often do you exercise?</mat-label>
+                    <mat-select [(ngModel)]="exerciseFrequency" (ngModelChange)="calculate()">
+                        <mat-option *ngFor="let pal of exerciseFrequencies" [value]="pal">{{pal.display}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="example-half-width">
+                    <mat-label>How intense is your exercise?</mat-label>
+                    <mat-select [(ngModel)]="exerciseIntense" (ngModelChange)="calculate()">
+                        <mat-option *ngFor="let pal of exerciseIntenses" [value]="pal">{{pal.display}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
             <div class="example-full-width">
                 <h3>Energy</h3>
                 <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
