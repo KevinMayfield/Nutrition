@@ -224,11 +224,7 @@ export class WeeklyGraphComponent {
   }
 
   getWeekNumber(d : Date) {
-    // Copy date so don't modify original
-    let onejan = new Date(d.getFullYear(), 0, 1);
-    let week = Math.ceil((this.epr.getDateAbs(d) - this.epr.getDateAbs(onejan) + onejan.getDay() + 1) / 7);
-    // Return array of year and week number
-    return week;
+    return this.epr.getWeekNumber(d);
   }
   getSundayFromWeekNum(weekNum : number) {
     var sunday = new Date(new Date().getFullYear(), 0, (1 + (weekNum - 1) * 7));

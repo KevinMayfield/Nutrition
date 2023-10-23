@@ -99,4 +99,11 @@ export class EPRService {
     return new Array(number).fill(0)
         .map((n, index) => index + 1);
   }
+  getWeekNumber(d : Date) {
+    // Copy date so don't modify original
+    let onejan = new Date(d.getFullYear(), 0, 1);
+    let week = Math.ceil((this.getDateAbs(d) - this.getDateAbs(onejan) + onejan.getDay() + 1) / 7);
+    // Return array of year and week number
+    return week;
+  }
 }

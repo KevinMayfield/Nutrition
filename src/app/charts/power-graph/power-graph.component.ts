@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SummaryActivity} from "../../models/summary-activity";
-import {HttpClient} from "@angular/common/http";
 import {EPRService} from "../../service/epr.service";
 import {Color, ScaleType} from "@swimlane/ngx-charts";
 

@@ -1,0 +1,44 @@
+<ngx-charts-bar-vertical
+        [view]="view"
+        [scheme]="colorScheme"
+        [results]="single"
+        [gradient]="gradient"
+        [xAxis]="showXAxis"
+        [yAxis]="showYAxis"
+        [legend]="showLegend"
+        [showXAxisLabel]="showXAxisLabel"
+        [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="xAxisLabel"
+        [yAxisLabel]="yAxisLabel"
+        (select)="onSelect($event)"
+        [animations]="false"
+        (window:resize)="onResize($event)"
+       >
+       <ng-template #tooltipTemplate let-model="model">
+
+             <span class="material-symbols-outlined">
+                                             timer
+                                             </span>
+              {{model.value}} min
+              <br/>
+              {{round(model.value * 100/totalTime)}} %
+       </ng-template>
+</ngx-charts-bar-vertical>
+<!--
+<ngx-charts-bar-vertical-2d
+        [view]="view"
+        [scheme]="colorScheme"
+        [results]="multi"
+        [gradient]="gradient"
+        [xAxis]="showXAxis"
+        [yAxis]="showYAxis"
+        [legend]="showLegend"
+        [showXAxisLabel]="showXAxisLabel"
+        [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="xAxisLabel"
+        [yAxisLabel]="yAxisLabel"
+        (select)="onSelect($event)"
+        [animations]="false"
+        (window:resize)="onResize($event)"
+       >
+</ngx-charts-bar-vertical-2d> -->

@@ -381,6 +381,7 @@ bolt
                         icon="info">
                 <button td-message-actions mat-button (click)="viewPower()">Power-Meter.cc</button>
             </td-message>
+            <app-power-summary [dayActivity]="activityArray"></app-power-summary>
             <table mat-table [dataSource]="dataSourceKJ" class="mat-elevation-z8"
                    matSort (matSortChange)="announceSortChange($event)"
                    matSortActive="date" matSortDirection="desc" matSortDisableClear>
