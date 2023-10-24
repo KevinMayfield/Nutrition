@@ -26,11 +26,15 @@ export class StravaService {
   loaded: EventEmitter<SummaryActivity> = new EventEmitter();
   activity: EventEmitter<SummaryActivity> = new EventEmitter();
   constructor(private http: HttpClient) {
-    const temp = new Date();
+
+   // this.to = new Date();
     this.to = new Date();
-    // this.to.setDate( temp.getDate() - this.duration - this.duration)
-    this.from = new Date();
-    this.from.setDate(temp.getDate() - this.duration );
+
+    this.from = new Date(this.to.toISOString());
+    console.log(this.from.setDate(this.from.getDate() - this.duration ));
+    console.log(this.from.toISOString())
+    console.log(this.to.toISOString())
+
     this.activity.subscribe(activity => {
         this.getActivity(activity.id).subscribe(result => {
           activity.kcal = result.calories
@@ -83,7 +87,8 @@ export class StravaService {
   }
 
   getToDate(): Date {
-    return <Date>this.to;
+    // @ts-ignore
+    return new Date(this.to.toISOString());
   }
 
   getActivities(page?: number | undefined): void {

@@ -106,4 +106,31 @@ export class EPRService {
     // Return array of year and week number
     return week;
   }
+
+  getFTPColours() {
+    var colours : string[] = []
+    let ftp = this.person.ftp
+    if (ftp !== undefined) {
+      for (let i = 0; i < 10; i++) {
+        let pwr = (i * 50) + 25; // crude
+
+        if (pwr > (ftp * 1.20)) {
+          colours.push('lightcoral')
+        } else if (pwr > (ftp * 1.06)) {
+          colours.push('lightpink')
+        } else if (pwr > (ftp * 0.95)) {
+          colours.push('lightsalmon')
+        } else if (pwr > (ftp * 0.88)) {
+          colours.push('#FFF59D')
+        } else if (pwr > (ftp * 0.76)) {
+          colours.push('lightgreen')
+        } else if (pwr > (ftp * 0.55)) {
+          colours.push('lightblue')
+        } else {
+          colours.push('lightgrey')
+        }
+      }
+    }
+    return colours
+  }
 }

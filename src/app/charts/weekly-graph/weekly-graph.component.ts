@@ -198,7 +198,7 @@ export class WeeklyGraphComponent {
           }
         }
         // @ts-ignore
-        let diffDays =this.epr.getDateAbs(new Date()) - this.epr.getDateAbs(this.getSundayFromWeekNum(wk.week))
+        let diffDays =this.epr.getDateAbs(this.strava.getToDate()) - this.epr.getDateAbs(this.getSundayFromWeekNum(wk.week))
         if (diffDays > 7) {
           entrySingle.value = Math.round(wk.kcal / 7)
         } else {

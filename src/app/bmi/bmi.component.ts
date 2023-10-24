@@ -152,7 +152,7 @@ export class BMIComponent implements OnInit {
 
     ngOnInit(): void {
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=https://fhir.hl7.org.uk/ValueSet/UKCore-EthnicCategory').subscribe(result => {
-            console.log(result)
+
             this.ethnicCategories = this.smart.getContainsExpansion(result)
             if (this.epr.person !== undefined && this.epr.person.ethnic !== undefined) {
                 for (var ethnic of this.ethnicCategories) {
@@ -163,7 +163,7 @@ export class BMIComponent implements OnInit {
             }
         })
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
-            console.log(result)
+
             this.administrativeGenders = this.smart.getContainsExpansion(result)
             if (this.epr.person !== undefined && this.epr.person.sex !== undefined) {
                 for (var gender of this.administrativeGenders) {

@@ -205,7 +205,7 @@ export class ActivityComponent implements OnInit{
 
         this.strava.loaded.subscribe(activity => {
 
-            var today = new Date();
+            var today = this.strava.getToDate()
             var activityDate = new Date(activity.start_date)
             var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
 
@@ -515,8 +515,8 @@ export class ActivityComponent implements OnInit{
 
 
     dayOfWeek(number: number) {
-        var now = new Date();
-        var from = new Date();
+        var now = this.strava.getToDate();
+        var from = this.strava.getToDate();
         from.setDate(now.getDate() - this.strava.duration + number );
         var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
         return days[ from.getDay() ];
@@ -537,8 +537,16 @@ export class ActivityComponent implements OnInit{
             case ActivityType.Run : {
                 return 'directions_run'
             }
+            default : {
+                if (type!== undefined && type.toString() === 'Ride') {
+                    return 'directions_bike'
+                }
+                console.log(type)
+                return 'exercise'
+            }
         }
-        return 'exercise'
+
+
     }
 
     getNames(activity: ActivityDay) {

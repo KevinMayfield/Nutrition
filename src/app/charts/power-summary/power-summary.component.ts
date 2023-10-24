@@ -51,6 +51,7 @@ export class PowerSummaryComponent implements OnInit {
   xAxisLabel = 'Power (watts)';
   showYAxisLabel = true;
   yAxisLabel = 'time (min)';
+  yScaleMax= 0;
 
   constructor(
       private epr: EPRService,
@@ -64,7 +65,8 @@ export class PowerSummaryComponent implements OnInit {
 
   private refreshActivity() {
     this.multi = undefined
-
+    this.single = undefined
+    this.yScaleMax = 0
     var multi = []
     for(let i=0;i<10;i++) {
       multi.push({
@@ -119,22 +121,26 @@ export class PowerSummaryComponent implements OnInit {
     }
     this.multi = multi
     // Now get results for specific week
-    var week = this.epr.getWeekNumber(new Date())
+    var week = this.epr.getWeekNumber(this.strava.getToDate())
     if (!this.thisWeek) week = week-1
     this.getWeek(week)
   }
   getWeek(weekNo : number) {
-    this.single = undefined
+
     this.totalTime = 0
     let single: any[] = []
     if (this.multi !== undefined) {
       for (let bar of this.multi) {
         var singleBar: any = {
-          name: bar.name
+          name: bar.name,
+          value: 0
         }
         for (let wk of bar.series) {
-          if (wk.name === weekNo) {
-            singleBar.value = wk.value
+          if (this.yScaleMax<wk.value) this.yScaleMax = wk.value
+          if (wk.name === weekNo ) {
+            if (wk.value !== undefined) {
+              singleBar.value = wk.value
+            }
             this.totalTime = this.totalTime + wk.value
           }
         }
@@ -153,30 +159,7 @@ export class PowerSummaryComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.epr.person !== undefined && this.epr.person.ftp !== undefined) {
-
-      var colours : string[] = []
-      let ftp = this.epr.person.ftp
-
-      for(let i=0;i<10;i++) {
-        let pwr = (i *50)  ; // crude
-
-        if (pwr < (ftp * 0.54)) {
-          colours.push('lightgrey')
-        } else if (pwr < (ftp * 0.74)) {
-          colours.push('lightblue')
-        } else if (pwr < (ftp * 0.89)) {
-          colours.push('lightgreen')
-        } else if (pwr < (ftp * 1.04)) {
-          colours.push('lightsalmon')
-        } else if (pwr < (ftp * 1.20)) {
-          colours.push('lightpink')
-        }
-        else {
-          colours.push('lightcoral')
-        }
-      }
-
-      this.colorScheme.domain = colours
+      this.colorScheme.domain = this.epr.getFTPColours()
     }
   }
 }

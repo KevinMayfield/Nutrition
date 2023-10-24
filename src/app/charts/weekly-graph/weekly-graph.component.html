@@ -41,6 +41,9 @@
                                  [animations]="false"
                                  (window:resize)="onResize($event)">
     <ng-template #tooltipTemplate let-model="model">
+        <b>Heart Rate Zone {{model.name}}</b>
+        <br/>
+        <br/>
           <span *ngFor="let pizza of pizza(model.value)">
                                       <span class="material-symbols-outlined">local_pizza</span>
                                  </span>

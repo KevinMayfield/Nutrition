@@ -48,30 +48,7 @@ export class PowerGraphComponent implements OnInit{
   ngOnInit(): void {
 
       if (this.epr.person !== undefined && this.epr.person.ftp !== undefined) {
-
-          var colours : string[] = []
-          let ftp = this.epr.person.ftp
-
-          for(let i=0;i<10;i++) {
-              let pwr = (i *50)  ; // crude
-
-              if (pwr < (ftp * 0.54)) {
-                  colours.push('lightgrey')
-              } else if (pwr < (ftp * 0.74)) {
-                  colours.push('lightblue')
-              } else if (pwr < (ftp * 0.89)) {
-                  colours.push('lightgreen')
-              } else if (pwr < (ftp * 1.04)) {
-                  colours.push('lightsalmon')
-              } else if (pwr < (ftp * 1.20)) {
-                  colours.push('lightpink')
-              }
-              else {
-                  colours.push('lightcoral')
-              }
-          }
-
-          this.colorScheme.domain = colours
+          this.colorScheme.domain = this.epr.getFTPColours()
       }
      if (this.activity !== undefined) {
          if (this.activity.elapsed_time < 120*60 ) {
