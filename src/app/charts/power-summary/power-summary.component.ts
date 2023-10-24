@@ -17,10 +17,10 @@ export class PowerSummaryComponent implements OnInit {
 
 
   @Input()
-  thisWeek : boolean = true
+  week : number = 0;
 
   @Input()
-  widthQuota: number = 3;
+  widthQuota: number = 1.1;
 
   @Input() set dayActivity(activity: ActivityDay[]) {
 
@@ -122,8 +122,8 @@ export class PowerSummaryComponent implements OnInit {
     this.multi = multi
     // Now get results for specific week
     var week = this.epr.getWeekNumber(this.strava.getToDate())
-    if (!this.thisWeek) week = week-1
-    this.getWeek(week)
+
+    this.getWeek(week + this.week)
   }
   getWeek(weekNo : number) {
 

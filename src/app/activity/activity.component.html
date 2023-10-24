@@ -380,7 +380,27 @@ bolt
                 </table>
                 <mat-paginator #paginatorHR [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
         </mat-tab>
-        <mat-tab *ngIf="hasPowerData" label="Physical Activity (Power)">
+        <mat-tab *ngIf="hasPowerData" label="Physical Activity Overview (Power)">
+            <div class="example-form">
+                <span>
+                    <h3>This week</h3>
+                    <app-power-summary [dayActivity]="activityArray"></app-power-summary>
+                </span>
+                <span>
+                    <h3>Last week</h3>
+                    <app-power-summary [dayActivity]="activityArray" [week]="-1"></app-power-summary>
+                </span>
+                <span>
+                    <h3>Week -2</h3>
+                    <app-power-summary [dayActivity]="activityArray" [week]="-2"></app-power-summary>
+                </span>
+                <span>
+                    <h3>Week -3</h3>
+                    <app-power-summary [dayActivity]="activityArray" [week]="-3"></app-power-summary>
+                </span>
+            </div>
+        </mat-tab>
+        <mat-tab *ngIf="hasPowerData" label="Physical Activity Log (Power)">
             <td-message
                         label="Information"
                         sublabel="For detailed breakdown of power data see power-meter.cc"
@@ -388,16 +408,7 @@ bolt
                         icon="info">
                 <button td-message-actions mat-button (click)="viewPower()">Power-Meter.cc</button>
             </td-message>
-            <div class="example-form2">
-                <span>
-                    <h3>This week</h3>
-                    <app-power-summary [dayActivity]="activityArray"></app-power-summary>
-                </span>
-                <span>
-                    <h3>Last week</h3>
-                    <app-power-summary [dayActivity]="activityArray" [thisWeek]="false"></app-power-summary>
-                </span>
-            </div>
+
             <h3>Activity Logs</h3>
             <table mat-table [dataSource]="dataSourceKJ" class="mat-elevation-z8"
                    matSort (matSortChange)="announceSortChange($event)"
