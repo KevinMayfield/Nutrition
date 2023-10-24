@@ -361,12 +361,12 @@ export class ActivityComponent implements OnInit{
 
         if (this.sort !== undefined && this.sort !== null) {
             this.sort.sortChange.subscribe((event) => {
-                 console.log(event);
+
             });
 
             if (this.dataSourceHR !== undefined) this.dataSourceHR.sort = this.sort;
         } else {
-            console.log('SORT UNDEFINED');
+
         }
 
     }
