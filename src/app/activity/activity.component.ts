@@ -13,6 +13,7 @@ import {MatSort, Sort} from "@angular/material/sort";
 import {ActivityType} from "../models/activity-type";
 import {EPRService} from "../service/epr.service";
 import {ActivityDay, ActivitySession} from "../models/activity-day";
+import {MatDatepickerInputEvent} from "@angular/material/datepicker";
 
 
 
@@ -35,6 +36,8 @@ export class ActivityComponent implements OnInit{
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
     activityArray : ActivityDay[] = []
+    activities : SummaryActivity[] = []
+    powerActivities: SummaryActivity[] = [];
     exerciseIntenses: ValueSetExpansionContains[] = [
         {
             code: 'very-light',
@@ -54,8 +57,7 @@ export class ActivityComponent implements OnInit{
         }
     ]
     exerciseIntense :ValueSetExpansionContains | undefined
-    activities : SummaryActivity[] = []
-    powerActivities: SummaryActivity[] = [];
+
     exerciseFrequencies: ValueSetExpansionContains[] = [
         {
             code: '1.2',
@@ -100,6 +102,7 @@ export class ActivityComponent implements OnInit{
 
     opened: boolean = true;
     hasPowerData: boolean = false;
+    endDate: Date = new Date();
     constructor(
         private http: HttpClient,
         private epr: EPRService,
@@ -430,6 +433,8 @@ export class ActivityComponent implements OnInit{
     getStrava(){
         // token changed so clear results
         this.activityArray = []
+        this.activities = []
+        this.powerActivities = [];
         for(var i= 0;i<=this.strava.duration;i++) this.activityArray.push({ duration:0,kcal: 0, sessions: []})
         this.strava.getAthlete().subscribe(athlete => {
             if (athlete.weight !== undefined) this.weight = athlete.weight
@@ -627,5 +632,12 @@ export class ActivityComponent implements OnInit{
 
     viewPower() {
         window.open("https://power-meter.cc/", "_blank")
+    }
+
+    addEvent(change: string, event: MatDatepickerInputEvent<Date>) {
+        console.log(event)
+        console.log(this.endDate)
+        this.strava.setToDate(this.endDate)
+        this.getStrava()
     }
 }

@@ -27,15 +27,9 @@ export class StravaService {
   activity: EventEmitter<SummaryActivity> = new EventEmitter();
   constructor(private http: HttpClient) {
 
-   // this.to = new Date();
-    this.to = new Date();
+   this.setToDate(new Date());
 
-    this.from = new Date(this.to.toISOString());
-    console.log(this.from.setDate(this.from.getDate() - this.duration ));
-    console.log(this.from.toISOString())
-    console.log(this.to.toISOString())
-
-    this.activity.subscribe(activity => {
+   this.activity.subscribe(activity => {
         this.getActivity(activity.id).subscribe(result => {
           activity.kcal = result.calories
           this.getActivityZone(activity.id).subscribe(zones => {
@@ -47,6 +41,14 @@ export class StravaService {
     })
   }
 
+  setToDate(date : Date) {
+    this.to = date;
+    this.from = new Date(this.to.toISOString());
+    this.from.setDate(this.from.getDate() - this.duration);
+
+    console.log(this.from.toISOString())
+    console.log(this.to.toISOString())
+  }
 
   getHeaders(): HttpHeaders {
 

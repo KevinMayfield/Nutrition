@@ -1,6 +1,13 @@
 <mat-sidenav-container class="example-container" xmlns="http://www.w3.org/1999/html">
     <mat-sidenav #sidenav mode="side" [(opened)]="opened">
         <div class="example-form">
+            <mat-form-field  class="example-full-width">
+                <mat-label>End date</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="endDate" (dateChange)="addEvent('change', $event)">
+                <mat-hint>DD/MM/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
             <mat-form-field class="example-full-width">
                 <mat-label >Height</mat-label>
                 <input matInput type="number" [(ngModel)]="height" required (ngModelChange)="calculate()">

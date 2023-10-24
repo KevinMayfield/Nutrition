@@ -39,6 +39,8 @@ import { NutritionComponent } from './nutrition/nutrition.component';
 import { SummaryGraphComponent } from './charts/summary-graph/summary-graph.component';
 import { WeeklyGraphComponent } from './charts/weekly-graph/weekly-graph.component';
 import { PowerSummaryComponent } from './charts/power-summary/power-summary.component';
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 
 @NgModule({
   declarations: [
@@ -85,9 +87,13 @@ import { PowerSummaryComponent } from './charts/power-summary/power-summary.comp
         MatTabsModule,
         MatProgressBarModule,
         BarChartModule,
-        MatChipsModule
+        MatChipsModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
-  providers: [],
+    providers: [
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
