@@ -98,7 +98,7 @@ export class ActivityComponent implements OnInit{
     displayedColumnsKJ = ['date', 'type','duration',
         //'z1', 'z2', 'z3', 'z4','z5', 'z6', 'z7', 'z8', 'z9', 'z10',
         "power",
-        "kJ", "ratio"]
+        "kJ", 'avghr', "cadence"]
 
     opened: boolean = true;
     hasPowerData: boolean = false;
@@ -532,26 +532,7 @@ export class ActivityComponent implements OnInit{
     }
 
     getType(type: ActivityType | undefined) {
-        switch(type) {
-            case ActivityType.Ride, ActivityType.VirtualRide : {
-                return 'directions_bike'
-            }
-            case ActivityType.Walk : {
-                return 'directions_walk'
-            }
-            case ActivityType.Run : {
-                return 'directions_run'
-            }
-            default : {
-                if (type!== undefined && type.toString() === 'Ride') {
-                    return 'directions_bike'
-                }
-                console.log(type)
-                return 'exercise'
-            }
-        }
-
-
+        return this.strava.getType(type)
     }
 
     getNames(activity: ActivityDay) {
@@ -616,7 +597,7 @@ export class ActivityComponent implements OnInit{
                     min : zone.distribution_buckets[4].min,
                     max: zone.distribution_buckets[4].max
                 }
-                console.log('I don this shit')
+
                 this.epr.setHRZone(hrzones)
             } else {
                 console.log(zone.type)
@@ -635,8 +616,10 @@ export class ActivityComponent implements OnInit{
     }
 
     addEvent(change: string, event: MatDatepickerInputEvent<Date>) {
-        console.log(event)
-        console.log(this.endDate)
+
+        while (this.endDate.getDay() !=6) {
+            this.endDate.setDate(this.endDate.getDate() +1);
+        }
         this.strava.setToDate(this.endDate)
         this.getStrava()
     }

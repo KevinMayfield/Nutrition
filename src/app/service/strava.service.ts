@@ -4,6 +4,7 @@ import {Observable, Subscription} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
+import {ActivityType} from "../models/activity-type";
 
 
 
@@ -45,9 +46,6 @@ export class StravaService {
     this.to = date;
     this.from = new Date(this.to.toISOString());
     this.from.setDate(this.from.getDate() - this.duration);
-
-    console.log(this.from.toISOString())
-    console.log(this.to.toISOString())
   }
 
   getHeaders(): HttpHeaders {
@@ -268,7 +266,28 @@ export class StravaService {
     }
     return !(date.valueOf() > new Date().valueOf() + offsetSeconds * 1000);
   }
+  getType(type: ActivityType | undefined) {
+    switch(type) {
+      case ActivityType.Ride, ActivityType.VirtualRide : {
+        return 'directions_bike'
+      }
+      case ActivityType.Walk : {
+        return 'directions_walk'
+      }
+      case ActivityType.Run : {
+        return 'directions_run'
+      }
+      default : {
+        if (type!== undefined && type.toString() === 'Ride') {
+          return 'directions_bike'
+        }
+        console.log(type)
+        return 'exercise'
+      }
+    }
 
+
+  }
 
 
 }

@@ -149,18 +149,7 @@ export class SummaryGraphComponent implements OnChanges {
     return this.epr.pizza(kcal)
   }
   getType(type: ActivityType | undefined) {
-    switch(type) {
-      case ActivityType.Ride, ActivityType.VirtualRide : {
-        return 'directions_bike'
-      }
-      case ActivityType.Walk : {
-        return 'directions_walk'
-      }
-      case ActivityType.Run : {
-        return 'directions_run'
-      }
-    }
-    return 'exercise'
+    return this.strava.getType(type)
   }
 
   round(val : number | undefined) {

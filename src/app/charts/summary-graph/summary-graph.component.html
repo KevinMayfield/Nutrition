@@ -25,12 +25,13 @@
         {{model.value}} kcal
         <br/>
         <span *ngIf="model.extra !== undefined && model.extra.session !== undefined">
-
+            Activities
+            <br/>
             <span *ngFor="let act of model.extra.session">
 
-                    Activities  <span *ngIf="act.type !== undefined" class="material-symbols-outlined">
+                     <span *ngIf="act.type !== undefined" class="material-symbols-outlined">
                      {{getType(act.type)}}
-                     </span>
+                     </span> {{act.name}}
                     <br/>
                     <span class="material-symbols-outlined">
                         ecg_heart

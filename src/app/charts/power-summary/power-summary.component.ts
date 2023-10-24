@@ -20,7 +20,7 @@ export class PowerSummaryComponent implements OnInit {
   week : number = 0;
 
   @Input()
-  widthQuota: number = 1.1;
+  widthQuota: number = 1.35;
 
   @Input() set dayActivity(activity: ActivityDay[]) {
 
