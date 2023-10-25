@@ -15,8 +15,6 @@ import {EPRService} from "../service/epr.service";
 import {ActivityDay, ActivitySession} from "../models/activity-day";
 import {MatDatepickerInputEvent} from "@angular/material/datepicker";
 
-
-
 @Component({
   selector: 'app-resting-metabolic-rate',
   templateUrl: './activity.component.html',
@@ -38,6 +36,7 @@ export class ActivityComponent implements OnInit{
     activityArray : ActivityDay[] = []
     activities : SummaryActivity[] = []
     powerActivities: SummaryActivity[] = [];
+    legendHR = true;
     exerciseIntenses: ValueSetExpansionContains[] = [
         {
             code: 'very-light',
@@ -103,6 +102,7 @@ export class ActivityComponent implements OnInit{
     opened: boolean = true;
     hasPowerData: boolean = false;
     endDate: Date = new Date();
+    selectedTabIndex: any;
     constructor(
         private http: HttpClient,
         private epr: EPRService,
@@ -704,5 +704,10 @@ export class ActivityComponent implements OnInit{
         }
         this.strava.setToDate(this.endDate)
         this.getStrava()
+    }
+
+    tabChanged(event: Event) {
+        console.log(event)
+        console.log(this.selectedTabIndex)
     }
 }

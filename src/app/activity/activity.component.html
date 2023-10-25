@@ -32,7 +32,7 @@
             </mat-form-field>
 
         </div>
-        <span *ngIf="zoneHR !== undefined">
+        <span *ngIf="zoneHR !== undefined  && (this.selectedTabIndex == undefined || this.selectedTabIndex < 2)">
             Maximum heart rate <span *ngIf="zoneHR.calculated">(calculated)</span><span *ngIf="!zoneHR.calculated">(strava)</span> =  {{zoneHR.maximumHR}}
             <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
                 <mat-chip-option style="background: lightpink"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z5?.min}}-{{zoneHR.z5?.max}} Z5 - Anerobic</mat-chip-option>
@@ -42,7 +42,7 @@
                 <mat-chip-option style="background: lightgrey"><span class="material-symbols-outlined">ecg_heart</span> {{zoneHR.z1?.min}}-{{zoneHR.z1?.max}} Z1 - Recovery</mat-chip-option>
             </mat-chip-listbox>
         </span>
-        <span *ngIf="zonePWR !== undefined">
+        <span *ngIf="zonePWR !== undefined  && (this.selectedTabIndex !== undefined && this.selectedTabIndex > 1)">
             FTP {{zonePWR?.ftp}}
             <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
                 <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z7?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z7?.min}}-{{zonePWR.z7?.max}} Z7 - Neuromuscular </mat-chip-option>
@@ -59,7 +59,8 @@
     <mat-sidenav-content>
 <mat-card xmlns="http://www.w3.org/1999/html">
     <mat-card-content>
-    <mat-tab-group>
+        {{this.selectedTabIndex}}
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectionchange)="tabChanged($event)">
         <mat-tab label="Summary (Energy/kcal)">
             <td-message
                         label="Information"
