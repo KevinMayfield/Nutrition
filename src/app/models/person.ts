@@ -3,7 +3,7 @@ import {Sex} from "./sex";
 
 class range {
   min: number = 0;
-  max: number = 0
+  max?: number = 0
 }
 export interface hrZone {
   calculated?: boolean;
@@ -14,7 +14,17 @@ export interface hrZone {
   z4?: range;
   z5?: range;
 }
-
+export interface pwrZone {
+  calculated?: boolean;
+  ftp?: number;
+  z1?: range;
+  z2?: range;
+  z3?: range;
+  z4?: range;
+  z5?: range;
+  z6?: range;
+  z7?: range;
+}
 export interface Person {
 
   id?: number;

@@ -52,7 +52,7 @@ export class EPRService {
     return Math.floor(time.getTime() / (1000 * 3600 * 24));
   }
 
-  getBackground(heartrate: number | undefined) {
+  getBackgroundHR(heartrate: number | undefined) {
 
     if (this.person.hrzones !== undefined && this.person.hrzones.maximumHR !== undefined && heartrate !== undefined) {
       if (this.person.hrzones.z5 !== undefined && this.person.hrzones.z5?.min < heartrate) return "lightpink"
@@ -113,24 +113,28 @@ export class EPRService {
     if (ftp !== undefined) {
       for (let i = 0; i < 10; i++) {
         let pwr = (i * 50) + 25; // crude
-
-        if (pwr > (ftp * 1.20)) {
-          colours.push('lightcoral')
-        } else if (pwr > (ftp * 1.06)) {
-          colours.push('lightpink')
-        } else if (pwr > (ftp * 0.95)) {
-          colours.push('lightsalmon')
-        } else if (pwr > (ftp * 0.88)) {
-          colours.push('#FFF59D')
-        } else if (pwr > (ftp * 0.76)) {
-          colours.push('lightgreen')
-        } else if (pwr > (ftp * 0.55)) {
-          colours.push('lightblue')
-        } else {
-          colours.push('lightgrey')
-        }
+        colours.push(this.getBackgroundPWR(pwr))
       }
     }
     return colours
+  }
+  getBackgroundPWR(pwr: number | undefined) {
+    let ftp = this.person.ftp
+    if (ftp !== undefined && pwr !== undefined) {
+      if (pwr > (ftp * 1.20)) {
+        return 'lightcoral'
+      } else if (pwr > (ftp * 1.06)) {
+        return 'lightpink'
+      } else if (pwr > (ftp * 0.95)) {
+        return 'lightsalmon'
+      } else if (pwr > (ftp * 0.88)) {
+        return '#FFF59D'
+      } else if (pwr > (ftp * 0.76)) {
+        return 'lightgreen'
+      } else if (pwr > (ftp * 0.55)) {
+        return 'lightblue'
+      }
+    }
+    return 'lightgrey'
   }
 }

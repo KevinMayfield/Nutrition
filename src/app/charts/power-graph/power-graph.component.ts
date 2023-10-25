@@ -17,7 +17,7 @@ export class PowerGraphComponent implements OnInit{
 
   single: any[] | undefined;
 
-  view: [number, number] = [500, 100];
+  view: [number, number] = [400, 100];
 
     colorScheme: Color = {
         domain: [
@@ -35,7 +35,7 @@ export class PowerGraphComponent implements OnInit{
   showYAxisLabel = false;
   yAxisLabel = 'Duration';
     @Input()
-    widthQuota: number = 2;
+    widthQuota: number = 3.8;
 
     constructor(
         private epr: EPRService){
@@ -54,9 +54,9 @@ export class PowerGraphComponent implements OnInit{
          if (this.activity.elapsed_time < 120*60 ) {
              var height = 50
              let ratio = Math.round((this.activity.elapsed_time * 4) / (60 * 120))
-             this.view = [500, height + (ratio * 40) ]
+             this.view = [innerWidth / this.widthQuota, height + (ratio * 40) ]
          }
-         else this.view = [500, 240]
+         else this.view = [innerWidth / this.widthQuota, 240]
          var single = []
         for(let zone of this.activity.zones) {
             if (zone.type === 'power') {

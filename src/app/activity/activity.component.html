@@ -32,24 +32,28 @@
             </mat-form-field>
 
         </div>
-        <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" *ngIf="zoneHR !== undefined">
-                Maximum heart rate <span *ngIf="zoneHR.calculated">(calculated)</span><span *ngIf="!zoneHR.calculated">(strava)</span> =  {{zoneHR.maximumHR}}
-            <mat-chip-option style="background: lightpink"><span class="material-symbols-outlined">
-ecg_heart
-            </span>{{zoneHR.z5?.min}}-{{zoneHR.z5?.max}} Z5 - Anerobic</mat-chip-option>
-                 <mat-chip-option style="background: lightsalmon"><span class="material-symbols-outlined">
-ecg_heart
-</span>{{zoneHR.z4?.min}}-{{zoneHR.z4?.max}} Z4 - Threshold</mat-chip-option>
-                 <mat-chip-option style="background: lightgreen"><span class="material-symbols-outlined">
-ecg_heart
-</span>{{zoneHR.z3?.min}}-{{zoneHR.z3?.max}} Z3 - Tempo</mat-chip-option>
-                 <mat-chip-option style="background: lightblue"><span class="material-symbols-outlined">
-ecg_heart
-</span>{{zoneHR.z2?.min}}-{{zoneHR.z2?.max}} Z2 - Endurance</mat-chip-option>
-                <mat-chip-option style="background: lightgrey"><span class="material-symbols-outlined">
-ecg_heart
-</span> {{zoneHR.z1?.min}}-{{zoneHR.z1?.max}} Z1 - Recovery</mat-chip-option>
-        </mat-chip-listbox>
+        <span *ngIf="zoneHR !== undefined">
+            Maximum heart rate <span *ngIf="zoneHR.calculated">(calculated)</span><span *ngIf="!zoneHR.calculated">(strava)</span> =  {{zoneHR.maximumHR}}
+            <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
+                <mat-chip-option style="background: lightpink"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z5?.min}}-{{zoneHR.z5?.max}} Z5 - Anerobic</mat-chip-option>
+                <mat-chip-option style="background: lightsalmon"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z4?.min}}-{{zoneHR.z4?.max}} Z4 - Threshold</mat-chip-option>
+                <mat-chip-option style="background: lightgreen"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z3?.min}}-{{zoneHR.z3?.max}} Z3 - Tempo</mat-chip-option>
+                <mat-chip-option style="background: lightblue"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z2?.min}}-{{zoneHR.z2?.max}} Z2 - Endurance</mat-chip-option>
+                <mat-chip-option style="background: lightgrey"><span class="material-symbols-outlined">ecg_heart</span> {{zoneHR.z1?.min}}-{{zoneHR.z1?.max}} Z1 - Recovery</mat-chip-option>
+            </mat-chip-listbox>
+        </span>
+        <span *ngIf="zonePWR !== undefined">
+            FTP {{zonePWR?.ftp}}
+            <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
+                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z7?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z7?.min}}-{{zonePWR.z7?.max}} Z7 - Neuromuscular </mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z6?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z6?.min}}-{{zonePWR.z6?.max}} Z6 - Anaerobic </mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z5?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z5?.min}}-{{zonePWR.z5?.max}} Z5 - VO2Max </mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z4?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z4?.min}}-{{zonePWR.z4?.max}} Z4 - Threshold</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z3?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z3?.min}}-{{zonePWR.z3?.max}} Z3 - Tempo</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z2?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z2?.min}}-{{zonePWR.z2?.max}} Z2 - Endurance</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z1?.min)}};"><span class="material-symbols-outlined">bolt</span> {{zonePWR.z1?.min}}-{{zonePWR.z1?.max}} Z1 - Active Recovery</mat-chip-option>
+            </mat-chip-listbox>
+        </span>
 
     </mat-sidenav>
     <mat-sidenav-content>
@@ -205,7 +209,7 @@ ecg_heart
             </td-message>
 
                 <table mat-table [dataSource]="dataSourceHR" class="mat-elevation-z8"
-                       matSort (matSortChange)="announceSortChange($event)"
+                       matSort #hrSort="matSort" (matSortChange)="announceSortChange($event)"
                        matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
                     <ng-container matColumnDef="date">
@@ -259,7 +263,7 @@ ecg_heart
 ecg_heart
 </span> </th>
                         <td mat-cell *matCellDef="let activity">
-                            <mat-chip style="background: {{getBackground(activity.average_heartrate)}}; width: 50px" layout-align="center">
+                            <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
                                 {{round(activity.average_heartrate)}}
                             </mat-chip>
                         </td>
@@ -269,7 +273,7 @@ ecg_heart
 ecg_heart
 </span> </th>
                         <td mat-cell *matCellDef="let activity">
-                            <mat-chip style="background: {{getBackground(activity.max_heartrate)}}; width: 50px" layout-align="center">
+                            <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
                                 {{round(activity.max_heartrate)}}
                             </mat-chip>
                         </td>
@@ -324,7 +328,7 @@ bolt
 
             <h3>Activity Logs</h3>
             <table mat-table [dataSource]="dataSourceKJ" class="mat-elevation-z8"
-                   matSort (matSortChange)="announceSortChange($event)"
+                   matSort #pwrSort="matSort" (matSortChange)="announceSortChange($event)"
                    matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
                 <ng-container matColumnDef="date">
@@ -334,27 +338,33 @@ bolt
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="type">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Type </th>
+                    <th mat-header-cell *matHeaderCellDef style="width: 3%;"> Type </th>
                     <td mat-cell *matCellDef="let activity" [matTooltip]="activity.name">
                         <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
                                     {{getType(activity.type)}}
                             </span></a>
                     </td>
                 </ng-container>
+                <ng-container matColumnDef="duration">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 3%;"> Duration </th>
+                    <td mat-cell *matCellDef="let activity">
+                        {{round(activity.elapsed_time/60)}}
+                    </td>
+                </ng-container>
                 <ng-container matColumnDef="link">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Link </th>
+                    <th mat-header-cell  *matHeaderCellDef style="width: 5%;"> Link </th>
                     <td mat-cell *matCellDef="let activity">
                         <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><mat-icon>open_in_new</mat-icon></a>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="power">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef > Power (W) </th>
+                    <th mat-header-cell *matHeaderCellDef > Power (W) </th>
                     <td mat-cell *matCellDef="let activity">
                         <app-power-graph [activity]="activity"></app-power-graph>
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="kJ">
+                <ng-container matColumnDef="kcal">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef > Work (kJ) </th>
                     <td mat-cell *matCellDef="let activity">
 
@@ -362,16 +372,22 @@ bolt
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="duration">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef> Duration </th>
-                    <td mat-cell *matCellDef="let activity">
-                        {{round(activity.elapsed_time/60)}}
-                    </td>
-                </ng-container>
+
                 <ng-container matColumnDef="cadence">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Cadence </th>
                     <td mat-cell *matCellDef="let activity">
                         {{round(activity.average_cadence)}}
+                    </td>
+                </ng-container>
+                weighted_average_watts
+                <ng-container matColumnDef="avgpwr">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Avg.  <span class="material-symbols-outlined">
+bolt
+</span> (Watts) </th>
+                    <td mat-cell *matCellDef="let activity">
+                        <mat-chip style="background: {{getBackgroundPWR(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
+                            {{round(activity.weighted_average_watts)}}
+                        </mat-chip>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="avghr">
@@ -379,7 +395,7 @@ bolt
 ecg_heart
 </span> </th>
                     <td mat-cell *matCellDef="let activity">
-                        <mat-chip style="background: {{getBackground(activity.average_heartrate)}}; width: 50px" layout-align="center">
+                        <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
                             {{round(activity.average_heartrate)}}
                         </mat-chip>
                     </td>

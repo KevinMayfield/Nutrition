@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {StravaService} from "../service/strava.service";
-import {hrZone} from "../models/person";
+import {hrZone, pwrZone} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -32,7 +32,7 @@ export class ActivityComponent implements OnInit{
     exerciseLevel: number = 0;
     exerciseDurationTotal: number = 0;
     zoneHR: hrZone | undefined
-
+    zonePWR: pwrZone | undefined
     administrativeGenders: ValueSetExpansionContains[] | undefined;
     administrativeGender :ValueSetExpansionContains | undefined
     activityArray : ActivityDay[] = []
@@ -88,17 +88,17 @@ export class ActivityComponent implements OnInit{
     dataSourceHR: MatTableDataSource<SummaryActivity> ;
     // @ts-ignore
     dataSourceKJ: MatTableDataSource<SummaryActivity> ;
-    @ViewChild(MatSort) sort: MatSort | null | undefined;
+    @ViewChild('hrSort') hrSort: MatSort | null | undefined;
+    @ViewChild('pwrSort') pwrSort: MatSort | null | undefined;
     @ViewChild('paginatorHR',) paginatorHR: MatPaginator | undefined;
     @ViewChild('paginatorKJ',) paginatorKJ: MatPaginator | undefined;
     displayedColumnsHR = ['date', 'type','duration',
         //'Z1', 'Z2', 'Z3', 'Z4','Z5',
         'heart',
         'avghr', 'peakhr', 'kcal', 'cadence']
-    displayedColumnsKJ = ['date', 'type','duration',
-        //'z1', 'z2', 'z3', 'z4','z5', 'z6', 'z7', 'z8', 'z9', 'z10',
-        "power",
-        "kJ", 'avghr', "cadence"]
+    displayedColumnsKJ = ['date', 'type',
+        "power",'avgpwr',
+        'duration',"kcal", 'avghr', "cadence"]
 
     opened: boolean = true;
     hasPowerData: boolean = false;
@@ -120,7 +120,40 @@ export class ActivityComponent implements OnInit{
         if (this.height !== undefined && this.height !== this.epr.person.height) {
             this.epr.setHeight(this.height)
         }
-
+        if (this.zonePWR === undefined && this.epr.person.ftp !== undefined) {
+            let ftp =this.epr.person.ftp
+            this.zonePWR = {
+                calculated : true,
+                ftp: this.epr.person.ftp,
+                z1: {
+                    min: 0,
+                    max: Math.round(0.55 * ftp)
+                },
+                z2: {
+                    min: Math.round(0.55 * ftp) + 1,
+                    max:Math.round(0.76 * ftp)
+                },
+                z3: {
+                    min: Math.round(0.76 * ftp) + 1,
+                    max:Math.round(0.88 * ftp)
+                },
+                z4: {
+                    min: Math.round(0.88 * ftp) + 1,
+                    max:Math.round(0.95 * ftp)
+                },
+                z5: {
+                    min: Math.round(0.95 * ftp) + 1,
+                    max:Math.round(1.06 * ftp)
+                },
+                z6: {
+                    min: Math.round(1.06 * ftp) + 1,
+                    max: Math.round(1.2 * ftp)
+                },
+                z7: {
+                    min: Math.round(1.2 * ftp) + 1
+                },
+            }
+        }
         if (((this.epr.person.hrzones === undefined || this.epr.person.hrzones.calculated)) && this.age !== undefined) {
             let zone = 220 - this.age
             if (zone !== undefined) {
@@ -289,7 +322,8 @@ export class ActivityComponent implements OnInit{
 
                     return 0;
                 }));
-                this.setSort()
+                this.setSortHR()
+                this.setSortPWR()
             }
 
         })
@@ -359,37 +393,82 @@ export class ActivityComponent implements OnInit{
 
     ngAfterViewInit(): void {
 
-        if (this.sort !== undefined && this.sort !== null) {
-            this.sort.sortChange.subscribe((event) => {
+        if (this.hrSort !== undefined && this.hrSort !== null) {
+            this.hrSort.sortChange.subscribe((event) => {
 
             });
 
-            if (this.dataSourceHR !== undefined) this.dataSourceHR.sort = this.sort;
+            if (this.dataSourceHR !== undefined) this.dataSourceHR.sort = this.hrSort;
+        } else {
+
+        }
+        if (this.pwrSort !== undefined && this.pwrSort !== null) {
+            this.pwrSort.sortChange.subscribe((event) => {
+
+            });
+
+            if (this.dataSourceKJ !== undefined) this.dataSourceKJ.sort = this.pwrSort;
         } else {
 
         }
 
     }
+    setSortPWR() {
+        if (this.dataSourceKJ !== undefined) {
+            // @ts-ignore
+            this.dataSourceKJ.sort = this.pwrSort
+            if (this.paginatorKJ !== undefined && this.dataSourceKJ !== undefined) this.dataSourceKJ.paginator = this.paginatorKJ
 
-    setSort() {
+            this.dataSourceKJ.sortingDataAccessor = (item: any, property) => {
+                switch (property) {
+                    case 'date': {
+                        try {
+                            return item.start_date
+                        } catch (e) {
+                            console.log(item.start_date)
+                            return new Date(item.start_date)
+                        }
+                        return 0;
+                    }
+                    case 'duration': {
+                        return item.elapsed_time
+                    }
+                    case 'avghr': {
+                        return item.average_heartrate
+                    }
+                    case 'avgpwr': {
+                        return item.weighted_average_watts
+                    }
+                    case 'kcal': {
+                        return item.kcal
+                    }
+                    case 'cadence': {
+                        return item.average_cadence
+                    }
+                    default: {
+                        return 0
+                    }
+                }
+            };
+        }
+    }
+    setSortHR() {
 
         // @ts-ignore
-        this.dataSourceHR.sort = this.sort
+        this.dataSourceHR.sort = this.hrSort
         if (this.paginatorHR !== undefined) this.dataSourceHR.paginator = this.paginatorHR
-        if (this.paginatorKJ !== undefined && this.dataSourceKJ !== undefined) this.dataSourceKJ.paginator = this.paginatorKJ
+
         this.dataSourceHR.sortingDataAccessor = (item, property) => {
             switch (property) {
                 case 'date': {
                     if (item.start_date !== undefined) {
                         try {
-                        return item.start_date.getDate()
+                        return item.start_date
                         }
                         catch (e) {
                             console.log(item.start_date)
-                            return new Date(item.start_date).getDate()
-
+                            return new Date(item.start_date)
                         }
-
                     }
                     return 0;
                 }
@@ -527,8 +606,11 @@ export class ActivityComponent implements OnInit{
         return days[ from.getDay() ];
     }
 
-    getBackground(heartrate: number | undefined) {
-        return this.epr.getBackground(heartrate)
+    getBackgroundHR(heartrate: number | undefined) {
+        return this.epr.getBackgroundHR(heartrate)
+    }
+    getBackgroundPWR(watts: number | undefined) {
+        return this.epr.getBackgroundPWR(watts)
     }
 
     getType(type: ActivityType | undefined) {
