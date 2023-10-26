@@ -98,7 +98,7 @@ export class ActivityComponent implements OnInit{
         "power",'avgpwr','avghr',
         'duration',"kcal",  "cadence"]
 
-    opened: boolean = false;
+    opened: boolean = true;
     hasPowerData: boolean = false;
     endDate: Date = new Date();
     selectedTabIndex: any;
@@ -231,7 +231,10 @@ export class ActivityComponent implements OnInit{
         if (this.epr.person.weight !== undefined) {
             this.weight = this.epr.person.weight
         }
-        if (this.height !== undefined || this.weight !== undefined) this.calculate()
+        if (this.height !== undefined || this.weight !== undefined) {
+            this.opened = false
+            this.calculate()
+        }
         this.getStrava()
         this.strava.tokenChange.subscribe(()=> {
 
