@@ -63,6 +63,16 @@ export class PowerSummaryComponent implements OnInit {
 
   }
 
+  getWeekDate()  {
+    var enddate = this.strava.getToDate()
+    return enddate.setDate(enddate.getDate() + this.week*7)
+  }
+  getWeekNum()  {
+
+    var week = this.epr.getWeekNumber(this.strava.getToDate()) + this.week
+    return week
+  }
+
   private refreshActivity() {
     this.multi = undefined
     this.single = undefined

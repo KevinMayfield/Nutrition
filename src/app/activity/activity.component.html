@@ -305,19 +305,15 @@ ecg_heart
         <mat-tab *ngIf="hasPowerData" label="Physical Activity Overview (Power)">
             <div class="example-form">
                 <span>
-                    <h3>This week</h3>
                     <app-power-summary [dayActivity]="activityArray"></app-power-summary>
                 </span>
                 <span>
-                    <h3>Last week</h3>
                     <app-power-summary [dayActivity]="activityArray" [week]="-1"></app-power-summary>
                 </span>
                 <span>
-                    <h3>Week -2</h3>
                     <app-power-summary [dayActivity]="activityArray" [week]="-2"></app-power-summary>
                 </span>
                 <span>
-                    <h3>Week -3</h3>
                     <app-power-summary [dayActivity]="activityArray" [week]="-3"></app-power-summary>
                 </span>
             </div>
