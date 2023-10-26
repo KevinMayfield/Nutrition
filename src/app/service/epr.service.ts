@@ -137,4 +137,10 @@ export class EPRService {
     }
     return 'lightgrey'
   }
+  duration(value: number) {
+    let min = Math.round(value%60)
+    let hr = Math.floor(value /60)
+    if (hr> 0) return hr + ' hr '+ min + ' min';
+    return min + ' min'
+  }
 }

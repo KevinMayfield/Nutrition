@@ -156,7 +156,9 @@ export class PowerSummaryComponent implements OnInit {
     if (val == undefined) return undefined
     return Math.round(val)
   }
-
+  duration(time: number ) {
+    return this.epr.duration(time)
+  }
   ngOnInit(): void {
     if (this.epr.person !== undefined && this.epr.person.ftp !== undefined) {
       this.colorScheme.domain = this.epr.getFTPColours()

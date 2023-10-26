@@ -12,4 +12,13 @@
         [yAxisLabel]="yAxisLabel"
         (select)="onSelect($event)"
         (window:resize)="onResize($event)">
+    <ng-template #tooltipTemplate let-model="model">
+
+             <span class="material-symbols-outlined">
+                                             timer
+                                             </span>
+        {{duration(model.value)}}
+        <br/>
+        {{round(model.value * 100 / model.extra.totalTime)}} %
+    </ng-template>
 </ngx-charts-bar-vertical>

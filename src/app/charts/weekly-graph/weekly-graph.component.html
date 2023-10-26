@@ -21,7 +21,7 @@
         <span class="material-symbols-outlined">local_pizza</span>
         {{model.value}} kcal
         <br/>
-        <span class="material-symbols-outlined">timer</span> {{round(model.extra.wk.duration/(7*60))}} mins per day
+        <span class="material-symbols-outlined">timer</span> {{duration(model.extra.wk.duration/(7*60))}} per day
     </ng-template>
 </ngx-charts-bar-vertical>
 <h4>Weekly Totals</h4>
@@ -50,7 +50,7 @@
         <span class="material-symbols-outlined">local_pizza</span>
         {{model.value}} kcal
         <br/>
-        <span class="material-symbols-outlined">timer</span> {{round(model.extra.wk.duration/60)}} mins
+        <span class="material-symbols-outlined">timer</span> {{duration(model.extra.wk.duration/60)}}
         <br/>
         Activities {{model.extra.wk.num_activities}}
     </ng-template>

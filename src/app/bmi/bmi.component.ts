@@ -288,4 +288,8 @@ export class BMIComponent implements OnInit {
                 '27.5 or more are at high risk (obese)',
         });
     }
+
+    onClick() {
+        this.opened = !this.opened
+    }
 }

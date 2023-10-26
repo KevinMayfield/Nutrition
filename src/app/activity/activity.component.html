@@ -1,5 +1,5 @@
 <mat-sidenav-container class="example-container" xmlns="http://www.w3.org/1999/html">
-    <mat-sidenav #sidenav mode="side" [(opened)]="opened">
+    <mat-sidenav #sidenav mode="side" [opened]="(opened && (weight !== undefined) && (height !==undefined))">
         <div class="example-form">
             <mat-form-field  class="example-full-width">
                 <mat-label>End date</mat-label>
@@ -58,8 +58,14 @@
     </mat-sidenav>
     <mat-sidenav-content>
 <mat-card xmlns="http://www.w3.org/1999/html">
+    <mat-card-header>
+        <mat-card-title>
+            <button mat-icon-button (click)="onClick()">
+                <mat-icon>menu</mat-icon>
+            </button>
+            Physical Activity</mat-card-title>
+    </mat-card-header>
     <mat-card-content>
-        {{this.selectedTabIndex}}
     <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectionchange)="tabChanged($event)">
         <mat-tab label="Summary (Energy/kcal)">
             <td-message
@@ -256,7 +262,7 @@
                     <ng-container matColumnDef="duration">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef> Duration </th>
                         <td mat-cell *matCellDef="let activity">
-                            {{round(activity.elapsed_time/60)}}
+                            {{duration(activity.elapsed_time/60)}}
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="avghr">
@@ -280,9 +286,7 @@ ecg_heart
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="kcal">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef> kcal <span class="material-symbols-outlined">
-bolt
-</span> </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Energy (kcal)</th>
                         <td mat-cell *matCellDef="let activity">
                             {{round(activity.kcal)}}
                         </td>
@@ -349,7 +353,7 @@ bolt
                 <ng-container matColumnDef="duration">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 3%;"> Duration </th>
                     <td mat-cell *matCellDef="let activity">
-                        {{round(activity.elapsed_time/60)}}
+                        {{duration(activity.elapsed_time/60)}}
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="link">
@@ -366,10 +370,10 @@ bolt
                 </ng-container>
 
                 <ng-container matColumnDef="kcal">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef > Work (kJ) </th>
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef > Energy (kcal) </th>
                     <td mat-cell *matCellDef="let activity">
 
-                                 {{activity.kilojoules}}
+                                 {{activity.kcal}}
                     </td>
                 </ng-container>
 

@@ -63,7 +63,10 @@ export class PowerGraphComponent implements OnInit{
                 for (let res of zone.distribution_buckets) {
                     single.push({
                             "name": res.min,
-                            "value": Math.round(res.time/60)
+                            "value": Math.round(res.time/60),
+                            "extra": {
+                                totalTime: Math.round(this.activity.elapsed_time/60)
+                            }
                         }
                     )
                 }
@@ -74,5 +77,13 @@ export class PowerGraphComponent implements OnInit{
   }
     onResize(event: any) {
         this.view = [event.target.innerWidth / this.widthQuota, this.view[1]];
+    }
+    round(val : number | undefined) {
+        if (val == undefined) return undefined
+        return Math.round(val)
+    }
+
+    duration(time: number ) {
+        return this.epr.duration(time)
     }
 }

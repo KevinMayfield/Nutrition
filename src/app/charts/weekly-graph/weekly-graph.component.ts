@@ -227,7 +227,7 @@ export class WeeklyGraphComponent {
     return this.epr.getWeekNumber(d);
   }
   getSundayFromWeekNum(weekNum : number) {
-    var sunday = new Date(new Date().getFullYear(), 0, (1 + (weekNum - 1) * 7));
+    var sunday = new Date(this.strava.getToDate().getFullYear(), 0, (1 + (weekNum - 1) * 7));
     while (sunday.getDay() !== 0) {
       sunday.setDate(sunday.getDate() + 1);
     }
@@ -262,6 +262,9 @@ export class WeeklyGraphComponent {
   }
   pizza(kcal: number | undefined) {
     return this.epr.pizza(kcal)
+  }
+  duration(time: number ) {
+    return this.epr.duration(time)
   }
   /*
 

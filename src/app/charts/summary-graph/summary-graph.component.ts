@@ -145,6 +145,9 @@ export class SummaryGraphComponent implements OnChanges {
     from.setDate(now.getDate() - this.strava.duration + number );
     return from.toISOString().split('T')[0];
   }
+  duration(time: number ) {
+    return this.epr.duration(time)
+  }
   pizza(kcal: number | undefined) {
     return this.epr.pizza(kcal)
   }

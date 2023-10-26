@@ -91,15 +91,14 @@ export class ActivityComponent implements OnInit{
     @ViewChild('pwrSort') pwrSort: MatSort | null | undefined;
     @ViewChild('paginatorHR',) paginatorHR: MatPaginator | undefined;
     @ViewChild('paginatorKJ',) paginatorKJ: MatPaginator | undefined;
-    displayedColumnsHR = ['date', 'type','duration',
-        //'Z1', 'Z2', 'Z3', 'Z4','Z5',
+    displayedColumnsHR = ['date', 'type',
         'heart',
-        'avghr', 'peakhr', 'kcal', 'cadence']
+        'avghr', 'peakhr','duration', 'kcal', 'cadence']
     displayedColumnsKJ = ['date', 'type',
-        "power",'avgpwr',
-        'duration',"kcal", 'avghr', "cadence"]
+        "power",'avgpwr','avghr',
+        'duration',"kcal",  "cadence"]
 
-    opened: boolean = true;
+    opened: boolean = false;
     hasPowerData: boolean = false;
     endDate: Date = new Date();
     selectedTabIndex: any;
@@ -709,5 +708,12 @@ export class ActivityComponent implements OnInit{
     tabChanged(event: Event) {
         console.log(event)
         console.log(this.selectedTabIndex)
+    }
+    duration(time: number ) {
+        return this.epr.duration(time)
+    }
+
+    onClick() {
+        this.opened = !this.opened
     }
 }

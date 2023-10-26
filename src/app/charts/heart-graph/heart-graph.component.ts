@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SummaryActivity} from "../../models/summary-activity";
 import {Color, ScaleType} from "@swimlane/ngx-charts";
+import {EPRService} from "../../service/epr.service";
 
 @Component({
   selector: 'app-heart-graph',
@@ -33,13 +34,17 @@ export class HeartGraphComponent implements OnInit{
   @Input()
   widthQuota: number = 4;
 
-  constructor() {
+  constructor(private epr : EPRService) {
     this.view = [innerWidth / this.widthQuota, this.view[1]];
   }
   onSelect(event: any) {
     console.log(event);
   }
 
+  round(val : number | undefined) {
+    if (val == undefined) return undefined
+    return Math.round(val)
+  }
   ngOnInit(): void {
 
     if (this.activity !== undefined) {
@@ -56,7 +61,10 @@ export class HeartGraphComponent implements OnInit{
           for (let res of zone.distribution_buckets) {
             single.push({
                   "name": res.min,
-                  "value": Math.round(res.time/60)
+                  "value": Math.round(res.time/60),
+                  "extra": {
+                    totalTime: Math.round(this.activity.elapsed_time/60)
+                  }
                 }
             )
           }
@@ -69,5 +77,7 @@ export class HeartGraphComponent implements OnInit{
   onResize(event: any) {
     this.view = [event.target.innerWidth / this.widthQuota, this.view[1]];
   }
-
+  duration(time: number ) {
+    return this.epr.duration(time)
+  }
 }
