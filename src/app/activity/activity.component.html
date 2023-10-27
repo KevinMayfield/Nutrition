@@ -206,7 +206,7 @@
         HEART RATE
 
         -->
-        <mat-tab label="Physical Activity (Heart Rate)">
+        <mat-tab label="Physical Activity Log (Heart Rate)">
             <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Activity-based Measures"
@@ -247,7 +247,7 @@
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="heart">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> HR Zones </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Heartrate (beats per min) </th>
                         <td mat-cell *matCellDef="let activity">
                             {{activity.name}}
                             <app-heart-graph [activity]="activity"></app-heart-graph>
@@ -303,28 +303,12 @@ ecg_heart
                 </table>
                 <mat-paginator #paginatorHR [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
         </mat-tab>
-        <mat-tab *ngIf="hasPowerData" label="Physical Activity Overview (Power)">
-            <div class="example-form">
-                <span>
-                    <app-power-summary [dayActivity]="activityArray"></app-power-summary>
-                </span>
-                <span>
-                    <app-power-summary [dayActivity]="activityArray" [week]="-1"></app-power-summary>
-                </span>
-                <span>
-                    <app-power-summary [dayActivity]="activityArray" [week]="-2"></app-power-summary>
-                </span>
-                <span>
-                    <app-power-summary [dayActivity]="activityArray" [week]="-3"></app-power-summary>
-                </span>
-            </div>
-        </mat-tab>
         <mat-tab *ngIf="hasPowerData" label="Physical Activity Log (Power)">
             <td-message
-                        label="Information"
-                        sublabel="For detailed breakdown of power data see power-meter.cc"
-                        color="primary"
-                        icon="info">
+                    label="Information"
+                    sublabel="For detailed breakdown of power data see power-meter.cc"
+                    color="primary"
+                    icon="info">
                 <button td-message-actions mat-button (click)="viewPower()">Power-Meter.cc</button>
             </td-message>
 
@@ -360,7 +344,7 @@ ecg_heart
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="power">
-                    <th mat-header-cell *matHeaderCellDef > Power (W) </th>
+                    <th mat-header-cell *matHeaderCellDef > Power (watts) </th>
                     <td mat-cell *matCellDef="let activity">
                         {{activity.name}}
                         <app-power-graph [activity]="activity"></app-power-graph>
@@ -371,7 +355,7 @@ ecg_heart
                     <th mat-header-cell mat-sort-header *matHeaderCellDef > Energy (kcal) </th>
                     <td mat-cell *matCellDef="let activity">
 
-                                 {{activity.kcal}}
+                        {{activity.kcal}}
                     </td>
                 </ng-container>
 
@@ -413,6 +397,23 @@ ecg_heart
             </table>
             <mat-paginator #paginatorKJ [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
         </mat-tab>
+        <mat-tab *ngIf="hasPowerData" label="Physical Activity Overview (Power)">
+            <div class="example-form">
+                <span>
+                    <app-power-summary [dayActivity]="activityArray"></app-power-summary>
+                </span>
+                <span>
+                    <app-power-summary [dayActivity]="activityArray" [week]="-1"></app-power-summary>
+                </span>
+                <span>
+                    <app-power-summary [dayActivity]="activityArray" [week]="-2"></app-power-summary>
+                </span>
+                <span>
+                    <app-power-summary [dayActivity]="activityArray" [week]="-3"></app-power-summary>
+                </span>
+            </div>
+        </mat-tab>
+
     </mat-tab-group>
 
 

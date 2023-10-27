@@ -28,8 +28,8 @@ export class HeartGraphComponent implements OnInit{
   showLegend = false;
   showXAxisLabel = false;
   xAxisLabel = 'Range';
-  showYAxisLabel = false;
-  yAxisLabel = 'Duration';
+  showYAxisLabel = true;
+  yAxisLabel = 'time (min)';
 
   @Input()
   widthQuota: number = 4;

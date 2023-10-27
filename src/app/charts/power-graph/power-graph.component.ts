@@ -32,8 +32,8 @@ export class PowerGraphComponent implements OnInit{
   showLegend = false;
   showXAxisLabel = false;
   xAxisLabel = 'Range';
-  showYAxisLabel = false;
-  yAxisLabel = 'Duration';
+    showYAxisLabel = true;
+    yAxisLabel = 'time (min)';
     @Input()
     widthQuota: number = 3.8;
 
