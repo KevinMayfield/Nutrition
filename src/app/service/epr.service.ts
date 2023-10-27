@@ -110,34 +110,29 @@ export class EPRService {
   }
 
   getFTPColours() {
-    var colours : string[] = []
-    let ftp = this.person.ftp
-    if (ftp !== undefined) {
-      for (let i = 0; i < 10; i++) {
-        let pwr = (i * 50) + 25; // crude
-        colours.push(this.getBackgroundPWR(pwr))
-      }
-    }
+    var colours : string[] = ['lightgrey', 'lightblue', 'lightgreen', '#FFF59D','lightsalmon','lightpink','lightcoral' ]
     return colours
   }
   getBackgroundPWR(pwr: number | undefined) {
+    console.log(pwr)
     let ftp = this.person.ftp
+    let colours = this.getFTPColours()
     if (ftp !== undefined && pwr !== undefined) {
       if (pwr >= (ftp * 1.20)) {
-        return 'lightcoral'
+        return colours[6]
       } else if (pwr >= (ftp * 1.06)) {
-        return 'lightpink'
+        return colours[5]
       } else if (pwr >= (ftp * 0.95)) {
-        return 'lightsalmon'
+        return colours[4]
       } else if (pwr >= (ftp * 0.88)) {
-        return '#FFF59D'
+        return colours[3]
       } else if (pwr >= (ftp * 0.76)) {
-        return 'lightgreen'
+        return colours[2]
       } else if (pwr >= (ftp * 0.55)) {
-        return 'lightblue'
+        return colours[1]
       }
     }
-    return 'lightgrey'
+    return colours[0]
   }
   duration(value: number) {
     let min = Math.round(value%60)
@@ -217,7 +212,6 @@ export class EPRService {
       if (hr.distribution_buckets.length>0) zones.push(hr)
       if (pwr.distribution_buckets.length>0)zones.push(pwr)
     }
-    console.log(zones)
     return zones;
   }
 

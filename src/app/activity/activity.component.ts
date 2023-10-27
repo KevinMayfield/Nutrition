@@ -581,7 +581,10 @@ export class ActivityComponent implements OnInit{
     getBackgroundHR(heartrate: number | undefined) {
         return this.epr.getBackgroundHR(heartrate)
     }
-    getBackgroundPWR(watts: number | undefined) {
+    getBackgroundPWRZone(zone: number) {
+        return this.epr.getFTPColours()[zone-1]
+    }
+    getBackgroundPWRColor(watts: number) {
         return this.epr.getBackgroundPWR(watts)
     }
 

@@ -19,8 +19,6 @@ export class PowerSummaryComponent implements OnInit {
   @Input()
   week : number = 0;
 
-  @Input()
-  widthQuota: number = 1.35;
 
   @Input() set dayActivity(activity: ActivityDay[]) {
 
@@ -34,12 +32,15 @@ export class PowerSummaryComponent implements OnInit {
   single: any[] | undefined;
   totalTime = 0;
 
-  view: [number, number] = [800, 300];
+  view: [number, number] = [800, 200];
+  @Input()
+  widthQuota: number = 1.1;
 
   colorScheme: Color = {
-    domain: [
-      'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
-    ], group: ScaleType.Ordinal, name: "", selectable: false
+    domain: this.epr.getFTPColours(),
+    group: ScaleType.Ordinal,
+    name: "",
+    selectable: false
   }
 
   // options
@@ -78,12 +79,14 @@ export class PowerSummaryComponent implements OnInit {
     this.single = undefined
     this.yScaleMax = 0
     var multi = []
-    for(let i=0;i<10;i++) {
-      multi.push({
-        "name": i*50,
-        "series": []
-      })
-    }
+    var zones = this.epr.getPWRZone()
+    multi.push({name : zones?.z1.min , series: []})
+    multi.push({name : zones?.z2.min , series: []})
+    multi.push({name : zones?.z3.min , series: []})
+    multi.push({name : zones?.z4.min , series: []})
+    multi.push({name : zones?.z5.min , series: []})
+    multi.push({name : zones?.z6.min , series: []})
+    multi.push({name : zones?.z7.min , series: []})
 
     if (this.activity !== undefined) {
 
@@ -173,5 +176,6 @@ export class PowerSummaryComponent implements OnInit {
     if (this.epr.person !== undefined && this.epr.person.ftp !== undefined) {
       this.colorScheme.domain = this.epr.getFTPColours()
     }
+    this.view = [innerWidth / this.widthQuota, this.view[1]]
   }
 }

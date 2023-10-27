@@ -45,13 +45,13 @@
         <span *ngIf="zonePWR !== undefined  && (this.selectedTabIndex !== undefined && this.selectedTabIndex > 1)">
             FTP {{zonePWR?.ftp}}
             <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
-                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z7?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z7?.min}}-{{zonePWR.z7?.max}} Z7 - Neuromuscular </mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z6?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z6?.min}}-{{zonePWR.z6?.max}} Z6 - Anaerobic </mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z5?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z5?.min}}-{{zonePWR.z5?.max}} Z5 - VO2Max </mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z4?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z4?.min}}-{{zonePWR.z4?.max}} Z4 - Threshold</mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z3?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z3?.min}}-{{zonePWR.z3?.max}} Z3 - Tempo</mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z2?.min)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z2?.min}}-{{zonePWR.z2?.max}} Z2 - Endurance</mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWR(zonePWR.z1?.min)}};"><span class="material-symbols-outlined">bolt</span> {{zonePWR.z1?.min}}-{{zonePWR.z1?.max}} Z1 - Active Recovery</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(7)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z7?.min}}-{{zonePWR.z7?.max}} Z7 - Neuromuscular </mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(6)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z6?.min}}-{{zonePWR.z6?.max}} Z6 - Anaerobic </mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(5)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z5?.min}}-{{zonePWR.z5?.max}} Z5 - VO2Max </mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(4)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z4?.min}}-{{zonePWR.z4?.max}} Z4 - Threshold</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(3)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z3?.min}}-{{zonePWR.z3?.max}} Z3 - Tempo</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(2)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z2?.min}}-{{zonePWR.z2?.max}} Z2 - Endurance</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(1)}};"><span class="material-symbols-outlined">bolt</span> {{zonePWR.z1?.min}}-{{zonePWR.z1?.max}} Z1 - Active Recovery</mat-chip-option>
             </mat-chip-listbox>
         </span>
 
@@ -386,7 +386,7 @@ ecg_heart
 bolt
 </span> (Watts) </th>
                     <td mat-cell *matCellDef="let activity">
-                        <mat-chip style="background: {{getBackgroundPWR(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
+                        <mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
                             {{round(activity.weighted_average_watts)}}
                         </mat-chip>
                     </td>

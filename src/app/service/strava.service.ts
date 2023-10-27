@@ -5,7 +5,6 @@ import {environment} from '../../environments/environment';
 import {Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {ActivityType} from "../models/activity-type";
-import {Zones} from "../models/stream";
 
 
 
@@ -23,7 +22,7 @@ export class StravaService {
   activityMap = new Map();
   private from: Date | undefined;
   private to: Date | undefined;
-  public duration = 5; //28; // keep low while developing to avoid hitting rate limits
+  public duration = 28; // keep low while developing to avoid hitting rate limits
 
   loaded: EventEmitter<SummaryActivity> = new EventEmitter();
   activity: EventEmitter<SummaryActivity> = new EventEmitter();
