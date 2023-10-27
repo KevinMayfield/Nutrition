@@ -1,6 +1,8 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {hrZone, Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
+import {Zones} from "../models/stream";
+import {resetCumulativeDurations} from "@angular-devkit/build-angular/src/tools/esbuild/profiling";
 
 @Injectable({
   providedIn: 'root'
@@ -121,17 +123,17 @@ export class EPRService {
   getBackgroundPWR(pwr: number | undefined) {
     let ftp = this.person.ftp
     if (ftp !== undefined && pwr !== undefined) {
-      if (pwr > (ftp * 1.20)) {
+      if (pwr >= (ftp * 1.20)) {
         return 'lightcoral'
-      } else if (pwr > (ftp * 1.06)) {
+      } else if (pwr >= (ftp * 1.06)) {
         return 'lightpink'
-      } else if (pwr > (ftp * 0.95)) {
+      } else if (pwr >= (ftp * 0.95)) {
         return 'lightsalmon'
-      } else if (pwr > (ftp * 0.88)) {
+      } else if (pwr >= (ftp * 0.88)) {
         return '#FFF59D'
-      } else if (pwr > (ftp * 0.76)) {
+      } else if (pwr >= (ftp * 0.76)) {
         return 'lightgreen'
-      } else if (pwr > (ftp * 0.55)) {
+      } else if (pwr >= (ftp * 0.55)) {
         return 'lightblue'
       }
     }
@@ -142,5 +144,116 @@ export class EPRService {
     let hr = Math.floor(value /60)
     if (hr> 0) return hr + ' hr '+ min + ' min';
     return min + ' min'
+  }
+
+  getZones(activity: SummaryActivity) : Zones[] {
+    var zones : Zones[] = []
+
+    if (activity.stream !== undefined) {
+      var hr : Zones = {
+        distribution_buckets: [], resource_state: 0, sensor_based: false, type: "heartrate"
+      }
+      var pwr : Zones = {
+        distribution_buckets: [], resource_state: 0, sensor_based: false, type: "power"
+      }
+       if (activity.stream.heartrate !== undefined) {
+
+         if (this.person.hrzones !== undefined) {
+
+           // @ts-ignore
+           hr.distribution_buckets.push({max: this.person.hrzones.z1?.max, min: this.person.hrzones.z1?.min, time: 0})
+           // @ts-ignore
+           hr.distribution_buckets.push({max: this.person.hrzones.z2?.max, min: this.person.hrzones.z2?.min, time: 0})
+           // @ts-ignore
+           hr.distribution_buckets.push({max: this.person.hrzones.z3?.max, min: this.person.hrzones.z3?.min, time: 0})
+           // @ts-ignore
+           hr.distribution_buckets.push({max: this.person.hrzones.z4?.max, min: this.person.hrzones.z4?.min, time: 0})
+           // @ts-ignore
+           hr.distribution_buckets.push({max: this.person.hrzones.z5?.max, min: this.person.hrzones.z5?.min, time: 0})
+
+         }
+
+
+
+       }
+      if (activity.stream.watts !== undefined && this.person.ftp !== undefined) {
+
+        let pwrZone = this.getPWRZone()
+        if (pwrZone!== undefined) {
+          pwr.distribution_buckets.push({max: pwrZone.z1.max, min: pwrZone.z1?.min, time: 0})
+          pwr.distribution_buckets.push({max: pwrZone.z2.max, min: pwrZone.z2?.min, time: 0})
+          pwr.distribution_buckets.push({max: pwrZone.z3.max, min: pwrZone.z3?.min, time: 0})
+          pwr.distribution_buckets.push({max: pwrZone.z4.max, min: pwrZone.z4?.min, time: 0})
+          pwr.distribution_buckets.push({max: pwrZone.z5.max, min: pwrZone.z5?.min, time: 0})
+          pwr.distribution_buckets.push({max: pwrZone.z6.max, min: pwrZone.z6?.min, time: 0})
+          pwr.distribution_buckets.push({max: 2000, min: pwrZone.z7?.min, time: 0})
+        }
+      }
+      if (activity.stream.time !== undefined) {
+        var lastTime = 0;
+        for (let i = 0; i < activity.stream.time.original_size; i++) {
+          let duration = activity.stream.time.data[i]
+          if (activity.stream.heartrate !== undefined && hr.distribution_buckets.length>0) {
+            for (let range of hr.distribution_buckets) {
+               if (activity.stream.heartrate.data[i] < range.max && activity.stream.heartrate.data[i] >= range.min) {
+                 range.time = range.time + (duration - lastTime)
+                 break
+               }
+            }
+          }
+          if (activity.stream.watts !== undefined && hr.distribution_buckets.length>0) {
+            for (let range of pwr.distribution_buckets) {
+            //  console.log(range.max + ' ' +activity.stream.watts.data[i])
+              if (activity.stream.watts.data[i] >= range.min &&
+                  (activity.stream.watts.data[i] < range.max)) {
+                range.time = range.time + (duration - lastTime)
+                break
+              }
+            }
+          }
+          lastTime = duration
+        }
+      }
+      if (hr.distribution_buckets.length>0) zones.push(hr)
+      if (pwr.distribution_buckets.length>0)zones.push(pwr)
+    }
+    console.log(zones)
+    return zones;
+  }
+
+  getPWRZone() {
+    let ftp = this.person.ftp
+    if (ftp !== undefined) return  {
+      calculated : true,
+          ftp: ftp,
+        z1: {
+      min: 0,
+          max: Math.round(0.55 * ftp)
+    },
+      z2: {
+        min: Math.round(0.55 * ftp) ,
+            max:Math.round(0.76 * ftp)
+      },
+      z3: {
+        min: Math.round(0.76 * ftp) ,
+            max:Math.round(0.88 * ftp)
+      },
+      z4: {
+        min: Math.round(0.88 * ftp),
+            max:Math.round(0.95 * ftp)
+      },
+      z5: {
+        min: Math.round(0.95 * ftp),
+            max:Math.round(1.06 * ftp)
+      },
+      z6: {
+        min: Math.round(1.06 * ftp) ,
+            max: Math.round(1.2 * ftp)
+      },
+      z7: {
+        min: Math.round(1.2 * ftp)
+      },
+    }
+    return undefined;
   }
 }

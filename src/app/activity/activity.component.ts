@@ -121,37 +121,7 @@ export class ActivityComponent implements OnInit{
         }
         if (this.zonePWR === undefined && this.epr.person.ftp !== undefined) {
             let ftp =this.epr.person.ftp
-            this.zonePWR = {
-                calculated : true,
-                ftp: this.epr.person.ftp,
-                z1: {
-                    min: 0,
-                    max: Math.round(0.55 * ftp)
-                },
-                z2: {
-                    min: Math.round(0.55 * ftp) + 1,
-                    max:Math.round(0.76 * ftp)
-                },
-                z3: {
-                    min: Math.round(0.76 * ftp) + 1,
-                    max:Math.round(0.88 * ftp)
-                },
-                z4: {
-                    min: Math.round(0.88 * ftp) + 1,
-                    max:Math.round(0.95 * ftp)
-                },
-                z5: {
-                    min: Math.round(0.95 * ftp) + 1,
-                    max:Math.round(1.06 * ftp)
-                },
-                z6: {
-                    min: Math.round(1.06 * ftp) + 1,
-                    max: Math.round(1.2 * ftp)
-                },
-                z7: {
-                    min: Math.round(1.2 * ftp) + 1
-                },
-            }
+            this.zonePWR = this.epr.getPWRZone()
         }
         if (((this.epr.person.hrzones === undefined || this.epr.person.hrzones.calculated)) && this.age !== undefined) {
             let zone = 220 - this.age
@@ -248,7 +218,7 @@ export class ActivityComponent implements OnInit{
             var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
 
             if (activity.kcal !== undefined) {
-
+                activity.zones = this.epr.getZones(activity)
                 var act : ActivityDay = {
                     duration: (activity.elapsed_time + this.activityArray[this.strava.duration - diffDays].duration),
                     kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal),

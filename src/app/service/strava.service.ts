@@ -5,6 +5,7 @@ import {environment} from '../../environments/environment';
 import {Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {ActivityType} from "../models/activity-type";
+import {Zones} from "../models/stream";
 
 
 
@@ -22,7 +23,7 @@ export class StravaService {
   activityMap = new Map();
   private from: Date | undefined;
   private to: Date | undefined;
-  public duration = 28; // keep low while developing to avoid hitting rate limits
+  public duration = 5; //28; // keep low while developing to avoid hitting rate limits
 
   loaded: EventEmitter<SummaryActivity> = new EventEmitter();
   activity: EventEmitter<SummaryActivity> = new EventEmitter();
@@ -33,11 +34,17 @@ export class StravaService {
    this.activity.subscribe(activity => {
         this.getActivity(activity.id).subscribe(result => {
           activity.kcal = result.calories
+          this.getStream(activity.id).subscribe( stream => {
+            activity.zones = []
+            activity.stream = stream
+            this.loaded.emit(activity)
+          })
+          /*
           this.getActivityZone(activity.id).subscribe(zones => {
             activity.zones = zones
             this.loaded.emit(activity)
           })
-
+*/
         })
     })
   }
@@ -140,6 +147,10 @@ export class StravaService {
     if (page !== undefined) {
       uri = uri + '&page=' + page;
     }
+    return this.http.get<any>(uri, {headers: this.getHeaders()});
+  }
+  private getStream(id: string) {
+    let uri = this.url + 'activities/'+id + '/streams?keys=heartrate,watts,time&key_by_type=true' //+'?include_all_efforts=';
     return this.http.get<any>(uri, {headers: this.getHeaders()});
   }
 
@@ -288,6 +299,7 @@ export class StravaService {
 
 
   }
+
 
 
 }

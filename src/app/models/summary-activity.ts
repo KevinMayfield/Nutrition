@@ -1,10 +1,12 @@
 import {MetaAthlete} from "./meta-athlete";
 import {ActivityType} from "./activity-type";
 import {PolylineMap} from "./polyline-map";
+import {Stream, Zones} from "./stream";
 
 
 export interface SummaryActivity {
-  zones: any[];
+  zones: Zones[];
+  stream?: Stream;
   suffer_score?: number;
   id: string;
   external_id: string;
