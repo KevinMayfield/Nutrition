@@ -249,6 +249,7 @@
                     <ng-container matColumnDef="heart">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> HR Zones </th>
                         <td mat-cell *matCellDef="let activity">
+                            {{activity.name}}
                             <app-heart-graph [activity]="activity"></app-heart-graph>
                        </td>
                     </ng-container>
@@ -361,6 +362,7 @@ ecg_heart
                 <ng-container matColumnDef="power">
                     <th mat-header-cell *matHeaderCellDef > Power (W) </th>
                     <td mat-cell *matCellDef="let activity">
+                        {{activity.name}}
                         <app-power-graph [activity]="activity"></app-power-graph>
                     </td>
                 </ng-container>
