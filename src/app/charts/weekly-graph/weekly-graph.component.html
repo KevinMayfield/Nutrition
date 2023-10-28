@@ -1,3 +1,18 @@
+<span *ngIf="stacked !== undefined && stacked.length>0">
+    <span *ngFor="let pie of stacked">
+            <h3>Week {{pie.name}}</h3>
+            <ngx-charts-advanced-pie-chart
+                    [view]="viewPie"
+                    [scheme]="colorStacked"
+                    label="kcal"
+                    [results]="pie.series"
+                    [gradient]="gradient"
+                    (select)="onSelect($event)"
+            >
+            </ngx-charts-advanced-pie-chart>
+       </span>
+</span>
+<!--
 <h4>Daily Average (per week)</h4>
 <ngx-charts-bar-vertical *ngIf="single!==undefined"
                                  [view]="viewSingle"
@@ -55,3 +70,4 @@
         Activities {{model.extra.wk.num_activities}}
     </ng-template>
 </ngx-charts-bar-vertical-stacked>
+-->

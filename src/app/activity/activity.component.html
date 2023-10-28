@@ -30,10 +30,20 @@
                     <mat-option *ngFor="let gender of administrativeGenders" [value]="gender">{{gender.display}}</mat-option>
                 </mat-select>
             </mat-form-field>
-
+            <mat-form-field class="example-full-width">
+                <mat-label>Max HR</mat-label>
+                <input matInput type="number" [(ngModel)]="maximumHR" (ngModelChange)="calculate()" disabled>
+                <span matSuffix>beats/min</span>
+                <mat-hint>Strava - My Performance</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>FTP</mat-label>
+                <input matInput type="number" [(ngModel)]="ftp" (ngModelChange)="calculate()" disabled>
+                <span matSuffix>watts</span>
+                <mat-hint>Strava - My Performance</mat-hint>
+            </mat-form-field>
         </div>
         <span *ngIf="zoneHR !== undefined  && (this.selectedTabIndex == undefined || this.selectedTabIndex < 2)">
-            Maximum heart rate <span *ngIf="zoneHR.calculated">(calculated)</span><span *ngIf="!zoneHR.calculated">(strava)</span> =  {{zoneHR.maximumHR}}
             <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
                 <mat-chip-option style="background: lightpink"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z5?.min}}-{{zoneHR.z5?.max}} Z5 - Anerobic</mat-chip-option>
                 <mat-chip-option style="background: lightsalmon"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z4?.min}}-{{zoneHR.z4?.max}} Z4 - Threshold</mat-chip-option>
@@ -43,7 +53,6 @@
             </mat-chip-listbox>
         </span>
         <span *ngIf="zonePWR !== undefined  && (this.selectedTabIndex !== undefined && this.selectedTabIndex > 1)">
-            FTP {{zonePWR?.ftp}}
             <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
                 <mat-chip-option style="background: {{getBackgroundPWRZone(7)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z7?.min}}-{{zonePWR.z7?.max}} Z7 - Neuromuscular </mat-chip-option>
                 <mat-chip-option style="background: {{getBackgroundPWRZone(6)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z6?.min}}-{{zonePWR.z6?.max}} Z6 - Anaerobic </mat-chip-option>
@@ -57,14 +66,13 @@
 
     </mat-sidenav>
     <mat-sidenav-content>
-<mat-card xmlns="http://www.w3.org/1999/html">
-    <mat-card-header>
-        <mat-card-title>
+        <mat-toolbar>
             <button mat-icon-button (click)="onClick()">
                 <mat-icon>menu</mat-icon>
             </button>
-            Physical Activity</mat-card-title>
-    </mat-card-header>
+            Physical Activity
+        </mat-toolbar>
+<mat-card xmlns="http://www.w3.org/1999/html">
     <mat-card-content>
     <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectionchange)="tabChanged($event)">
         <mat-tab label="Summary (Energy/kcal)">
@@ -195,11 +203,12 @@
                      </table>
                          </span>
              </div>
+            <h3>Weekly Activity Rates</h3>
+            <app-weekly-graph [dayActivity]="activityArray" ></app-weekly-graph>
             <h3>Activity Summary</h3>
             <app-summary-graph [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
 
-            <h3>Weekly Activity Rates</h3>
-            <app-weekly-graph [dayActivity]="activityArray" ></app-weekly-graph>
+
         </mat-tab>
         <!--
 

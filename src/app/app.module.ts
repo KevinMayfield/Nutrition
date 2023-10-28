@@ -32,7 +32,7 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import { PowerGraphComponent } from './charts/power-graph/power-graph.component';
-import {BarChartModule} from "@swimlane/ngx-charts";
+import {BarChartModule, PieChartModule} from "@swimlane/ngx-charts";
 import { HeartGraphComponent } from './charts/heart-graph/heart-graph.component';
 import {MatChipsModule} from "@angular/material/chips";
 import { NutritionComponent } from './nutrition/nutrition.component';
@@ -41,6 +41,7 @@ import { WeeklyGraphComponent } from './charts/weekly-graph/weekly-graph.compone
 import { PowerSummaryComponent } from './charts/power-summary/power-summary.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
+import {MatToolbarModule} from "@angular/material/toolbar";
 
 @NgModule({
   declarations: [
@@ -89,7 +90,9 @@ import {MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
         BarChartModule,
         MatChipsModule,
         MatDatepickerModule,
-        MatNativeDateModule
+        MatNativeDateModule,
+        MatToolbarModule,
+        PieChartModule
     ],
     providers: [
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }

@@ -114,7 +114,6 @@ export class EPRService {
     return colours
   }
   getBackgroundPWR(pwr: number | undefined) {
-    console.log(pwr)
     let ftp = this.person.ftp
     let colours = this.getFTPColours()
     if (ftp !== undefined && pwr !== undefined) {

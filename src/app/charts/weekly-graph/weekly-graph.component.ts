@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActivityDay, ActivitySession} from "../../models/activity-day";
 import {hrZone} from "../../models/person";
 import {Color, ScaleType} from "@swimlane/ngx-charts";
@@ -26,7 +26,7 @@ class DaySummary {
   templateUrl: './weekly-graph.component.html',
   styleUrls: ['./weekly-graph.component.scss']
 })
-export class WeeklyGraphComponent {
+export class WeeklyGraphComponent implements OnInit {
   activitiesWeek : ActivityWeek[] = []
 
   @Input()
@@ -34,6 +34,7 @@ export class WeeklyGraphComponent {
 
   @Input()
   widthQuota: number = 1.35;
+
 
   @Input() set dayActivity(activity: ActivityDay[]) {
 
@@ -44,10 +45,18 @@ export class WeeklyGraphComponent {
   zoneHR: hrZone | undefined
 
   stacked: any[] | undefined;
-  single: any[] | undefined;
 
-  viewSingle: [number, number] = [800, 200];
+
+
   viewStacked: [number, number] = [800, 300];
+  viewPie:  [number, number] = [700, 200];
+
+  private colorFTP: Color = {
+    domain: this.epr.getFTPColours(),
+    group: ScaleType.Ordinal,
+    name: "",
+    selectable: false
+  }
 
   colorStacked: Color = {
     domain: [
@@ -71,10 +80,14 @@ export class WeeklyGraphComponent {
   showYAxisLabel = true;
   yAxisLabel = 'kcal';
 
+  showLabels: boolean = false;
+  isDoughnut: boolean = true;
+  legendPosition: string = 'below';
+
   constructor(
       private epr: EPRService,
       private strava: StravaService){
-      this.viewSingle = [innerWidth / this.widthQuota, this.viewSingle[1]];
+
      this.viewStacked = [innerWidth / this.widthQuota, this.viewStacked[1]];
   }
   onSelect(event: any) {
@@ -152,10 +165,10 @@ export class WeeklyGraphComponent {
         }
       }
       this.stacked = undefined
-      this.single = undefined
+
       this.colorSingle.domain = []
       var stacked = []
-      var single = []
+
       var domain = []
 
       for (let wk of this.activitiesWeek) {
@@ -169,7 +182,7 @@ export class WeeklyGraphComponent {
         }
         for (let f=0;f<5;f++) {
           let ser = {
-            name: (f+1),
+            name: 'Zone '+(f+1),
             value: 0,
             extra: {
               wk: {}
@@ -192,19 +205,6 @@ export class WeeklyGraphComponent {
         }
         stacked.push(entry)
 
-        var entrySingle = {"name": wk.week + ' ' + iso,value: 0,
-          'extra': {
-              'wk': wk
-          }
-        }
-        // @ts-ignore
-        let diffDays =this.epr.getDateAbs(this.strava.getToDate()) - this.epr.getDateAbs(this.getSundayFromWeekNum(wk.week))
-        if (diffDays > 7) {
-          entrySingle.value = Math.round(wk.kcal / 7)
-        } else {
-          if (+diffDays > 0) entrySingle.value = Math.round(wk.kcal / diffDays)
-        }
-        single.push(entrySingle)
         let avg_dur = Math.round(wk.duration / (7 *60))
         if (avg_dur < 20) {  domain.push('lightgrey') }
         else if (avg_dur < 40 ) { domain.push('lightblue') }
@@ -213,13 +213,12 @@ export class WeeklyGraphComponent {
         else  {   domain.push('lightpink') }
       }
       this.stacked  = stacked
-      this.single  = single
+
       this.colorSingle.domain = domain
     }
   }
 
   onResize(event: any) {
-    this.viewSingle = [event.target.innerWidth / this.widthQuota, this.viewSingle[1]];
     this.viewStacked = [event.target.innerWidth / this.widthQuota, this.viewStacked[1]];
   }
 
@@ -266,18 +265,12 @@ export class WeeklyGraphComponent {
   duration(time: number ) {
     return this.epr.duration(time)
   }
-  /*
 
-     if (activity.max_heartrate !== undefined && (this.activitiesWeek[week].hr_max === undefined || this.activitiesWeek[week].hr_max < activity.max_heartrate)) {
-                      this.activitiesWeek[week].hr_max = activity.max_heartrate
-                  }
-                this.activitiesWeek[week].avg_duration = ((this.activitiesWeek[week].avg_duration * this.activitiesWeek[week].num_activities) + activity.elapsed_time) / (this.activitiesWeek[week].num_activities + 1)
-                this.activitiesWeek[week].avg_kcal = ((this.activitiesWeek[week].avg_kcal * this.activitiesWeek[week].num_activities) + activity.kcal) / (this.activitiesWeek[week].num_activities + 1)
-                if (this.activityArray[this.strava.duration - diffDays].duration ===0 ) {
-                    this.activitiesWeek[week].num_activities = 1 + this.activitiesWeek[week].num_activities
-                }
+  ngOnInit(): void {
+    if (this.epr.person !== undefined && this.epr.person.ftp !== undefined) {
+      this.colorFTP.domain = this.epr.getFTPColours()
+    }
 
-                this.dataSourceWeek = new MatTableDataSource<activityWeek>(this.activitiesWeek)
+  }
 
-   */
 }

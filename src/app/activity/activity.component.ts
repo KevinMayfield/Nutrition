@@ -102,6 +102,7 @@ export class ActivityComponent implements OnInit{
     hasPowerData: boolean = false;
     endDate: Date = new Date();
     selectedTabIndex: any;
+    ftp: number | undefined;
     constructor(
         private http: HttpClient,
         private epr: EPRService,
@@ -120,11 +121,12 @@ export class ActivityComponent implements OnInit{
             this.epr.setHeight(this.height)
         }
         if (this.zonePWR === undefined && this.epr.person.ftp !== undefined) {
-            let ftp =this.epr.person.ftp
+            this.ftp =this.epr.person.ftp
             this.zonePWR = this.epr.getPWRZone()
         }
         if (((this.epr.person.hrzones === undefined || this.epr.person.hrzones.calculated)) && this.age !== undefined) {
             let zone = 220 - this.age
+            this.maximumHR = this.round(zone)
             if (zone !== undefined) {
                 this.epr.setHRZone( {
                     calculated: true,
@@ -188,9 +190,11 @@ export class ActivityComponent implements OnInit{
 
 
         this.zoneHR = this.epr.person.hrzones
+        this.maximumHR = this.zoneHR?.maximumHR
         this.epr.zoneChange.subscribe(zone => {
             console.log('hr zone change')
             this.zoneHR = zone
+            this.maximumHR = this.zoneHR?.maximumHR
         })
         if (this.epr.person.age !== undefined) {
             this.age = this.epr.person.age
