@@ -183,7 +183,7 @@ export class ActivityComponent implements OnInit{
                 "value": 0
             },
                 {
-                    "name": "Daily Calorie Needs",
+                    "name": "Activity Level Adjustment",
                     "value": 0
                 }];
             energy[0].value = (this.weight * 10) + (6.25 * this.height)

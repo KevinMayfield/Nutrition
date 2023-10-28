@@ -112,19 +112,21 @@
                     <button td-message-actions mat-button >View More</button>
                 </td-message>
                 <div *ngIf="dailyEnergy !== undefined || rmr !== undefined">
-                    <mat-grid-list cols="2" rowHeight="2:1">
-                      <mat-grid-tile>
+                    <mat-grid-list cols="2" rowHeight="5:1">
+                      <mat-grid-tile rowspan="2">
                            <ngx-charts-advanced-pie-chart
                                    [view]="viewEnergyPie"
                                    [scheme]="colorScheme"
-                                   label="Daily Energy (kcal)"
+                                   label="Daily Calorie Needs (kcal)"
                                    [results]="energy"
                                    (window:resize)="onResize($event)"
                            >
                                      </ngx-charts-advanced-pie-chart>
                       </mat-grid-tile>
-                        <mat-grid-tile>
+                        <mat-grid-tile style="background: azure">
                             <h3>{{exerciseFrequency?.display}}</h3>
+                        </mat-grid-tile>
+                        <mat-grid-tile style="background: lightgoldenrodyellow">
                             <h3>{{exerciseIntense?.display}}</h3>
                             <span *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-light'" >
                                  {{perKgKCal(3)}}-{{perKgKCal(5)}} grams of carbohydrate per day ({{perKgKCal(3*4)}}-{{perKgKCal(5*4)}} kcal)
