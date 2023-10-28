@@ -68,3 +68,47 @@ mat-nav-list, mat-list {
                 }
         }
 }
+
+$white: #fff;
+$black: #000;
+$chart-tooltip-border-radius: 5px;
+$chart-caret-size: 7px solid $white !default;
+
+@mixin charts-tooltip($theme) {
+        $typography: $typography;
+        $foreground: map-get($theme, foreground);
+
+        .chart__tooltip-sub-label {
+                color: mat-color($foreground, secondary-text);
+                font-size: mat.font-size($typography, body-2);
+        }
+
+        .ngx-charts-tooltip-content.type-tooltip {
+                @include mat-elevation(3);
+                background-color: $white !important;
+                border-radius: $chart-tooltip-border-radius !important;
+                color: $black !important;
+                padding: 8px !important;
+        }
+        .ngx-charts-tooltip-content.type-tooltip {
+                background-color: $white !important;
+                color: $black !important;
+        }
+
+        .ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-top {
+                border-top: $chart-caret-size !important;
+        }
+
+        .ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-right {
+                border-right: $chart-caret-size !important;
+        }
+
+        .ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-bottom {
+                border-bottom: $chart-caret-size !important;
+        }
+
+        .ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-left {
+                border-left: $chart-caret-size !important;
+        }
+}
+@include charts-tooltip($theme);

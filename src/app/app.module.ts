@@ -38,27 +38,27 @@ import {MatChipsModule} from "@angular/material/chips";
 import { NutritionComponent } from './nutrition/nutrition.component';
 import { SummaryGraphComponent } from './charts/summary-graph/summary-graph.component';
 import { WeeklyGraphComponent } from './charts/weekly-graph/weekly-graph.component';
-import { PowerSummaryComponent } from './charts/power-summary/power-summary.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {MatToolbarModule} from "@angular/material/toolbar";
+import {ReversePipe} from "./service/reverse-pipe";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    BMIComponent,
-    MainMenuComponent,
-    ActivityComponent,
-      SafeHtmlPipe,
-      SafeUrlPipe,
-      StravaComponent,
-      PowerGraphComponent,
-      HeartGraphComponent,
-      NutritionComponent,
-      SummaryGraphComponent,
-      WeeklyGraphComponent,
-      PowerSummaryComponent
-  ],
+    declarations: [
+        AppComponent,
+        BMIComponent,
+        MainMenuComponent,
+        ActivityComponent,
+        SafeHtmlPipe,
+        SafeUrlPipe,
+        StravaComponent,
+        PowerGraphComponent,
+        HeartGraphComponent,
+        NutritionComponent,
+        SummaryGraphComponent,
+        WeeklyGraphComponent,
+        ReversePipe
+    ],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,

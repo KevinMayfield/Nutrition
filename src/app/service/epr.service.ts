@@ -2,7 +2,6 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {hrZone, Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {Zones} from "../models/stream";
-import {resetCumulativeDurations} from "@angular-devkit/build-angular/src/tools/esbuild/profiling";
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +21,8 @@ export class EPRService {
   setPerson(athlete: Person) {
 
     // These entries preserve existing data
-    if (athlete.hrzones === undefined && this.person.hrzones !== undefined) {
-      athlete.hrzones = this.person.hrzones
+    if (athlete.maximumHR === undefined && this.person.maximumHR !== undefined) {
+      athlete.maximumHR = this.person.maximumHR
     }
     if (athlete.age === undefined && this.person.age !== undefined) {
       athlete.age = this.person.age
@@ -42,12 +41,12 @@ export class EPRService {
     localStorage.setItem('activityPerson', JSON.stringify(this.person))
   }
 
-  setHRZone(param: hrZone) {
-    this.zoneChange.emit(param)
-      console.log('set HR Zone')
-     this.person.hrzones = param
-     this.setPerson(this.person)
-     this.zoneChange.emit(param)
+  setMaximumHR(maximumHR : number) {
+      if (maximumHR !== undefined && maximumHR > 100 && this.person.maximumHR !== maximumHR) {
+        this.person.maximumHR = maximumHR
+        this.setPerson(this.person)
+        this.zoneChange.emit(this.getHRZone())
+      }
   }
 
   getDateAbs(time: Date) {
@@ -55,12 +54,13 @@ export class EPRService {
   }
 
   getBackgroundHR(heartrate: number | undefined) {
-
-    if (this.person.hrzones !== undefined && this.person.hrzones.maximumHR !== undefined && heartrate !== undefined) {
-      if (this.person.hrzones.z5 !== undefined && this.person.hrzones.z5?.min < heartrate) return "lightpink"
-      if (this.person.hrzones.z4 !== undefined && this.person.hrzones.z4?.min < heartrate) return "lightsalmon"
-      if (this.person.hrzones.z3 !== undefined && this.person.hrzones.z3?.min < heartrate) return "lightgreen"
-      if (this.person.hrzones.z2 !== undefined && this.person.hrzones.z2?.min < heartrate) return "lightblue"
+    if (this.person.maximumHR == undefined) return 'lightgrey'
+    let hrzones = this.getHRZone()
+    if (hrzones !== undefined && heartrate !== undefined) {
+      if (hrzones.z5 !== undefined && hrzones.z5?.min < heartrate) return "lightpink"
+      if (hrzones.z4 !== undefined && hrzones.z4?.min < heartrate) return "lightsalmon"
+      if (hrzones.z3 !== undefined && hrzones.z3?.min < heartrate) return "lightgreen"
+      if (hrzones.z2 !== undefined && hrzones.z2?.min < heartrate) return "lightblue"
     }
     return "lightgrey"
   }
@@ -152,18 +152,18 @@ export class EPRService {
       }
        if (activity.stream.heartrate !== undefined) {
 
-         if (this.person.hrzones !== undefined) {
-
+         if (this.person.maximumHR !== undefined) {
+           let hrzones = this.getHRZone()
            // @ts-ignore
-           hr.distribution_buckets.push({max: this.person.hrzones.z1?.max, min: this.person.hrzones.z1?.min, time: 0})
+           hr.distribution_buckets.push({max: hrzones.z1?.max, min: hrzones.z1?.min, time: 0})
            // @ts-ignore
-           hr.distribution_buckets.push({max: this.person.hrzones.z2?.max, min: this.person.hrzones.z2?.min, time: 0})
+           hr.distribution_buckets.push({max: hrzones.z2?.max, min: hrzones.z2?.min, time: 0})
            // @ts-ignore
-           hr.distribution_buckets.push({max: this.person.hrzones.z3?.max, min: this.person.hrzones.z3?.min, time: 0})
+           hr.distribution_buckets.push({max: hrzones.z3?.max, min: hrzones.z3?.min, time: 0})
            // @ts-ignore
-           hr.distribution_buckets.push({max: this.person.hrzones.z4?.max, min: this.person.hrzones.z4?.min, time: 0})
+           hr.distribution_buckets.push({max: hrzones.z4?.max, min: hrzones.z4?.min, time: 0})
            // @ts-ignore
-           hr.distribution_buckets.push({max: this.person.hrzones.z5?.max, min: this.person.hrzones.z5?.min, time: 0})
+           hr.distribution_buckets.push({max: hrzones.z5?.max, min: hrzones.z5?.min, time: 0})
 
          }
 
@@ -213,7 +213,39 @@ export class EPRService {
     }
     return zones;
   }
+getHRZone() {
 
+    let maximumHR = this.person.maximumHR
+    if (maximumHR !== undefined) {
+      return {
+        calculated: true,
+        maximumHR: Math.round(maximumHR),
+        z1: {
+          min: Math.round(maximumHR * 0.5),
+          max: Math.round(maximumHR * 0.6)
+        },
+        z2: {
+          min: Math.round(maximumHR * 0.6),
+          max: Math.round(maximumHR * 0.7)
+        },
+        z3: {
+          min: Math.round(maximumHR * 0.7),
+          max: Math.round(maximumHR * 0.8)
+        },
+        z4: {
+          min: Math.round(maximumHR * 0.8),
+          max: Math.round(maximumHR * 0.9)
+        },
+        z5: {
+          min: Math.round(maximumHR * 0.9),
+          max: Math.round(maximumHR * 1.0)
+        }
+      }
+    } else {
+      return undefined
+    }
+
+}
   getPWRZone() {
     let ftp = this.person.ftp
     if (ftp !== undefined) return  {

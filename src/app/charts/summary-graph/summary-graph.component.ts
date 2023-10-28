@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {EPRService} from "../../service/epr.service";
 import {ActivityDay, ActivitySession} from "../../models/activity-day";
@@ -110,7 +110,7 @@ export class SummaryGraphComponent implements OnChanges {
     }
   }
   getZone(session: ActivitySession) {
-    let zone = this.epr.person.hrzones
+    let zone = this.epr.getHRZone()
     if (zone == undefined) return 0;
     if (session.activity == undefined) return 1;
 

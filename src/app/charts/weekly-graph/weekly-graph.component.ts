@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivityDay, ActivitySession} from "../../models/activity-day";
+import {ActivityDay} from "../../models/activity-day";
 import {hrZone} from "../../models/person";
 import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {EPRService} from "../../service/epr.service";
@@ -23,17 +23,23 @@ class DaySummary {
 
 @Component({
   selector: 'app-weekly-graph',
-  templateUrl: './weekly-graph.component.html',
-  styleUrls: ['./weekly-graph.component.scss']
+  styleUrls: ['./weekly-graph.component.scss'],
+  templateUrl: './weekly-graph.component.html'
 })
 export class WeeklyGraphComponent implements OnInit {
+
   activitiesWeek : ActivityWeek[] = []
 
   @Input()
   activity: ActivityDay[] | undefined
 
   @Input()
-  widthQuota: number = 1.35;
+  widthQuota: number = 1;
+
+  // From original power summary display
+  multiHR: any[] | undefined;
+  multiPWR: any[] | undefined;
+  yScaleMax =0;
 
 
   @Input() set dayActivity(activity: ActivityDay[]) {
@@ -46,12 +52,10 @@ export class WeeklyGraphComponent implements OnInit {
 
   stacked: any[] | undefined;
 
+  viewHRPie:  [number, number] = [700, 200];
+  viewPWRPie:  [number, number] = [800, 200];
 
-
-  viewStacked: [number, number] = [800, 300];
-  viewPie:  [number, number] = [700, 200];
-
-  private colorFTP: Color = {
+  colorFTP: Color = {
     domain: this.epr.getFTPColours(),
     group: ScaleType.Ordinal,
     name: "",
@@ -88,12 +92,141 @@ export class WeeklyGraphComponent implements OnInit {
       private epr: EPRService,
       private strava: StravaService){
 
-     this.viewStacked = [innerWidth / this.widthQuota, this.viewStacked[1]];
+     this.viewHRPie = [innerWidth / this.widthQuota, this.viewHRPie[1]];
+    this.viewPWRPie = [innerWidth / this.widthQuota, this.viewPWRPie[1]];
   }
   onSelect(event: any) {
     console.log(event);
   }
 
+  private refreshPowerActivity() {
+    this.multiPWR = undefined
+
+    this.yScaleMax = 0
+    var multi = []
+    var zones = this.epr.getPWRZone()
+    multi.push({name : zones?.z1.min , series: []})
+    multi.push({name : zones?.z2.min , series: []})
+    multi.push({name : zones?.z3.min , series: []})
+    multi.push({name : zones?.z4.min , series: []})
+    multi.push({name : zones?.z5.min , series: []})
+    multi.push({name : zones?.z6.min , series: []})
+    multi.push({name : zones?.z7.min , series: []})
+
+    if (this.activity !== undefined) {
+
+      for (let act of this.activity) {
+        if (act.sessions !== undefined && act.day !== undefined) {
+          for(let session of act.sessions) {
+            if (session.activity !== undefined) {
+              if (session.activity.zones !== undefined) {
+                for (let zone of session.activity.zones) {
+                  if (zone.type === 'power') {
+                    for (let bucket of zone.distribution_buckets) {
+                      for (let mul of multi) {
+                        if (bucket.min == mul.name) {
+                          let weekNo = this.epr.getWeekNumber(act.day)
+
+                          var fd: any = undefined
+                          for (let series of mul.series) {
+                            // @ts-ignore
+                            if (series.name === weekNo) {
+                              fd = series
+                            }
+                          }
+                          if (fd === undefined) {
+                            fd = {
+                              name: weekNo,
+                              value: Math.round(bucket.time / 60)
+                            }
+                            // @ts-ignore
+                            mul.series.push(fd)
+                          } else {
+                            fd.value = fd.value + Math.round(bucket.time / 60)
+                          }
+
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+      }
+    }
+    this.multiPWR = multi
+  }
+
+  private refreshHRActivity() {
+    this.multiHR = undefined
+
+    this.yScaleMax = 0
+    var multi = []
+    var zones = this.epr.getHRZone()
+    if (zones!== undefined) {
+
+      // @ts-ignore
+      multi.push({name : zones.z1.min , series: []})
+      // @ts-ignore
+      multi.push({name : zones.z2.min , series: []})
+      // @ts-ignore
+      multi.push({name : zones.z3.min , series: []})
+      // @ts-ignore
+      multi.push({name : zones.z4.min , series: []})
+      // @ts-ignore
+      multi.push({name : zones.z5.min , series: []})
+
+
+      if (this.activity !== undefined) {
+
+        for (let act of this.activity) {
+          if (act.sessions !== undefined && act.day !== undefined) {
+            for (let session of act.sessions) {
+              if (session.activity !== undefined) {
+                if (session.activity.zones !== undefined) {
+                  for (let zone of session.activity.zones) {
+                    if (zone.type === 'heartrate') {
+                      for (let bucket of zone.distribution_buckets) {
+                        for (let mul of multi) {
+                          if (bucket.min == mul.name) {
+                            let weekNo = this.epr.getWeekNumber(act.day)
+
+                            var fd: any = undefined
+                            for (let series of mul.series) {
+                              // @ts-ignore
+                              if (series.name === weekNo) {
+                                fd = series
+                              }
+                            }
+                            if (fd === undefined) {
+                              fd = {
+                                name: weekNo,
+                                value: Math.round(bucket.time / 60)
+                              }
+                              // @ts-ignore
+                              mul.series.push(fd)
+                            } else {
+                              fd.value = fd.value + Math.round(bucket.time / 60)
+                            }
+
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+        }
+      }
+    }
+    this.multiHR = multi
+  }
   refreshActivity() {
 
     this.activitiesWeek = []
@@ -171,6 +304,9 @@ export class WeeklyGraphComponent implements OnInit {
 
       var domain = []
 
+      this.refreshPowerActivity()
+      this.refreshHRActivity()
+
       for (let wk of this.activitiesWeek) {
         // @ts-ignore
         let isoDate = this.getSundayFromWeekNum(wk.week)
@@ -178,11 +314,13 @@ export class WeeklyGraphComponent implements OnInit {
 
         // @ts-ignore
         var entry = {"name": wk.week + ' ' + iso,
-          "series": []
+          "series": [],
+          "pwr": [],
+          "hr": []
         }
         for (let f=0;f<5;f++) {
           let ser = {
-            name: 'Zone '+(f+1),
+            name: 'Heart rate Zone '+(f+1),
             value: 0,
             extra: {
               wk: {}
@@ -192,6 +330,7 @@ export class WeeklyGraphComponent implements OnInit {
           entry.series.push(ser)
         }
         for (let zone of wk.zones) {
+
           if (zone.zone !== undefined) {
             var ent = entry.series[zone.zone - 1]
             if (zone.kcal !== undefined) {
@@ -212,6 +351,30 @@ export class WeeklyGraphComponent implements OnInit {
         else if (avg_dur < 240 ) {   domain.push('lightsalmon') }
         else  {   domain.push('lightpink') }
       }
+
+      for (let stack of stacked) {
+        let week = +stack.name.split(' ')[0]
+        let wkPower = this.getPWRWeek(week)
+        stack.pwr = []
+        wkPower.forEach((value, index) => {
+          // @ts-ignore
+          stack.pwr.push({
+            name: 'Power Zone '+ (index+1),
+            value: value.value
+          })
+        });
+        let wkHR = this.getHRWeek(week)
+        stack.hr = []
+        wkHR.forEach((value, index) => {
+          // @ts-ignore
+          stack.hr.push({
+            name: 'Heart rate Zone '+ (index+1),
+            value: value.value
+          })
+        });
+      }
+
+
       this.stacked  = stacked
 
       this.colorSingle.domain = domain
@@ -219,7 +382,8 @@ export class WeeklyGraphComponent implements OnInit {
   }
 
   onResize(event: any) {
-    this.viewStacked = [event.target.innerWidth / this.widthQuota, this.viewStacked[1]];
+    this.viewHRPie = [event.target.innerWidth / this.widthQuota, this.viewHRPie[1]];
+    this.viewPWRPie = [event.target.innerWidth / this.widthQuota, this.viewPWRPie[1]];
   }
 
   getWeekNumber(d : Date) {
@@ -234,7 +398,7 @@ export class WeeklyGraphComponent implements OnInit {
   }
 
   getZone(activity: SummaryActivity) {
-    let zone = this.epr.person.hrzones
+    let zone = this.epr.getHRZone()
     if (zone == undefined) return 0;
     if (activity == undefined) return 1;
 
@@ -255,6 +419,52 @@ export class WeeklyGraphComponent implements OnInit {
     }
     return 5
   }
+
+  getPWRWeek(weekNo : number) {
+
+    let single: any[] = []
+    if (this.multiPWR !== undefined) {
+      for (let bar of this.multiPWR) {
+        var singleBar: any = {
+          name: bar.name,
+          value: 0
+        }
+        for (let wk of bar.series) {
+          if (this.yScaleMax<wk.value) this.yScaleMax = wk.value
+          if (wk.name === weekNo ) {
+            if (wk.value !== undefined) {
+              singleBar.value = wk.value
+            }
+          }
+        }
+        single.push(singleBar)
+      }
+    }
+    return single
+  }
+  getHRWeek(weekNo : number) {
+
+    let single: any[] = []
+    if (this.multiHR !== undefined) {
+      for (let bar of this.multiHR) {
+        var singleBar: any = {
+          name: bar.name,
+          value: 0
+        }
+        for (let wk of bar.series) {
+          if (this.yScaleMax<wk.value) this.yScaleMax = wk.value
+          if (wk.name === weekNo ) {
+            if (wk.value !== undefined) {
+              singleBar.value = wk.value
+            }
+          }
+        }
+        single.push(singleBar)
+      }
+    }
+    return single
+  }
+
   round(val : number | undefined) {
     if (val == undefined) return undefined
     return Math.round(val)
@@ -270,7 +480,6 @@ export class WeeklyGraphComponent implements OnInit {
     if (this.epr.person !== undefined && this.epr.person.ftp !== undefined) {
       this.colorFTP.domain = this.epr.getFTPColours()
     }
-
   }
 
 }

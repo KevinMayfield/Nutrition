@@ -44,7 +44,7 @@ export interface Person {
   updated_at?: Date;
   ftp?: number;
   weight?: number;
-  hrzones?: hrZone;
+  maximumHR?: number;
   age?: number;
   height?: number;
   waist?: number;

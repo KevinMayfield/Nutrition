@@ -1,5 +1,5 @@
 .example-full-width {
-  width: 90%;
+  width: 100%;
 }
 .example-third-width {
   width: 30%;
@@ -38,13 +38,14 @@ mat-sidenav {
 {
   flex-direction: column;
 }
+.mat-grid-tile {
+  border: solid 0px lightgrey;
+}
 
 .green-progress .mat-progress-bar-fill::after {
   background-color: green !important;
 }
-.mat-grid-tile {
-  border: solid 1px lightgrey;
-}
+
 
 mat-chip {
   justify-content: space-between;

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Parameters, QuestionnaireResponse, ValueSetExpansionContains} from "fhir/r4";
 import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
@@ -14,6 +14,7 @@ import {ActivityType} from "../models/activity-type";
 import {EPRService} from "../service/epr.service";
 import {ActivityDay, ActivitySession} from "../models/activity-day";
 import {MatDatepickerInputEvent} from "@angular/material/datepicker";
+import {Color, ScaleType} from "@swimlane/ngx-charts";
 
 @Component({
   selector: 'app-resting-metabolic-rate',
@@ -22,6 +23,25 @@ import {MatDatepickerInputEvent} from "@angular/material/datepicker";
     encapsulation: ViewEncapsulation.None,
 })
 export class ActivityComponent implements OnInit{
+
+    colorScheme: Color = {
+        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+        group: ScaleType.Ordinal,
+        name: "",
+        selectable: false
+    }
+    @Input()
+    widthQuota: number = 1;
+    viewEnergyPie:  [number, number] = [500, 200];
+    energy= [{
+        "name": "Resting Metabolic Rate",
+        "value": 8940000
+    },
+    {
+        "name": "Daily Calorie Needs",
+        "value": 5000000
+    }];
+
     height: number | undefined;
     weight: number | undefined;
     rmr: number | undefined;
@@ -124,37 +144,20 @@ export class ActivityComponent implements OnInit{
             this.ftp =this.epr.person.ftp
             this.zonePWR = this.epr.getPWRZone()
         }
-        if (((this.epr.person.hrzones === undefined || this.epr.person.hrzones.calculated)) && this.age !== undefined) {
+        if (this.maximumHR !== undefined && this.maximumHR !== this.epr.person.maximumHR) {
+
+            this.epr.setMaximumHR(this.maximumHR)
+            this.zoneHR = this.epr.getHRZone()
+        }
+        if (this.epr.person.maximumHR === undefined && this.age !== undefined) {
+            console.log('age generated change')
             let zone = 220 - this.age
             this.maximumHR = this.round(zone)
             if (zone !== undefined) {
-                this.epr.setHRZone( {
-                    calculated: true,
-                    maximumHR: this.round(zone),
-                    z1: {
-                        min: Math.round(zone * 0.5),
-                        max: Math.round(zone * 0.6)
-                    },
-                    z2: {
-                        min: Math.round(zone * 0.6),
-                        max: Math.round(zone * 0.7)
-                    },
-                    z3: {
-                        min: Math.round(zone * 0.7),
-                        max: Math.round(zone * 0.8)
-                    },
-                    z4: {
-                        min: Math.round(zone * 0.8),
-                        max: Math.round(zone * 0.9)
-                    },
-                    z5: {
-                        min: Math.round(zone * 0.9),
-                        max: Math.round(zone * 1.0)
-                    }
-                })
+                this.epr.setMaximumHR(zone)
             }
-
         }
+
         if (this.administrativeGenders !== undefined && this.epr.person.sex !== undefined) {
             for (var gender of this.administrativeGenders) {
 
@@ -179,6 +182,12 @@ export class ActivityComponent implements OnInit{
                 // @ts-ignore
                 this.dailyEnergy = this.rmr * (+this.exerciseFrequency.code)
             }
+            this.energy[0].value = this.rmr
+            if (this.dailyEnergy !== undefined) {
+                this.energy[1].value = this.dailyEnergy - this.rmr}
+            else {
+                this.energy[1].value = 0
+            }
         }
     }
 
@@ -188,14 +197,17 @@ export class ActivityComponent implements OnInit{
             this.administrativeGenders = this.smart.getContainsExpansion(result)
         })
 
+        this.zoneHR = this.epr.getHRZone()
 
-        this.zoneHR = this.epr.person.hrzones
-        this.maximumHR = this.zoneHR?.maximumHR
         this.epr.zoneChange.subscribe(zone => {
             console.log('hr zone change')
             this.zoneHR = zone
             this.maximumHR = this.zoneHR?.maximumHR
+            this.getStrava()
         })
+        if (this.epr.person.maximumHR !== undefined) {
+            this.maximumHR = this.epr.person.maximumHR
+        }
         if (this.epr.person.age !== undefined) {
             this.age = this.epr.person.age
         }
@@ -211,7 +223,6 @@ export class ActivityComponent implements OnInit{
         }
         this.getStrava()
         this.strava.tokenChange.subscribe(()=> {
-
             this.getStrava()
         })
 
@@ -248,9 +259,11 @@ export class ActivityComponent implements OnInit{
                     name: activity.name,
                     activity: activity
                 }
+                /*
                 if (activity.zones !== undefined && (this.epr.person.hrzones === undefined || this.epr.person.hrzones?.calculated)) {
                     this.getZone(activity)
                 }
+                 */
                 if (activity.type !== undefined) session.type = activity.type
                 act.sessions.push(session)
                 this.activityArray[this.strava.duration - diffDays] = act
@@ -628,7 +641,7 @@ export class ActivityComponent implements OnInit{
     }
 
 
-
+/*
     getZone(activity: any) {
         if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return
         for (let zone of activity.zones) {
@@ -665,6 +678,8 @@ export class ActivityComponent implements OnInit{
             }
         }
     }
+
+ */
 
     viewPA() {
         window.open("https://build.fhir.org/ig/HL7/physical-activity/measures.html", "_blank")
