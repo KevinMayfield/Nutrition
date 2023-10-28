@@ -31,7 +31,7 @@ export class ActivityComponent implements OnInit{
         selectable: false
     }
     @Input()
-    widthQuota: number = 1;
+    widthQuota: number = 2;
     viewEnergyPie:  [number, number] = [500, 200];
     energy= [{
         "name": "Resting Metabolic Rate",
@@ -130,8 +130,7 @@ export class ActivityComponent implements OnInit{
         private strava: StravaService,
         protected sanitizer: DomSanitizer,
         private _liveAnnouncer: LiveAnnouncer) {
-       // this.sanitizer.bypassSecurityTrustHtml("<mat-icon>local_pizza</mat-icon>")
-
+        this.viewEnergyPie = [innerWidth / this.widthQuota, this.viewEnergyPie[1]];
     }
     calculate() {
         if (this.age !== undefined && this.age !== this.epr.person.age) {
@@ -158,6 +157,10 @@ export class ActivityComponent implements OnInit{
             }
         }
 
+        this.setGenders()
+        this.calculateEnergy()
+    }
+    setGenders() {
         if (this.administrativeGenders !== undefined && this.epr.person.sex !== undefined) {
             for (var gender of this.administrativeGenders) {
 
@@ -169,28 +172,42 @@ export class ActivityComponent implements OnInit{
                 }
             }
         }
-        this.calculateEnergy()
     }
-
     calculateEnergy() {
         if (this.weight != undefined
             && this.height != undefined
             && this.administrativeGender !== undefined) {
-            this.rmr = (this.weight * 10) + (6.25 * this.height)
+
+            let energy= [{
+                "name": "Resting Metabolic Rate",
+                "value": 0
+            },
+                {
+                    "name": "Daily Calorie Needs",
+                    "value": 0
+                }];
+            energy[0].value = (this.weight * 10) + (6.25 * this.height)
             if (this.administrativeGender.code == 'male') {
-                this.rmr = this.rmr - (5 * this.age) + 5
+                energy[0].value = energy[0].value - (5 * this.age) + 5
             } else {
-                this.rmr = this.rmr - (5 * this.age) - 16
+                energy[0].value = energy[0].value - (5 * this.age) - 16
             }
             if (this.exerciseFrequency !== undefined) {
                 // @ts-ignore
-                this.dailyEnergy = this.rmr * (+this.exerciseFrequency.code)
+                energy[1].value = energy[0].value * (+this.exerciseFrequency.code)
             }
-            this.energy[0].value = this.rmr
+
             if (this.dailyEnergy !== undefined) {
-                this.energy[1].value = this.dailyEnergy - this.rmr}
+                energy[1].value = energy[1].value - this.energy[0].value}
             else {
-                this.energy[1].value = 0
+                energy[1].value = 0
+            }
+            if (this.energy[0].value !== energy[0].value ||
+                this.energy[1].value !== energy[1].value) {
+                // only refresh if necessary
+                this.rmr = energy[0].value
+                this.dailyEnergy = energy[1].value
+                this.energy = energy
             }
         }
     }
@@ -199,6 +216,8 @@ export class ActivityComponent implements OnInit{
 
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
             this.administrativeGenders = this.smart.getContainsExpansion(result)
+            console.log(this.administrativeGenders)
+            this.setGenders()
         })
 
         this.zoneHR = this.epr.getHRZone()
@@ -321,63 +340,63 @@ export class ActivityComponent implements OnInit{
 
         })
         this.smart.patientChangeEvent.subscribe(patient => {
-                this.age = this.smart.age
+            this.age = this.smart.age
 
             this.setSelectAnswers()
-                var parameters: Parameters = {
-                    "resourceType": "Parameters",
+            var parameters: Parameters = {
+                "resourceType": "Parameters",
 
-                    "parameter": [
-                        {
-                            "name": "subject",
-                            "valueReference": {
-                                "reference": "Patient/" + patient.id
-                            }
-                        },
-                        {
-                            "name": "questionnaireRef",
-                            "valueReference": {
-                                "reference": "Questionnaire/b1132517-9aea-4968-910b-ccfa3889c33a"
-                            }
+                "parameter": [
+                    {
+                        "name": "subject",
+                        "valueReference": {
+                            "reference": "Patient/" + patient.id
                         }
-                    ]
-                }
+                    },
+                    {
+                        "name": "questionnaireRef",
+                        "valueReference": {
+                            "reference": "Questionnaire/b1132517-9aea-4968-910b-ccfa3889c33a"
+                        }
+                    }
+                ]
+            }
 
-                // @ts-ignore
-                this.http.post(this.smart.epr + '/Questionnaire/$populate', parameters).subscribe(result => {
+            // @ts-ignore
+            this.http.post(this.smart.epr + '/Questionnaire/$populate', parameters).subscribe(result => {
 
-                    if (result !== undefined) {
+                if (result !== undefined) {
 
-                        var parameters = result as Parameters
-                        if (parameters.parameter !== undefined) {
+                    var parameters = result as Parameters
+                    if (parameters.parameter !== undefined) {
 
-                            for (var parameter of parameters.parameter) {
-                                if (parameter.name === 'response') {
+                        for (var parameter of parameters.parameter) {
+                            if (parameter.name === 'response') {
 
-                                    var questionnaireResponse = parameter.resource as QuestionnaireResponse
-                                    if (questionnaireResponse.item !== undefined) {
+                                var questionnaireResponse = parameter.resource as QuestionnaireResponse
+                                if (questionnaireResponse.item !== undefined) {
 
-                                        for (var item of questionnaireResponse.item) {
-                                            if (item.linkId === '9832470915833') {
-                                                // @ts-ignore
-                                                this.height = item.answer[0].valueQuantity.value
-                                            }
+                                    for (var item of questionnaireResponse.item) {
+                                        if (item.linkId === '9832470915833') {
+                                            // @ts-ignore
+                                            this.height = item.answer[0].valueQuantity.value
+                                        }
 
-                                            if (item.linkId === '81247982689') {
-                                                // @ts-ignore
-                                                this.weight = item.answer[0].valueQuantity.value
-                                            }
-                                            if (item.linkId === '7761181498456') {
-                                                // @ts-ignore
-                                                this.waist = item.answer[0].valueQuantity.value
-                                            }
+                                        if (item.linkId === '81247982689') {
+                                            // @ts-ignore
+                                            this.weight = item.answer[0].valueQuantity.value
+                                        }
+                                        if (item.linkId === '7761181498456') {
+                                            // @ts-ignore
+                                            this.waist = item.answer[0].valueQuantity.value
                                         }
                                     }
                                 }
                             }
-
-                            this.calculate()
                         }
+
+                        this.calculate()
+                    }
                     }
                 })
             }
@@ -714,5 +733,8 @@ export class ActivityComponent implements OnInit{
 
     onClick() {
         this.opened = !this.opened
+    }
+    onResize(event: any) {
+        this.viewEnergyPie = [event.target.innerWidth / this.widthQuota, this.viewEnergyPie[1]];
     }
 }

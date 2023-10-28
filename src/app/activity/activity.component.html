@@ -119,6 +119,7 @@
                                    [scheme]="colorScheme"
                                    label="Daily Energy (kcal)"
                                    [results]="energy"
+                                   (window:resize)="onResize($event)"
                            >
                                      </ngx-charts-advanced-pie-chart>
                       </mat-grid-tile>

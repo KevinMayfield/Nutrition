@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {ActivityDay} from "../../models/activity-day";
 import {hrZone} from "../../models/person";
 import {Color, ScaleType} from "@swimlane/ngx-charts";
@@ -91,9 +91,8 @@ export class WeeklyGraphComponent implements OnInit {
   constructor(
       private epr: EPRService,
       private strava: StravaService){
-
-     this.viewHRPie = [innerWidth / this.widthQuota, this.viewHRPie[1]];
-    this.viewPWRPie = [innerWidth / this.widthQuota, this.viewPWRPie[1]];
+      this.viewHRPie = [innerWidth / this.widthQuota, this.viewHRPie[1]];
+      this.viewPWRPie = [innerWidth / this.widthQuota, this.viewPWRPie[1]];
   }
   onSelect(event: any) {
     console.log(event);

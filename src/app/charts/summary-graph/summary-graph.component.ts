@@ -17,7 +17,7 @@ export class SummaryGraphComponent implements OnChanges {
   activity: ActivityDay[] | undefined
 
   @Input()
-  widthQuota: number = 1.35;
+  widthQuota: number = 1.1;
 
   @Input() set dayActivity(activity: ActivityDay[]) {
 
