@@ -169,6 +169,10 @@ export class ActivityComponent implements OnInit{
                 }
             }
         }
+        this.calculateEnergy()
+    }
+
+    calculateEnergy() {
         if (this.weight != undefined
             && this.height != undefined
             && this.administrativeGender !== undefined) {
@@ -545,7 +549,7 @@ export class ActivityComponent implements OnInit{
                     this.exerciseIntense = intense
                 }
             }
-            this.calculate()
+            this.calculateEnergy()
         }
     }
     round(val : number | undefined) {
