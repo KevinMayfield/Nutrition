@@ -4,7 +4,7 @@
             <ngx-charts-advanced-pie-chart
                     [view]="viewHRPie"
                     [scheme]="colorStacked"
-                    label="Exercise energy (kcal) - Average Activity Heart Rate"
+                    label="Exercise energy (kcal) - Heart Rate Zone (Average for Activity)"
                     [results]="pie.series"
                     [gradient]="gradient"
                     (select)="onSelect($event)"
@@ -15,7 +15,7 @@
                  <ngx-charts-advanced-pie-chart
                          [view]="viewPWRPie"
                          [scheme]="colorStacked"
-                         label="Exercise duration (min) - Heart Rate"
+                         label="Exercise duration (min) - Heart Rate Zone"
                          [results]="pie.hr"
                          [gradient]="gradient"
                          (select)="onSelect($event)"
@@ -27,7 +27,7 @@
              <ngx-charts-advanced-pie-chart
                      [view]="viewPWRPie"
                      [scheme]="colorFTP"
-                     label="Exercise duration (min) - Power"
+                     label="Exercise duration (min) - Power Zone"
                      [results]="pie.pwr"
                      [gradient]="gradient"
                      (select)="onSelect($event)"

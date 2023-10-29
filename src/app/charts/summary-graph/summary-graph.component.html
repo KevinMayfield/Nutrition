@@ -23,10 +23,10 @@
                                  </span>
         <span class="material-symbols-outlined">local_pizza</span>
         {{model.value}} kcal
-        <br/>
+        <hr/>
         <span *ngIf="model.extra !== undefined && model.extra.session !== undefined">
             Activities
-            <br/>
+            <hr/>
             <span *ngFor="let act of model.extra.session">
 
                      <span *ngIf="act.type !== undefined" class="material-symbols-outlined">
@@ -41,7 +41,7 @@
                                              timer
                                              </span>
                     {{duration(act.activity.elapsed_time/60)}}
-                    <br/>
+                    <hr/>
                 </span>
         </span>
 

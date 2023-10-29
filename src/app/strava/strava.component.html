@@ -1,5 +1,23 @@
-<mat-list>
-    <mat-list-item  (click)="connectStrava()" >
-        <img class="img-responsive" src="assets/btn_strava_connectwith_orange.png" alt="image">
-    </mat-list-item>
-</mat-list>
+<mat-card>
+<mat-card-content>
+    <td-message
+            label="Under Development"
+            sublabel="Work in progress"
+            icon="information"
+    ></td-message>
+    <td-markdown [anchor]="anchor" >{{ markdown }}</td-markdown>
+    <mat-list>
+        <mat-list-item  (click)="connectStrava()" >
+            <img class="img-responsive" src="assets/btn_strava_connectwith_orange.png" alt="image">
+        </mat-list-item>
+    </mat-list>
+</mat-card-content>
+<mat-card-actions>
+    <button mat-button class="text-upper" color="accent" (click)="jumpToH1()">
+        Jump to heading 1
+    </button>
+    <button mat-button class="text-upper" color="accent" (click)="jumpToH2()">
+        Jump to heading 2
+    </button>
+</mat-card-actions>
+</mat-card>

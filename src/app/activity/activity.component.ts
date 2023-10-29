@@ -34,7 +34,7 @@ export class ActivityComponent implements OnInit{
     widthQuota: number = 2;
     viewEnergyPie:  [number, number] = [500, 200];
     energy= [{
-        "name": "Resting Metabolic Rate",
+        "name": "Base Metabolic Rate",
         "value": 8940000
     },
     {
@@ -179,7 +179,7 @@ export class ActivityComponent implements OnInit{
             && this.administrativeGender !== undefined) {
 
             let energy= [{
-                "name": "Resting Metabolic Rate",
+                "name": "Base Metabolic Rate",
                 "value": 0
             },
                 {

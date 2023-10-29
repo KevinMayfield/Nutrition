@@ -13,6 +13,46 @@ export class StravaComponent implements OnInit{
     stravaConnect = true;
     stravaComplete = false;
     athlete: Person | undefined;
+    markdown: string = `
+## What does it do
+    
+ - An estimated daily calorie needs from data held in Strava. This is adjusted according to activities recorded. 
+ - Body Mass Index (BMI) calculation
+ - Activity Logs, this allows a user to review how they are performing exercise. This is available in two versions
+    - Heart rate. The use of a heart rate monitor or smart watch is recommended.
+    - Power. This requires a power meter on your bike or indoor trainer. 
+
+## Aims
+
+ - To help people become healthier, and so reducing the demand on health services, by focusing on health aspects to avoid overeating, over training and [Relative energy deficiency in sport](https://en.wikipedia.org/wiki/Relative_energy_deficiency_in_sport)
+ - To provide a useful source of information for a user and health/wellbeing practitioner such as a GP, Nutritionist, Fitness Coach, etc.
+ - To provide progress reports to a health/wellbeing practitioner. 
+    - The author of this website is an experienced health interoperability professional (with an interest in Sports Science and cycling) and is available for implementing [US Physical Activity](https://build.fhir.org/ig/HL7/physical-activity/) in the UK.
+ - Other features
+    - [Physical Activity Readiness Questionnaire for Everyone (PAR-Q+)](https://eparmedx.com/) in both email+pdf and modern (HL7 FHIR) formats.
+    - Physical Activity Care Plans 
+
+## Requirements
+
+In order to get the most out of the application, the following data should be recorded in Strava in the \`Settings\` section.
+
+ - \`My Profile\`
+    - Gender
+    - Weight
+ - \`My Performance\`
+    - Functional Threshold Power (FTP)
+
+Once you have connected to Strava via the button below, you should enter in the following information.
+
+  - Height in centimetres
+  - Age (this is not supplied by Strava to external applications)  
+  - Maximum Heart rate - this will be calculated from the age value you supply, adjust to your individual value.
+  
+These values are stored locally in your web browser, the application does not store any personnel information.        
+    `;
+
+    anchor!: string;
+
     constructor(public strava: StravaService,
                 private router: Router,
                 private route: ActivatedRoute,) {
@@ -99,5 +139,13 @@ export class StravaComponent implements OnInit{
                 }
             }
         );
+    }
+
+    jumpToH1(): void {
+        this.anchor = 'heading-1';
+    }
+
+    jumpToH2(): void {
+        this.anchor = 'heading-2';
     }
 }

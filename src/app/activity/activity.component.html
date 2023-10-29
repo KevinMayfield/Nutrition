@@ -103,7 +103,7 @@
                 </mat-form-field>
             </div> -->
             <div class="example-full-width">
-                <h3>Energy</h3>
+                <h3>Energy Intake Estimates</h3>
                 <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
                             label="Information"
                             sublabel="Gender, Height and Weight is required to estimate energy intake."
@@ -111,9 +111,11 @@
                             icon="info">
                     <button td-message-actions mat-button >View More</button>
                 </td-message>
+                The estimates are based on activities recorded in Strava.
                 <div *ngIf="dailyEnergy !== undefined || rmr !== undefined">
-                    <mat-grid-list cols="2" rowHeight="5:1">
-                      <mat-grid-tile rowspan="2">
+                    <mat-grid-list cols="2" rowHeight="2:1">
+                      <mat-grid-tile>
+                          <span class="bigger">{{exerciseFrequency?.display}}</span>
                            <ngx-charts-advanced-pie-chart
                                    [view]="viewEnergyPie"
                                    [scheme]="colorScheme"
@@ -123,23 +125,32 @@
                            >
                                      </ngx-charts-advanced-pie-chart>
                       </mat-grid-tile>
-                        <mat-grid-tile style="background: azure">
-                            <h3>{{exerciseFrequency?.display}}</h3>
-                        </mat-grid-tile>
-                        <mat-grid-tile style="background: lightgoldenrodyellow">
-                            <h3>{{exerciseIntense?.display}}</h3>
+                        <mat-grid-tile style="background: lightgoldenrodyellow" layout-align="centre ">
+                            <span class="bigger">{{exerciseIntense?.display}}</span>
+                            <br/>
                             <span *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-light'" >
-                                 {{perKgKCal(3)}}-{{perKgKCal(5)}} grams of carbohydrate per day ({{perKgKCal(3*4)}}-{{perKgKCal(5*4)}} kcal)
-                                <!--  This is grams figure of carbs {{perKgKCal(3)}}-{{perKgKCal(5)}} g <-->
+                                    <span class="bigger">{{perKgKCal(3*4)}} -> {{perKgKCal(5*4)}} kcal</span>
+                                <br/>
+                                 <br/>
+                                <small>{{perKgKCal(3)}}-{{perKgKCal(5)}} grams of carbohydrate per day</small>
                             </span>
                             <span *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate'" >
-                                {{perKgKCal(5)}}-{{perKgKCal(7)}} grams of carbohydrate per day ({{perKgKCal(5*4)}}-{{perKgKCal(7*4)}} kcal)
+                                 <span class="bigger">{{perKgKCal(5*4)}} -> {{perKgKCal(7*4)}} kcal</span>
+                                <br/>
+                                 <br/>
+                                <small>{{perKgKCal(5)}}-{{perKgKCal(7)}} grams of carbohydrate per day</small>
                             </span>
                             <span *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate-high'" >
-                                {{perKgKCal(6)}}-{{perKgKCal(10)}} grams of carbohydrate per day ({{perKgKCal(6*4)}}-{{perKgKCal(10*4)}} kcal)
+                                <span class="bigger">{{perKgKCal(6*4)}} -> {{perKgKCal(10*4)}} kcal</span>
+                                <br/>
+                                 <br/>
+                                <small>{{perKgKCal(6)}}-{{perKgKCal(10)}} grams of carbohydrate per day</small>
                             </span>
                             <span *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-high'" >
-                                {{perKgKCal(8)}}-{{perKgKCal(12)}} grams of carbohydrate per day ({{perKgKCal(8*4)}}-{{perKgKCal(12*4)}} kcal)
+                                <span class="bigger">{{perKgKCal(8*4)}} -> {{perKgKCal(12*4)}} kcal</span>
+                                <br/>
+                                 <br/>
+                                <small>{{perKgKCal(8)}}-{{perKgKCal(12)}} grams of carbohydrate per day</small>
                             </span>
                         </mat-grid-tile>
 
