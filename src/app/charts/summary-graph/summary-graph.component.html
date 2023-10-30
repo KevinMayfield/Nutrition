@@ -1,5 +1,6 @@
+<div #containerRef>
 <ngx-charts-bar-vertical-stacked *ngIf="single!==undefined"
-                         [view]="view"
+                                 [view]="[containerRef.offsetWidth, 300]"
                          [scheme]="colorScheme"
                          [results]="single"
                          [gradient]="gradient"
@@ -12,7 +13,7 @@
                          [yAxisLabel]="yAxisLabel"
                          (select)="onSelect($event)"
                             [animations]="false"
-                                 (window:resize)="onResize($event)">
+                                >
     <ng-template #tooltipTemplate let-model="model">
       <!--  {{model|json}} -->
         <b>Heart Rate Zone {{model.name}}</b>
@@ -52,3 +53,4 @@
         <pre>{{model|json}}</pre>
     </ng-template> -->
 </ngx-charts-bar-vertical-stacked>
+</div>

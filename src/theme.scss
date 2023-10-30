@@ -74,6 +74,8 @@ $black: #000;
 $chart-tooltip-border-radius: 5px;
 $chart-caret-size: 7px solid $white !default;
 
+
+
 @mixin charts-tooltip($theme) {
         $typography: $typography;
         $foreground: map-get($theme, foreground);

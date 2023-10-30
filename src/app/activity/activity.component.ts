@@ -111,13 +111,10 @@ export class ActivityComponent implements OnInit{
     @ViewChild('pwrSort') pwrSort: MatSort | null | undefined;
     @ViewChild('paginatorHR',) paginatorHR: MatPaginator | undefined;
     @ViewChild('paginatorKJ',) paginatorKJ: MatPaginator | undefined;
-    displayedColumnsHR = ['date', 'type',
-        'heart',
-        'avghr', 'peakhr','duration', 'kcal', 'cadence']
-    displayedColumnsKJ = ['date', 'type',
-        "power",'avgpwr','avghr',
-        'duration',"kcal",  "cadence"]
-
+    displayedColumnsHR = ['date', 'heart']
+   // displayedColumnsHR = ['date', 'type', 'heart', 'avghr', 'peakhr','duration', 'kcal', 'cadence']
+    displayedColumnsKJ = ['date', "power"]
+  //  displayedColumnsKJ = ['date', "power",'type','avgpwr','avghr', 'duration',"kcal",  "cadence"]
     opened: boolean = true;
     hasPowerData: boolean = false;
     endDate: Date = new Date();

@@ -52,8 +52,8 @@ export class WeeklyGraphComponent implements OnInit {
 
   stacked: any[] | undefined;
 
-  viewHRPie:  [number, number] = [700, 200];
-  viewPWRPie:  [number, number] = [800, 200];
+  //viewHRPie:  [number, number] = [700, 200];
+ // viewPWRPie:  [number, number] = [800, 200];
 
   colorFTP: Color = {
     domain: this.epr.getFTPColours(),
@@ -91,8 +91,8 @@ export class WeeklyGraphComponent implements OnInit {
   constructor(
       private epr: EPRService,
       private strava: StravaService){
-      this.viewHRPie = [innerWidth / this.widthQuota, this.viewHRPie[1]];
-      this.viewPWRPie = [innerWidth / this.widthQuota, this.viewPWRPie[1]];
+ //     this.viewHRPie = [innerWidth / this.widthQuota, this.viewHRPie[1]];
+ //     this.viewPWRPie = [innerWidth / this.widthQuota, this.viewPWRPie[1]];
   }
   onSelect(event: any) {
     console.log(event);
@@ -380,11 +380,12 @@ export class WeeklyGraphComponent implements OnInit {
     }
   }
 
+  /*
   onResize(event: any) {
     this.viewHRPie = [event.target.innerWidth / this.widthQuota, this.viewHRPie[1]];
     this.viewPWRPie = [event.target.innerWidth / this.widthQuota, this.viewPWRPie[1]];
   }
-
+*/
   getWeekNumber(d : Date) {
     return this.epr.getWeekNumber(d);
   }

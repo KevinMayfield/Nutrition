@@ -1,37 +1,36 @@
-<span *ngIf="stacked !== undefined && stacked.length>0">
+<span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
     <span *ngFor="let pie of stacked | reverse">
             <h3>Week {{pie.name}}</h3>
             <ngx-charts-advanced-pie-chart
-                    [view]="viewHRPie"
+                    [view]="[containerRef.offsetWidth, 200]"
                     [scheme]="colorStacked"
                     label="Exercise energy (kcal) - Heart Rate Zone (Average for Activity)"
                     [results]="pie.series"
                     [gradient]="gradient"
                     (select)="onSelect($event)"
-                    (window:resize)="onResize($event)"
             >
             </ngx-charts-advanced-pie-chart>
             <span *ngIf="pie.hr !== undefined">
                  <ngx-charts-advanced-pie-chart
-                         [view]="viewPWRPie"
+                         [view]="[containerRef.offsetWidth, 200]"
                          [scheme]="colorStacked"
                          label="Exercise duration (min) - Heart Rate Zone"
                          [results]="pie.hr"
                          [gradient]="gradient"
                          (select)="onSelect($event)"
-                         (window:resize)="onResize($event)"
+
                  >
                 </ngx-charts-advanced-pie-chart>
             </span>
             <span *ngIf="pie.pwr !== undefined">
              <ngx-charts-advanced-pie-chart
-                     [view]="viewPWRPie"
+                     [view]="[containerRef.offsetWidth, 200]"
                      [scheme]="colorFTP"
                      label="Exercise duration (min) - Power Zone"
                      [results]="pie.pwr"
                      [gradient]="gradient"
                      (select)="onSelect($event)"
-                     (window:resize)="onResize($event)"
+
              >
             </ngx-charts-advanced-pie-chart>
                 </span>

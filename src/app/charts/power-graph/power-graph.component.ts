@@ -35,7 +35,7 @@ export class PowerGraphComponent implements OnInit{
     showYAxisLabel = true;
     yAxisLabel = 'time (min)';
     @Input()
-    widthQuota: number = 3.8;
+    widthQuota: number = 1.4;
 
     constructor(
         private epr: EPRService){
@@ -57,19 +57,19 @@ export class PowerGraphComponent implements OnInit{
              this.view = [innerWidth / this.widthQuota, height + (ratio * 40) ]
          }
          else this.view = [innerWidth / this.widthQuota, 240]
-         var single = []
+         var single: any[] = []
         for(let zone of this.activity.zones) {
             if (zone.type === 'power') {
-                for (let res of zone.distribution_buckets) {
+                zone.distribution_buckets.forEach((res,index)=> {
                     single.push({
-                            "name": res.min + '-' + res.max,
+                            "name": 'Z'+(index+1),
                             "value": Math.round(res.time/60),
                             "extra": {
-                                totalTime: Math.round(this.activity.elapsed_time/60)
+                                totalTime: this.activity !== undefined ? Math.round(this.activity.elapsed_time/60) : 0
                             }
                         }
                     )
-                }
+                })
             }
         }
         this.single = single

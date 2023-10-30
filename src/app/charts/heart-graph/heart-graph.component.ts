@@ -32,7 +32,7 @@ export class HeartGraphComponent implements OnInit{
   yAxisLabel = 'time (min)';
 
   @Input()
-  widthQuota: number = 4;
+  widthQuota: number = 1.4;
 
   constructor(private epr : EPRService) {
     this.view = [innerWidth / this.widthQuota, this.view[1]];
@@ -48,30 +48,31 @@ export class HeartGraphComponent implements OnInit{
   ngOnInit(): void {
 
     if (this.activity !== undefined) {
-      var single = []
-      if (this.activity.elapsed_time < 120*60 ) {
-        var height = 40
-        let ratio = Math.round((this.activity.elapsed_time * 4) / (60 * 120))
+      if (this.activity.elapsed_time !== undefined) {
+        var single: any[] = []
+        if (this.activity.elapsed_time < 120 * 60) {
+          var height = 40
+          let ratio = Math.round((this.activity.elapsed_time * 4) / (60 * 120))
 
-        this.view = [innerWidth / this.widthQuota, height + (ratio * 40) ]
-      }
-      else this.view = [innerWidth / this.widthQuota, 240]
-      for(let zone of this.activity.zones) {
-        if (zone.type === 'heartrate') {
-          for (let res of zone.distribution_buckets) {
-            single.push({
-                  "name": res.min+ '-' + res.max,
-                  "value": Math.round(res.time/60),
-                  "extra": {
-                    totalTime: Math.round(this.activity.elapsed_time/60)
+          this.view = [innerWidth / this.widthQuota, height + (ratio * 40)]
+        } else this.view = [innerWidth / this.widthQuota, 240]
+        for (let zone of this.activity.zones) {
+          if (zone.type === 'heartrate') {
+            zone.distribution_buckets.forEach((res, index) => {
+              single.push({
+                    "name": 'Z' + (index+1),
+                    "value": Math.round(res.time / 60),
+                    "extra": {
+                      totalTime: this.activity !== undefined ? Math.round(this.activity.elapsed_time / 60) : 0
+                    }
                   }
-                }
-            )
+              )
+            })
           }
         }
-      }
 
-      this.single = single
+        this.single = single
+      }
     }
   }
   onResize(event: any) {

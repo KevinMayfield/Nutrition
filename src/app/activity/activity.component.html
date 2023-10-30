@@ -157,47 +157,7 @@
                         </mat-grid-list>
                 </div>
             </div>
-          <!--  <div class="example-full-width">
-                    <span *ngIf="weight !== undefined">
-                    <h3>Daily Carbohydate Intake</h3>
-                    <table class="mat-elevation-z8" >
-                        <tr>
-                            <th>Activity Level</th>
-                            <th>Recommended Carbohydrate Intake (g/kg BW)</th>
-                             <th>Recommended Energy (kcal)</th>
-                            <th>Recommended Carbohydrate Intake (g)</th>
-                        </tr>
-                        <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-light'" >
-                            <td>Very Light Training (low-intensity or skill-based exercise)</td>
-                            <td>3-5 g/kg BW daily</td>
-                            <td>{{perKgKCal(3*4)}}-{{perKgKCal(5*4)}} kcal</td>
-                            <td>{{perKgKCal(3)}}-{{perKgKCal(5)}} g </td>
 
-                         </tr>
-                         <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate'">
-                             <td>Moderate-intensity training (approx. 1 h daily)</td>
-                             <td>5-7 g/kg BW daily</td>
-                              <td>{{perKgKCal(5*4)}}-{{perKgKCal(7*4)}} kcal</td>
-                             <td>{{perKgKCal(5)}}-{{perKgKCal(7)}} g</td>
-
-                         </tr>
-                         <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate-high'">
-                             <td>Moderate-high-intensity training (approx. 1-3 h daily)</td>
-                             <td>6-10 g/kg BW daily</td>
-                              <td>{{perKgKCal(6*4)}}-{{perKgKCal(10*4)}} kcal</td>
-                             <td>{{perKgKCal(6)}}-{{perKgKCal(10)}} g</td>
-
-                         </tr>
-                         <tr *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-high'">
-                             <td>Very high-intensity training (> 4 h daily)</td>
-                             <td>8-12 g/kg BW daily</td>
-                              <td>{{perKgKCal(8*4)}}-{{perKgKCal(12*4)}} kcal</td>
-                             <td>{{perKgKCal(8)}}-{{perKgKCal(12)}} g </td>
-
-                         </tr>
-                     </table>
-                         </span>
-             </div> -->
             <app-weekly-graph [dayActivity]="activityArray" ></app-weekly-graph>
             <h3>Activity Summary</h3>
             <app-summary-graph [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
@@ -217,93 +177,75 @@
                         icon="info">
                 <button td-message-actions mat-button (click)="viewPA()">View More</button>
             </td-message>
-
-                <table mat-table [dataSource]="dataSourceHR" class="mat-elevation-z8"
+             <div>
+                <table mat-table matTableResponsive [dataSource]="dataSourceHR" class="mat-elevation-z8"
                        matSort #hrSort="matSort" (matSortChange)="announceSortChange($event)"
                        matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
                     <ng-container matColumnDef="date">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Date </th>
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 20%;"> Date </th>
                         <td mat-cell *matCellDef="let activity">
-                            {{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="type">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Type </th>
-                        <td mat-cell *matCellDef="let activity" [matTooltip]="activity.name">
-                            <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
-                                    {{getType(activity.type)}}
-                            </span></a>
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="link">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Link </th>
-                        <td mat-cell *matCellDef="let activity">
-                            <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><mat-icon>open_in_new</mat-icon></a>
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="name">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 20%;"> Name </th>
-                        <td mat-cell *matCellDef="let activity">
-                            {{activity.name}}
-                            <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><mat-icon>open_in_new</mat-icon></a>
+                            <div layout="column" layout-align="space-around start">
+                                <span>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</span>
+                                <span>
+                                      {{duration(activity.elapsed_time/60)}}
+                                </span>
+                                <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
+                                        {{getType(activity.type)}}
+                                </span></a>
+
+                            </div>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="heart">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Heart rate (beats per min) </th>
+                        <th mat-header-cell *matHeaderCellDef style="width: 80%;"> Heart rate (beats per min) </th>
                         <td mat-cell *matCellDef="let activity">
-                            {{activity.name}}
+                            <b>{{activity.name}}</b>
+                            <br/>
                             <app-heart-graph [activity]="activity"></app-heart-graph>
-                       </td>
-                    </ng-container>
-                    <ng-container matColumnDef="cadence">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Cadence </th>
-                        <td mat-cell *matCellDef="let activity">
-                            {{round(activity.average_cadence)}}
-                        </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="duration">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Duration </th>
-                        <td mat-cell *matCellDef="let activity">
-                            {{duration(activity.elapsed_time/60)}}
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="avghr">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Avg.  <span class="material-symbols-outlined">
-ecg_heart
-</span> </th>
-                        <td mat-cell *matCellDef="let activity">
-                            <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
+                            <hr/>
+                            <div layout="row" layout-align="space-around center">
+                                <span>
+                                    <span class="material-symbols-outlined">local_pizza</span> Energy
+                                    {{round(activity.kcal)}} kcal
+                                </span>
+                                <span>
+                                    <span class="material-symbols-outlined">ecg_heart</span>
+                                    Avg.  <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
                                 {{round(activity.average_heartrate)}}
                             </mat-chip>
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="peakhr">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Max. <span class="material-symbols-outlined">
-ecg_heart
-</span> </th>
-                        <td mat-cell *matCellDef="let activity">
-                            <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
-                                {{round(activity.max_heartrate)}}
-                            </mat-chip>
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="kcal">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef> Energy (kcal)</th>
-                        <td mat-cell *matCellDef="let activity">
-                            {{round(activity.kcal)}}
+                                    Max. <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
+                                    {{round(activity.max_heartrate)}}
+                                          </mat-chip>
+                                </span>
+                            </div>
+                            <div layout="row" layout-align="space-around center">
+                                <span *ngIf="activity.weighted_average_watts !== undefined">
+                                  <span class="material-symbols-outlined">bolt</span>
+                                                  Power Avg.  <mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
+                                            {{round(activity.weighted_average_watts)}}
+                                        </mat-chip>
+                                    (Watts)
+                                </span>
+                                <span *ngIf="activity.average_cadence !== undefined">
+                                    <span class="material-symbols-outlined">forward_circle</span>
+                                  Cadence {{round(activity.average_cadence)}}
+                             </span>
+                            </div>
                         </td>
                     </ng-container>
 
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHR"></tr>
+
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHR; sticky: true"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumnsHR;"></tr>
 
                     <tr class="mat-row" *matNoDataRow>
                         <td class="mat-cell" colspan="7">No data matching the filter </td>
                     </tr>
                 </table>
+             </div>
                 <mat-paginator #paginatorHR [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
         </mat-tab>
         <mat-tab *ngIf="hasPowerData" label="Physical Activity Log (Power)">
@@ -316,88 +258,72 @@ ecg_heart
             </td-message>
 
             <h3>Activity Logs</h3>
-            <table mat-table [dataSource]="dataSourceKJ" class="mat-elevation-z8"
+            <div>
+            <table mat-table matTableResponsive [dataSource]="dataSourceKJ" class="mat-elevation-z8"
                    matSort #pwrSort="matSort" (matSortChange)="announceSortChange($event)"
                    matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
                 <ng-container matColumnDef="date">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef> Date </th>
                     <td mat-cell *matCellDef="let activity">
-                        {{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="type">
-                    <th mat-header-cell *matHeaderCellDef style="width: 3%;"> Type </th>
-                    <td mat-cell *matCellDef="let activity" [matTooltip]="activity.name">
-                        <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
-                                    {{getType(activity.type)}}
-                            </span></a>
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="duration">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 3%;"> Duration </th>
-                    <td mat-cell *matCellDef="let activity">
-                        {{duration(activity.elapsed_time/60)}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="link">
-                    <th mat-header-cell  *matHeaderCellDef style="width: 5%;"> Link </th>
-                    <td mat-cell *matCellDef="let activity">
-                        <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><mat-icon>open_in_new</mat-icon></a>
+                        <div layout="column" layout-align="space-around start">
+                            <span>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</span>
+                            <span>
+                                      {{duration(activity.elapsed_time/60)}}
+                                </span>
+                            <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
+                                        {{getType(activity.type)}}
+                                </span></a>
+
+                        </div>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="power">
                     <th mat-header-cell *matHeaderCellDef > Power (watts) </th>
                     <td mat-cell *matCellDef="let activity">
-                        {{activity.name}}
+                        <b>{{activity.name}}</b>
+                        <br/>
                         <app-power-graph [activity]="activity"></app-power-graph>
+                        <hr/>
+                        <div layout="row" layout-align="space-around center">
+                                <span>
+                                    <span class="material-symbols-outlined">local_pizza</span>
+                                    Energy {{round(activity.kcal)}} kcal
+                                </span>
+                            <span>
+                                    <span class="material-symbols-outlined">ecg_heart</span>
+                                    Avg.  <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
+                                {{round(activity.average_heartrate)}}
+                            </mat-chip>
+                                    Max. <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
+                                    {{round(activity.max_heartrate)}}
+                                          </mat-chip>
+                                </span>
+                        </div>
+                        <div layout="row" layout-align="space-around center">
+                                <span>
+                                  <span class="material-symbols-outlined">bolt</span>
+                                                 Power Avg.  <mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
+                                            {{round(activity.weighted_average_watts)}}
+                                        </mat-chip>
+                                    (Watts)
+                                </span>
+                             <span>
+                                  <span class="material-symbols-outlined">forward_circle</span>
+                                  Cadence {{round(activity.average_cadence)}}
+                             </span>
+                        </div>
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="kcal">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef > Energy (kcal) </th>
-                    <td mat-cell *matCellDef="let activity">
-
-                        {{activity.kcal}}
-                    </td>
-                </ng-container>
-
-
-                <ng-container matColumnDef="cadence">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Cadence </th>
-                    <td mat-cell *matCellDef="let activity">
-                        {{round(activity.average_cadence)}}
-                    </td>
-                </ng-container>
-                weighted_average_watts
-                <ng-container matColumnDef="avgpwr">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Avg.  <span class="material-symbols-outlined">
-bolt
-</span> (Watts) </th>
-                    <td mat-cell *matCellDef="let activity">
-                        <mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
-                            {{round(activity.weighted_average_watts)}}
-                        </mat-chip>
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="avghr">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 5%;"> Avg.  <span class="material-symbols-outlined">
-ecg_heart
-</span> </th>
-                    <td mat-cell *matCellDef="let activity">
-                        <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
-                            {{round(activity.average_heartrate)}}
-                        </mat-chip>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumnsKJ"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsKJ; sticky: true"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumnsKJ;"></tr>
 
                 <tr class="mat-row" *matNoDataRow>
                     <td class="mat-cell" colspan="7">No data matching the filter </td>
                 </tr>
             </table>
+            </div>
             <mat-paginator #paginatorKJ [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
         </mat-tab>
 
