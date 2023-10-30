@@ -183,27 +183,35 @@ export class EPRService {
           pwr.distribution_buckets.push({max: 2000, min: pwrZone.z7?.min, time: 0})
         }
       }
-      if (activity.stream.time !== undefined) {
+      if (activity.stream.time !== undefined && activity.stream.distance) {
         var lastTime = 0;
         for (let i = 0; i < activity.stream.time.original_size; i++) {
           let duration = activity.stream.time.data[i]
-          if (activity.stream.heartrate !== undefined && hr.distribution_buckets.length>0) {
-            for (let range of hr.distribution_buckets) {
-               if (activity.stream.heartrate.data[i] < range.max && activity.stream.heartrate.data[i] >= range.min) {
-                 range.time = range.time + (duration - lastTime)
-                 break
-               }
-            }
-          }
-          if (activity.stream.watts !== undefined && hr.distribution_buckets.length>0) {
-            for (let range of pwr.distribution_buckets) {
-            //  console.log(range.max + ' ' +activity.stream.watts.data[i])
-              if (activity.stream.watts.data[i] >= range.min &&
-                  (activity.stream.watts.data[i] < range.max)) {
-                range.time = range.time + (duration - lastTime)
-                break
+          let distance = activity.stream.distance.data[i]
+          let elapsed = duration - lastTime
+
+          if (distance !== undefined && distance > 0 && elapsed < 120) {
+
+            if (activity.stream.heartrate !== undefined && hr.distribution_buckets.length > 0) {
+              for (let range of hr.distribution_buckets) {
+                if (activity.stream.heartrate.data[i] < range.max && activity.stream.heartrate.data[i] >= range.min) {
+                  range.time = range.time + elapsed
+                  break
+                }
               }
             }
+            if (activity.stream.watts !== undefined && hr.distribution_buckets.length > 0) {
+              for (let range of pwr.distribution_buckets) {
+                //  console.log(range.max + ' ' +activity.stream.watts.data[i])
+                if (activity.stream.watts.data[i] >= range.min &&
+                    (activity.stream.watts.data[i] < range.max)) {
+                  range.time = range.time + elapsed
+                  break
+                }
+              }
+            }
+          } else {
+          //  console.log('no distance')
           }
           lastTime = duration
         }

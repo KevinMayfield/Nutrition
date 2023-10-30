@@ -62,7 +62,7 @@ export class PowerGraphComponent implements OnInit{
             if (zone.type === 'power') {
                 for (let res of zone.distribution_buckets) {
                     single.push({
-                            "name": res.min,
+                            "name": res.min + '-' + res.max,
                             "value": Math.round(res.time/60),
                             "extra": {
                                 totalTime: Math.round(this.activity.elapsed_time/60)
