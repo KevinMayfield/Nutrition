@@ -186,10 +186,12 @@
                         <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 20%;"> Date </th>
                         <td mat-cell *matCellDef="let activity">
                             <div layout="column" layout-align="space-around start">
-                                <span>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</span>
-                                <span>
-                                      {{duration(activity.elapsed_time/60)}}
-                                </span>
+                                <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
+                                <b>{{duration(activity.moving_time/60)}}</b>
+                                <i *ngIf="activity.elapsed_time != activity.moving_time">Idle time <b>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</b></i>
+                                <i *ngIf="activity.elapsed_time != activity.moving_time">Total time <b>{{duration((activity.elapsed_time)/60)}}</b></i>
+                                <span>Distance <b>{{round(activity.distance/1000)}} km</b></span>
+                                <span>Elevation <b>{{round(activity.total_elevation_gain)}} m</b></span>
                                 <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
                                         {{getType(activity.type)}}
                                 </span></a>
@@ -267,10 +269,12 @@
                     <th mat-header-cell mat-sort-header *matHeaderCellDef> Date </th>
                     <td mat-cell *matCellDef="let activity">
                         <div layout="column" layout-align="space-around start">
-                            <span>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</span>
-                            <span>
-                                      {{duration(activity.elapsed_time/60)}}
-                                </span>
+                            <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
+                            <b>{{duration(activity.moving_time/60)}}</b>
+                            <i *ngIf="activity.elapsed_time != activity.moving_time">Idle time <b>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</b></i>
+                            <i *ngIf="activity.elapsed_time != activity.moving_time">Total time <b>{{duration((activity.elapsed_time)/60)}}</b></i>
+                            <span>Distance <b>{{round(activity.distance/1000)}} km</b></span>
+                            <span>Elevation <b>{{round(activity.total_elevation_gain)}} m</b></span>
                             <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
                                         {{getType(activity.type)}}
                                 </span></a>
@@ -311,6 +315,14 @@
                              <span>
                                   <span class="material-symbols-outlined">forward_circle</span>
                                   Cadence {{round(activity.average_cadence)}}
+                             </span>
+                        </div>
+                        <div layout="row" layout-align="space-around center" *ngIf="ftp !== undefined && activity !== undefined ">
+                                <span >
+                                    Intensity Factor <mat-chip>{{intensity(activity)}}</mat-chip>
+                                </span>
+                            <span>
+                                Stress Score <mat-chip>{{stress(activity)}}</mat-chip>
                              </span>
                         </div>
                     </td>

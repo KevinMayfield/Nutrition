@@ -568,7 +568,7 @@ export class ActivityComponent implements OnInit{
         }
     }
     round(val : number | undefined) {
-        if (val == undefined) return undefined
+        if (val == undefined) return 0
         return Math.round(val)
     }
 
@@ -732,5 +732,25 @@ export class ActivityComponent implements OnInit{
     }
     onResize(event: any) {
         this.viewEnergyPie = [event.target.innerWidth / this.widthQuota, this.viewEnergyPie[1]];
+    }
+
+    stress(activity: SummaryActivity) {
+        if (activity.weighted_average_watts !== undefined && this.ftp !== undefined) {
+            let intensity = activity.weighted_average_watts / this.ftp
+            let tss = 100 * (((activity.moving_time) * activity.weighted_average_watts * intensity) / (this.ftp * 3600))
+            return Math.round(tss)
+        } else {
+            return 0
+        }
+
+    }
+
+    intensity(activity: SummaryActivity) {
+        if (activity.weighted_average_watts !== undefined && this.ftp !== undefined) {
+            return Math.round(activity.weighted_average_watts * 100 / this.ftp)/100
+        } else {
+            return 0
+        }
+
     }
 }
