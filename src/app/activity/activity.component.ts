@@ -753,4 +753,12 @@ export class ActivityComponent implements OnInit{
         }
 
     }
+
+    getBackgroundStress(activity: SummaryActivity) :string {
+        let stress = this.stress(activity)
+        if (stress < 150) return 'lightblue';
+        if (stress < 300) return 'lightgreen';
+        if (stress < 450) return '#FFF59D'
+        return 'lightcoral'
+    }
 }

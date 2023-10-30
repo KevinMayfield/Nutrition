@@ -188,53 +188,70 @@
                         <td mat-cell *matCellDef="let activity">
                             <div layout="column" layout-align="space-around start">
                                 <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
-                                <b>{{duration(activity.moving_time/60)}}</b>
-                                <i *ngIf="activity.elapsed_time != activity.moving_time">Idle time <b>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</b></i>
-                                <i *ngIf="activity.elapsed_time != activity.moving_time">Total time <b>{{duration((activity.elapsed_time)/60)}}</b></i>
-                                <span>Distance <b>{{round(activity.distance/1000)}} km</b></span>
-                                <span>Elevation <b>{{round(activity.total_elevation_gain)}} m</b></span>
                                 <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
                                         {{getType(activity.type)}}
-                                </span></a>
-
+                                </span> </a>
+                                <table>
+                                    <tr>
+                                        <td>Total time</td>
+                                        <td><b>{{duration(activity.moving_time/60)}}</b></td>
+                                    </tr>
+                                    <tr *ngIf="activity.elapsed_time != activity.moving_time">
+                                        <td><i>Idle time</i></td>
+                                        <td><b><i>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</i></b></td>
+                                    </tr>
+                                    <tr *ngIf="activity.elapsed_time != activity.moving_time">
+                                        <td>Moving time</td>
+                                        <td><b>{{duration((activity.elapsed_time)/60)}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Distance</td>
+                                        <td><b>{{round(activity.distance/1000)}} km</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Elevation</td>
+                                        <td><b>{{round(activity.total_elevation_gain)}} m</b></td>
+                                    </tr>
+                                </table>
                             </div>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="heart">
-                        <th mat-header-cell *matHeaderCellDef style="width: 80%;"> Heart rate (beats per min) </th>
+                        <th mat-header-cell *matHeaderCellDef style="width: 80%;"> </th>
                         <td mat-cell *matCellDef="let activity">
-                            <b>{{activity.name}}</b>
+                            <h3>{{activity.name}}</h3>
                             <br/>
                             <app-heart-graph [activity]="activity"></app-heart-graph>
                             <hr/>
-                            <div layout="row" layout-align="space-around center">
-                                <span>
-                                    <span class="material-symbols-outlined">local_pizza</span> Energy
-                                    <b>{{round(activity.kcal)}} kcal</b>
-                                </span>
-                                <span>
-                                    <span class="material-symbols-outlined">ecg_heart</span>
-                                    Avg.  <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
-                                {{round(activity.average_heartrate)}}
-                            </mat-chip>
-                                    Max. <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
-                                    {{round(activity.max_heartrate)}}
-                                          </mat-chip>
-                                </span>
-                            </div>
-                            <div layout="row" layout-align="space-around center">
-                                <span *ngIf="activity.weighted_average_watts !== undefined">
-                                  <span class="material-symbols-outlined">bolt</span>
-                                                  Power Avg.  <mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
-                                            {{round(activity.weighted_average_watts)}}
-                                        </mat-chip>
-                                    (Watts)
-                                </span>
-                                <span *ngIf="activity.average_cadence !== undefined">
+                            <table>
+                                <tr>
+                                    <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">local_pizza</span> Energy</td>
+                                    <td><b>{{round(activity.kcal)}} kcal</b></td>
+                                    <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">ecg_heart</span> Heart Rate</td>
+                                    <td > <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
+                                        {{round(activity.average_heartrate)}}</mat-chip> Avg.
+                                         <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
+                                            {{round(activity.max_heartrate)}}</mat-chip> Max.
+                                    </td>
+                                </tr>
+                                <tr *ngIf="activity.weighted_average_watts !== undefined">
+                                    <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">bolt</span>
+                                        Power Avg.</td>
+                                    <td><mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
+                                        {{round(activity.weighted_average_watts)}}
+                                    </mat-chip>
+                                        (Watts)</td>
+                                    <td style="display: flex; justify-content: flex-end"><span *ngIf="activity.average_cadence !== undefined">
 
-                                    Cadence <b>{{round(activity.average_cadence)}} rpm</b>
-                             </span>
-                            </div>
+                                    Cadence
+                             </span></td>
+                                    <td>
+                                        <span *ngIf="activity.average_cadence !== undefined">
+                                        <b>{{round(activity.average_cadence)}} rpm</b>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </ng-container>
 
@@ -269,63 +286,87 @@
                 <ng-container matColumnDef="date">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef> Date </th>
                     <td mat-cell *matCellDef="let activity">
+
                         <div layout="column" layout-align="space-around start">
                             <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
-                            <b>{{duration(activity.moving_time/60)}}</b>
-                            <i *ngIf="activity.elapsed_time != activity.moving_time">Idle time <b>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</b></i>
-                            <i *ngIf="activity.elapsed_time != activity.moving_time">Total time <b>{{duration((activity.elapsed_time)/60)}}</b></i>
-                            <span>Distance <b>{{round(activity.distance/1000)}} km</b></span>
-                            <span>Elevation <b>{{round(activity.total_elevation_gain)}} m</b></span>
                             <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
                                         {{getType(activity.type)}}
-                                </span></a>
-
+                                </span> </a>
+                            <table>
+                                <tr>
+                                    <td>Total time</td>
+                                    <td><b>{{duration(activity.moving_time/60)}}</b></td>
+                                </tr>
+                                <tr *ngIf="activity.elapsed_time != activity.moving_time">
+                                    <td><i>Idle time</i></td>
+                                    <td><b><i>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</i></b></td>
+                                </tr>
+                                <tr *ngIf="activity.elapsed_time != activity.moving_time">
+                                    <td>Moving time</td>
+                                    <td><b>{{duration((activity.elapsed_time)/60)}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td>Distance</td>
+                                    <td><b>{{round(activity.distance/1000)}} km</b></td>
+                                </tr>
+                                <tr>
+                                    <td>Elevation</td>
+                                    <td><b>{{round(activity.total_elevation_gain)}} m</b></td>
+                                </tr>
+                            </table>
                         </div>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="power">
-                    <th mat-header-cell *matHeaderCellDef > Power (watts) </th>
+                    <th mat-header-cell *matHeaderCellDef > </th>
                     <td mat-cell *matCellDef="let activity">
-                        <b>{{activity.name}}</b>
+                         <h3>{{activity.name}}</h3>
                         <br/>
                         <app-power-graph [activity]="activity"></app-power-graph>
                         <hr/>
-                        <div layout="row" layout-align="space-around center">
-                                <span>
-                                    <span class="material-symbols-outlined">local_pizza</span>
-                                    Energy <b>{{round(activity.kcal)}} kcal</b>
-                                </span>
-                            <span>
-                                    <span class="material-symbols-outlined">ecg_heart</span>
-                                    Avg.  <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
-                                        {{round(activity.average_heartrate)}}
-                                        </mat-chip>
-                                    Max. <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
-                                    {{round(activity.max_heartrate)}}
-                                          </mat-chip>
-                                </span>
-                        </div>
-                        <div layout="row" layout-align="space-around center">
-                                <span>
-                                  <span class="material-symbols-outlined">bolt</span>
-                                                 Power Weighted Avg.  <mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
-                                            {{round(activity.weighted_average_watts)}}
-                                        </mat-chip>
-                                    (Watts)
-                                </span>
-                             <span>
+                        <table>
+                            <tr>
+                                <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">local_pizza</span> Energy</td>
+                                <td><b>{{round(activity.kcal)}} kcal</b></td>
+                                <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">ecg_heart</span> Heart Rate</td>
+                                <td >  <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
+                                    {{round(activity.average_heartrate)}}</mat-chip> Avg.
+                                    <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
+                                        {{round(activity.max_heartrate)}}</mat-chip> Max.
+                                </td>
+                            </tr>
+                            <tr *ngIf="activity.weighted_average_watts !== undefined">
+                                <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">bolt</span>
+                                    Power Avg.</td>
+                                <td><mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
+                                    {{round(activity.weighted_average_watts)}}
+                                </mat-chip>
+                                    (Watts)</td>
+                                <td style="display: flex; justify-content: flex-end"><span *ngIf="activity.average_cadence !== undefined">
 
-                                 Cadence <b>{{round(activity.average_cadence)}} rpm</b>
-                             </span>
-                        </div>
-                        <div layout="row" layout-align="space-around center" *ngIf="ftp !== undefined && activity !== undefined ">
-                                <span >
-                                    Intensity Factor <mat-chip>{{intensity(activity)}}</mat-chip>
-                                </span>
-                            <span>
-                                Stress Score <mat-chip>{{stress(activity)}}</mat-chip>
-                             </span>
-                        </div>
+                                    Cadence
+                             </span></td>
+                                <td>
+                                        <span *ngIf="activity.average_cadence !== undefined">
+                                        <b>{{round(activity.average_cadence)}} rpm</b>
+                                        </span>
+                                </td>
+                            </tr>
+                            <tr *ngIf="ftp !== undefined && activity !== undefined ">
+                                <td style="display: flex; justify-content: flex-end">
+                                    Intensity Factor
+                                </td>
+                                <td>
+                                    <mat-chip>{{intensity(activity)}}</mat-chip>
+                                </td>
+                                <td style="display: flex; justify-content: flex-end">
+                                    Stress Score
+                                </td>
+                                <td>
+                                    <mat-chip style="background: {{getBackgroundStress(activity)}}; width: 50px" matTooltip="A value of less that 150 should mean you will have recovered by the following day. Less than 300 and you should have recovered on the 2nd day. Less than 450, you should have recovered after the 2nd day. Over 450 and recovery may be longer.">{{stress(activity)}}</mat-chip>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </ng-container>
 
