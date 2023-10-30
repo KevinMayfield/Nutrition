@@ -213,7 +213,6 @@ export class ActivityComponent implements OnInit{
 
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
             this.administrativeGenders = this.smart.getContainsExpansion(result)
-            console.log(this.administrativeGenders)
             this.setGenders()
         })
 

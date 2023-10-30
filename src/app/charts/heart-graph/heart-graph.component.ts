@@ -38,7 +38,7 @@ export class HeartGraphComponent implements OnInit{
     this.view = [innerWidth / this.widthQuota, this.view[1]];
   }
   onSelect(event: any) {
-    console.log(event);
+  //  console.log(event);
   }
 
   round(val : number | undefined) {
