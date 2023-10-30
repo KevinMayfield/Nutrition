@@ -1,13 +1,6 @@
 <mat-sidenav-container class="example-container" xmlns="http://www.w3.org/1999/html">
     <mat-sidenav #sidenav mode="side" [(opened)]="opened">
         <div class="example-form">
-            <mat-form-field  class="example-full-width">
-                <mat-label>End date</mat-label>
-                <input matInput [matDatepicker]="picker" [(ngModel)]="endDate" (dateChange)="addEvent('change', $event)">
-                <mat-hint>DD/MM/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
             <mat-form-field class="example-full-width">
                 <mat-label >Height</mat-label>
                 <input matInput type="number" [(ngModel)]="height" required (ngModelChange)="calculate()">
@@ -66,11 +59,19 @@
 
     </mat-sidenav>
     <mat-sidenav-content>
-        <mat-toolbar>
-            <button mat-icon-button (click)="onClick()">
-                <mat-icon>menu</mat-icon>
-            </button>
+        <mat-toolbar layout-align="space-between center">
+            <span>
+                <button mat-icon-button (click)="onClick()">
+                    <mat-icon>menu</mat-icon>
+                </button>
             Physical Activity
+            </span>
+            <mat-form-field  class="example-third-width">
+                <input matInput [matDatepicker]="picker" [(ngModel)]="endDate" (dateChange)="addEvent('change', $event)">
+
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
         </mat-toolbar>
 <mat-card xmlns="http://www.w3.org/1999/html">
     <mat-card-content>
@@ -209,7 +210,7 @@
                             <div layout="row" layout-align="space-around center">
                                 <span>
                                     <span class="material-symbols-outlined">local_pizza</span> Energy
-                                    {{round(activity.kcal)}} kcal
+                                    <b>{{round(activity.kcal)}} kcal</b>
                                 </span>
                                 <span>
                                     <span class="material-symbols-outlined">ecg_heart</span>
@@ -230,8 +231,8 @@
                                     (Watts)
                                 </span>
                                 <span *ngIf="activity.average_cadence !== undefined">
-                                    <span class="material-symbols-outlined">forward_circle</span>
-                                  Cadence {{round(activity.average_cadence)}}
+
+                                    Cadence <b>{{round(activity.average_cadence)}} rpm</b>
                              </span>
                             </div>
                         </td>
@@ -292,13 +293,13 @@
                         <div layout="row" layout-align="space-around center">
                                 <span>
                                     <span class="material-symbols-outlined">local_pizza</span>
-                                    Energy {{round(activity.kcal)}} kcal
+                                    Energy <b>{{round(activity.kcal)}} kcal</b>
                                 </span>
                             <span>
                                     <span class="material-symbols-outlined">ecg_heart</span>
                                     Avg.  <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
-                                {{round(activity.average_heartrate)}}
-                            </mat-chip>
+                                        {{round(activity.average_heartrate)}}
+                                        </mat-chip>
                                     Max. <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
                                     {{round(activity.max_heartrate)}}
                                           </mat-chip>
@@ -313,8 +314,8 @@
                                     (Watts)
                                 </span>
                              <span>
-                                  <span class="material-symbols-outlined">forward_circle</span>
-                                  Cadence {{round(activity.average_cadence)}}
+
+                                 Cadence <b>{{round(activity.average_cadence)}} rpm</b>
                              </span>
                         </div>
                         <div layout="row" layout-align="space-around center" *ngIf="ftp !== undefined && activity !== undefined ">
