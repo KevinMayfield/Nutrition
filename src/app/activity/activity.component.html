@@ -361,16 +361,16 @@
                                     <b>{{stress(activity)}}</b>
                                 </td>
                             </tr>
-                            <tr *ngIf="activity.np !== undefined">
+                            <tr *ngIf="activity.np !== undefined" matTooltip="Normalized Power®, Training Stress Score® & Intensity Factor® are TrainingPeaks® registered trademarks">
                                 <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">bolt</span>
-                                    Normalised Power</td>
+                                    Normalized Power®</td>
                                 <td><mat-chip style="background: {{getBackgroundPWRColor(activity.np)}}; width: 50px" layout-align="center">
                                     {{round(activity.np)}}
                                 </mat-chip>
                                     &nbsp;<b>Watts</b>
                                 </td>
                                 <td style="display: flex; justify-content: flex-end">
-                                    Intensity Factor
+                                    Intensity Factor®
                                 </td>
                                 <td>
                                     <b>{{intensityFactor(activity)}}%</b>
