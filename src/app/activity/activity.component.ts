@@ -180,7 +180,7 @@ export class ActivityComponent implements OnInit{
                 "value": 0
             },
                 {
-                    "name": "Activity Level Adjustment",
+                    "name": "Activity Adjustment",
                     "value": 0
                 }];
             energy[0].value = (this.weight * 10) + (6.25 * this.height)
@@ -744,10 +744,19 @@ export class ActivityComponent implements OnInit{
         }
 
     }
+    stressTraining(activity: SummaryActivity) {
+        if (activity.np !== undefined && this.ftp !== undefined) {
+            let intensity = activity.np / this.ftp
+            let tss = 100 * (((activity.moving_time) * activity.np * intensity) / (this.ftp * 3600))
+            return Math.round(tss)
+        } else {
+            return 0
+        }
+    }
 
     intensity(activity: SummaryActivity) {
         if (activity.weighted_average_watts !== undefined && this.ftp !== undefined) {
-            return Math.round(activity.weighted_average_watts * 100 / this.ftp)/100
+            return Math.round(activity.weighted_average_watts * 100 / this.ftp)
         } else {
             return 0
         }
@@ -760,5 +769,20 @@ export class ActivityComponent implements OnInit{
         if (stress < 300) return 'lightgreen';
         if (stress < 450) return '#FFF59D'
         return 'lightcoral'
+    }
+    getBackgroundTSS(activity: SummaryActivity) :string {
+        let stress = this.stressTraining(activity)
+        if (stress < 150) return 'lightgreen';
+        if (stress < 300) return '#FFF59D';
+        if (stress < 450) return 'lightpink'
+        return 'lightcoral'
+    }
+
+    intensityFactor(activity: SummaryActivity) {
+        if (activity.np !== undefined && this.ftp !== undefined) {
+            return Math.round(activity.np * 100 / this.ftp)
+        } else {
+            return 0
+        }
     }
 }

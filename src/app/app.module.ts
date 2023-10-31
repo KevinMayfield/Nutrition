@@ -42,7 +42,6 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {ReversePipe} from "./service/reverse-pipe";
-import {MatTableResponsiveModule} from "./directive/mat-table-responsive.module";
 
 @NgModule({
     declarations: [
@@ -93,8 +92,7 @@ import {MatTableResponsiveModule} from "./directive/mat-table-responsive.module"
         MatDatepickerModule,
         MatNativeDateModule,
         MatToolbarModule,
-        PieChartModule,
-        MatTableResponsiveModule
+        PieChartModule
     ],
     providers: [
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }

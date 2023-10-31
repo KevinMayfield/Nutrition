@@ -215,6 +215,34 @@ export class EPRService {
           }
           lastTime = duration
         }
+        if (activity.stream.watts !== undefined && hr.distribution_buckets.length > 0) {
+          var rolling30: number[] = []
+          for (let i = 0; i < activity.stream.time.original_size; i++) {
+            let start = activity.stream.time.data[i]
+            let distance = activity.stream.distance.data[i]
+            let power30: number[] = []
+            if (distance > 0) {
+
+              for (let f = i; f < activity.stream.time.original_size; f++) {
+                let end = activity.stream.time.data[f]
+                if (end - start > 30) break;
+                power30.push(activity.stream.watts.data[f])
+              }
+
+              let total30 = 0
+              power30.forEach((value) => {
+                total30 += value
+              })
+              rolling30.push(Math.pow(total30 / power30.length, 4))
+            }
+          }
+          let tot30 = 0
+          rolling30.forEach((value => {
+            tot30 += value
+          }))
+          let avg30 =tot30/rolling30.length
+          activity.np = Math.round(Math.sqrt(Math.sqrt(avg30)))
+        }
       }
       if (hr.distribution_buckets.length>0) zones.push(hr)
       if (pwr.distribution_buckets.length>0)zones.push(pwr)

@@ -44,11 +44,14 @@ export interface SummaryActivity {
   kilojoules : number;
   intensity: number;
   average_heartrate? : number;
+  average_watts? : number;
   weighted_average_watts? : number;
   kcal? : number;
   max_heartrate?: number;
   device_watts?: boolean;
   average_cadence?: number;
+  np? : number;
+
  // splits_metric?: any[];
  // splits_standard?: any[];
 }

@@ -179,7 +179,7 @@
                 <button td-message-actions mat-button (click)="viewPA()">View More</button>
             </td-message>
              <div>
-                <table mat-table matTableResponsive [dataSource]="dataSourceHR" class="mat-elevation-z8"
+                <table mat-table [dataSource]="dataSourceHR" class="mat-elevation-z8"
                        matSort #hrSort="matSort" (matSortChange)="announceSortChange($event)"
                        matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
@@ -227,11 +227,14 @@
                                 <tr>
                                     <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">local_pizza</span> Energy</td>
                                     <td><b>{{round(activity.kcal)}} kcal</b></td>
-                                    <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">ecg_heart</span> Heart Rate</td>
+                                    <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">ecg_heart</span> Average Heart Rate</td>
                                     <td > <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
-                                        {{round(activity.average_heartrate)}}</mat-chip> Avg.
-                                         <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
-                                            {{round(activity.max_heartrate)}}</mat-chip> Max.
+                                        {{round(activity.average_heartrate)}}</mat-chip> &nbsp; <b>bpm</b>
+                                    </td>
+                                    <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">ecg_heart</span> Max Heart Rate</td>
+                                    <td >
+                                        <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
+                                            {{round(activity.max_heartrate)}}</mat-chip> &nbsp; <b>bpm</b>
                                     </td>
                                 </tr>
                                 <tr *ngIf="activity.weighted_average_watts !== undefined">
@@ -240,9 +243,8 @@
                                     <td><mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
                                         {{round(activity.weighted_average_watts)}}
                                     </mat-chip>
-                                        (Watts)</td>
+                                      &nbsp;  <b>Watts</b></td>
                                     <td style="display: flex; justify-content: flex-end"><span *ngIf="activity.average_cadence !== undefined">
-
                                     Cadence
                              </span></td>
                                     <td>
@@ -279,7 +281,7 @@
 
             <h3>Activity Logs</h3>
             <div>
-            <table mat-table matTableResponsive [dataSource]="dataSourceKJ" class="mat-elevation-z8"
+            <table mat-table [dataSource]="dataSourceKJ" class="mat-elevation-z8"
                    matSort #pwrSort="matSort" (matSortChange)="announceSortChange($event)"
                    matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
@@ -328,22 +330,64 @@
                             <tr>
                                 <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">local_pizza</span> Energy</td>
                                 <td><b>{{round(activity.kcal)}} kcal</b></td>
-                                <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">ecg_heart</span> Heart Rate</td>
+                                <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">ecg_heart</span> Avg. Heart Rate</td>
                                 <td >  <mat-chip style="background: {{getBackgroundHR(activity.average_heartrate)}}; width: 50px" layout-align="center">
-                                    {{round(activity.average_heartrate)}}</mat-chip> Avg.
+                                    {{round(activity.average_heartrate)}}</mat-chip> &nbsp; <b>bpm</b>
+
+                                </td>
+                                <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">ecg_heart</span> Max. Heart Rate</td>
+                                <td >
                                     <mat-chip style="background: {{getBackgroundHR(activity.max_heartrate)}}; width: 50px" layout-align="center">
-                                        {{round(activity.max_heartrate)}}</mat-chip> Max.
+                                        {{round(activity.max_heartrate)}}</mat-chip> &nbsp; <b>bpm</b>
                                 </td>
                             </tr>
                             <tr *ngIf="activity.weighted_average_watts !== undefined">
                                 <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">bolt</span>
-                                    Power Avg.</td>
-                                <td><mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
+                                    Average Power</td>
+                                <td><b>
                                     {{round(activity.weighted_average_watts)}}
+                                    Watts</b>
+                                </td>
+                                <td style="display: flex; justify-content: flex-end">
+                                    Intensity
+                                </td>
+                                <td>
+                                    <b>{{intensity(activity)}}%</b>
+                                </td>
+                                <td style="display: flex; justify-content: flex-end">
+                                    Training Load
+                                </td>
+                                <td>
+                                    <b>{{stress(activity)}}</b>
+                                </td>
+                            </tr>
+                            <tr *ngIf="activity.np !== undefined">
+                                <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">bolt</span>
+                                    Normalised Power</td>
+                                <td><mat-chip style="background: {{getBackgroundPWRColor(activity.np)}}; width: 50px" layout-align="center">
+                                    {{round(activity.np)}}
                                 </mat-chip>
-                                    (Watts)</td>
+                                    &nbsp;<b>Watts</b>
+                                </td>
+                                <td style="display: flex; justify-content: flex-end">
+                                    Intensity Factor
+                                </td>
+                                <td>
+                                    <b>{{intensityFactor(activity)}}%</b>
+                                </td>
+                                <td style="display: flex; justify-content: flex-end">
+                                    Training Stress
+                                </td>
+                                <td>
+                                    <mat-chip style="background: {{getBackgroundTSS(activity)}}; width: 50px" matTooltip="< 150 recovery under a day.
+                                     < 300 recovered by 2nd day.
+                                     < 450 recovered after the 2nd day.
+                                     > 450 recovery may be longer.">
+                                        {{stressTraining(activity)}}</mat-chip>
+                                </td>
+                            </tr>
+                            <tr *ngIf="activity !== undefined ">
                                 <td style="display: flex; justify-content: flex-end"><span *ngIf="activity.average_cadence !== undefined">
-
                                     Cadence
                              </span></td>
                                 <td>
@@ -351,19 +395,12 @@
                                         <b>{{round(activity.average_cadence)}} rpm</b>
                                         </span>
                                 </td>
-                            </tr>
-                            <tr *ngIf="ftp !== undefined && activity !== undefined ">
+                                <td></td>
+                                <td></td>
                                 <td style="display: flex; justify-content: flex-end">
-                                    Intensity Factor
-                                </td>
+                                    <span *ngIf="activity.np !== undefined" >Ride Variability Index</span></td>
                                 <td>
-                                    <mat-chip>{{intensity(activity)}}</mat-chip>
-                                </td>
-                                <td style="display: flex; justify-content: flex-end">
-                                    Stress Score
-                                </td>
-                                <td>
-                                    <mat-chip style="background: {{getBackgroundStress(activity)}}; width: 50px" matTooltip="A value of less that 150 should mean you will have recovered by the following day. Less than 300 and you should have recovered on the 2nd day. Less than 450, you should have recovered after the 2nd day. Over 450 and recovery may be longer.">{{stress(activity)}}</mat-chip>
+                                    <span *ngIf="activity.np !== undefined"><b matTooltip="This is measure of how smooth the ride was. A value close to 1 is consistent riding with low variation of power output which you would get on Zwift or a flat ride. Rolling terrain, hills or a inconsistent ride (stopping for traffic) will create more variability.">{{round(activity.np * 100/ activity.average_watts)/100}}</b></span>
                                 </td>
                             </tr>
                         </table>
