@@ -198,23 +198,23 @@
                                 </span> </a>
                                 <table>
                                     <tr>
-                                        <td>Total time</td>
+                                        <td style="display: flex; justify-content: flex-end">Total time</td>
                                         <td><b>{{duration(activity.moving_time/60)}}</b></td>
                                     </tr>
                                     <tr *ngIf="activity.elapsed_time != activity.moving_time">
-                                        <td><i>Idle time</i></td>
+                                        <td style="display: flex; justify-content: flex-end"><i>Idle time</i></td>
                                         <td><b><i>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</i></b></td>
                                     </tr>
                                     <tr *ngIf="activity.elapsed_time != activity.moving_time">
-                                        <td>Moving time</td>
+                                        <td style="display: flex; justify-content: flex-end">Moving time</td>
                                         <td><b>{{duration((activity.elapsed_time)/60)}}</b></td>
                                     </tr>
                                     <tr>
-                                        <td>Distance</td>
+                                        <td style="display: flex; justify-content: flex-end">Distance</td>
                                         <td><b>{{round(activity.distance/1000)}} km</b></td>
                                     </tr>
                                     <tr>
-                                        <td>Elevation</td>
+                                        <td style="display: flex; justify-content: flex-end">Elevation</td>
                                         <td><b>{{round(activity.total_elevation_gain)}} m</b></td>
                                     </tr>
                                 </table>
@@ -295,7 +295,7 @@
                                 </span> </a>
                             <table>
                                 <tr>
-                                    <td>Total time</td>
+                                    <td style="display: flex; justify-content: flex-end">Total time</td>
                                     <td><b>{{duration(activity.moving_time/60)}}</b></td>
                                 </tr>
                                 <tr *ngIf="activity.elapsed_time != activity.moving_time">
@@ -303,15 +303,15 @@
                                     <td><b><i>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</i></b></td>
                                 </tr>
                                 <tr *ngIf="activity.elapsed_time != activity.moving_time">
-                                    <td>Moving time</td>
+                                    <td style="display: flex; justify-content: flex-end">Moving time</td>
                                     <td><b>{{duration((activity.elapsed_time)/60)}}</b></td>
                                 </tr>
                                 <tr>
-                                    <td>Distance</td>
+                                    <td style="display: flex; justify-content: flex-end">Distance</td>
                                     <td><b>{{round(activity.distance/1000)}} km</b></td>
                                 </tr>
                                 <tr>
-                                    <td>Elevation</td>
+                                    <td style="display: flex; justify-content: flex-end">Elevation</td>
                                     <td><b>{{round(activity.total_elevation_gain)}} m</b></td>
                                 </tr>
                             </table>
