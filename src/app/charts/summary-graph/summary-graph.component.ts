@@ -27,13 +27,20 @@ export class SummaryGraphComponent implements OnChanges {
   @Input()
   zoneHR: hrZone | undefined
 
-  single: any[] | undefined;
+  calories: any[] | undefined;
+  trimp: any[] | undefined;
+  tss: any[] | undefined;
 
  // view: [number, number] = [800, 300];
 
   colorScheme: Color = {
     domain: [
       'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
+    ], group: ScaleType.Ordinal, name: "", selectable: false
+  }
+  colorNeutral: Color = {
+    domain: [
+      'lightblue'
     ], group: ScaleType.Ordinal, name: "", selectable: false
   }
 
@@ -64,18 +71,29 @@ export class SummaryGraphComponent implements OnChanges {
   }
 */
   refreshActivity() {
-    this.single = undefined
-    var single = []
-
+    this.calories = undefined
+    this.trimp = undefined
+    this.tss = undefined
+    var calories: any[] = []
+    var trimp: any[] = []
+    var tss: any[] = []
     if (this.activity !== undefined) {
       var day = 0;
       for (let act of this.activity) {
-        var entry = {
+        var entryCalories = {
           "name": this.date(day),
           "series": []
         }
+        var entryTrimp = {
+          "name": this.date(day),
+          "value": 0
+        }
+        var entryTss = {
+          "name": this.date(day),
+          "value": 0
+        }
         for (let f=0;f<5;f++) {
-          let ser = {
+          let ser :any = {
             name: (f+1),
             value: 0,
             extra: {
@@ -83,11 +101,17 @@ export class SummaryGraphComponent implements OnChanges {
             }
           }
           // @ts-ignore
-          entry.series.push(ser)
+          entryCalories.series.push(ser)
         }
         for (let session of act.sessions) {
+          if (session.activity != undefined && session.activity.trimp !== undefined) {
+            entryTrimp.value += session.activity.trimp
+          }
+          if (session.activity != undefined && session.activity.np !== undefined) {
+            entryTss.value += this.epr.stressTraining(session.activity)
+          }
           let zone = this.getZone(session)
-          var ent = entry.series[zone-1]
+          var ent = entryCalories.series[zone-1]
            if (session.activity !== undefined && session.activity.kcal !== undefined) {
              // @ts-ignore
              ent.value = ent.value + Math.round(session.activity.kcal)
@@ -95,10 +119,14 @@ export class SummaryGraphComponent implements OnChanges {
              ent.extra.session.push(session)
            }
         }
-        single.push(entry)
+        calories.push(entryCalories)
+        trimp.push(entryTrimp)
+        tss.push(entryTss)
         day++
       }
-      this.single = single
+      this.calories = calories
+      this.trimp = trimp
+      this.tss = tss
     }
   }
 
@@ -164,4 +192,5 @@ export class SummaryGraphComponent implements OnChanges {
   }
 
   */
+
 }

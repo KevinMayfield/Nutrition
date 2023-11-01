@@ -360,6 +360,14 @@ getHRZone() {
     }
     return undefined;
   }
-
+  stressTraining(activity: SummaryActivity) {
+    if (activity.np !== undefined && this.person.ftp !== undefined) {
+      let intensity = activity.np / this.person.ftp
+      let tss = 100 * (((activity.moving_time) * activity.np * intensity) / (this.person.ftp * 3600))
+      return Math.round(tss)
+    } else {
+      return 0
+    }
+  }
 
 }

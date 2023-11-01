@@ -757,13 +757,7 @@ export class ActivityComponent implements OnInit{
 
     }
     stressTraining(activity: SummaryActivity) {
-        if (activity.np !== undefined && this.ftp !== undefined) {
-            let intensity = activity.np / this.ftp
-            let tss = 100 * (((activity.moving_time) * activity.np * intensity) / (this.ftp * 3600))
-            return Math.round(tss)
-        } else {
-            return 0
-        }
+       return this.epr.stressTraining(activity)
     }
 
     intensity(activity: SummaryActivity) {

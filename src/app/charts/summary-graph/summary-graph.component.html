@@ -1,8 +1,9 @@
 <div #containerRef>
-<ngx-charts-bar-vertical-stacked *ngIf="single!==undefined"
-                                 [view]="[containerRef.offsetWidth, 300]"
+    <h4>Energy (kcal)</h4>
+<ngx-charts-bar-vertical-stacked *ngIf="calories!==undefined"
+                                 [view]="[containerRef.offsetWidth, 150]"
                          [scheme]="colorScheme"
-                         [results]="single"
+                         [results]="calories"
                          [gradient]="gradient"
                          [xAxis]="showXAxis"
                          [yAxis]="showYAxis"
@@ -47,10 +48,42 @@
         </span>
 
     </ng-template>
-
- <!--   <ng-template #seriesTooltipTemplate let-model="model">
-        This is vertical line tooltip template
-        <pre>{{model|json}}</pre>
-    </ng-template> -->
 </ngx-charts-bar-vertical-stacked>
+    <h4>Stress Scores</h4>
+    <h5>Heart Rate based</h5>
+    <ngx-charts-bar-vertical *ngIf="trimp!==undefined"
+                             [view]="[containerRef.offsetWidth, 150]"
+                             [scheme]="colorNeutral"
+                             [results]="trimp"
+                             [gradient]="gradient"
+                             [xAxis]="showXAxis"
+                             [yAxis]="showYAxis"
+                             [legend]="showLegend"
+                             [showXAxisLabel]="showXAxisLabel"
+                             [showYAxisLabel]="showYAxisLabel"
+                             [xAxisLabel]="xAxisLabel"
+                             yAxisLabel="TRIMP"
+                             (select)="onSelect($event)"
+                             [animations]="false"
+    >
+
+    </ngx-charts-bar-vertical>
+    <h5>Power Meter based</h5>
+    <ngx-charts-bar-vertical *ngIf="tss!==undefined"
+                             [view]="[containerRef.offsetWidth, 150]"
+                             [scheme]="colorNeutral"
+                             [results]="tss"
+                             [gradient]="gradient"
+                             [xAxis]="showXAxis"
+                             [yAxis]="showYAxis"
+                             [legend]="showLegend"
+                             [showXAxisLabel]="showXAxisLabel"
+                             [showYAxisLabel]="showYAxisLabel"
+                             [xAxisLabel]="xAxisLabel"
+                             yAxisLabel="TSS"
+                             (select)="onSelect($event)"
+                             [animations]="false"
+    >
+
+    </ngx-charts-bar-vertical>
 </div>
