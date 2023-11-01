@@ -26,7 +26,6 @@ export interface pwrZone {
   z7?: range;
 }
 export interface Person {
-
   id?: number;
   resource_state?: ResourceState;
   firstname?: string;
@@ -45,6 +44,7 @@ export interface Person {
   ftp?: number;
   weight?: number;
   maximumHR?: number;
+  restingHR?: number;
   age?: number;
   height?: number;
   waist?: number;

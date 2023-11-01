@@ -47,6 +47,8 @@ export class ActivityComponent implements OnInit{
     rmr: number | undefined;
     dailyEnergy: number | undefined
     age: any;
+    restingHR: any;
+    maximumHR: undefined | number;
     exerciseLevel: number = 0;
     exerciseDurationTotal: number = 0;
     zoneHR: hrZone | undefined
@@ -101,7 +103,7 @@ export class ActivityComponent implements OnInit{
     ]
     exerciseFrequency :ValueSetExpansionContains | undefined
    protected readonly Math = Math;
-    maximumHR: undefined | number;
+    registered = "Normalized Power®, Training Stress Score® & Intensity Factor® are TrainingPeaks® registered trademarks"
 
     // @ts-ignore
     dataSourceHR: MatTableDataSource<SummaryActivity> ;
@@ -144,6 +146,9 @@ export class ActivityComponent implements OnInit{
 
             this.epr.setMaximumHR(this.maximumHR)
             this.zoneHR = this.epr.getHRZone()
+        }
+        if (this.restingHR !== undefined && this.restingHR !== this.epr.person.restingHR) {
+            this.epr.setRestingHR(this.restingHR)
         }
         if (this.epr.person.maximumHR === undefined && this.age !== undefined) {
             console.log('age generated change')
@@ -227,6 +232,12 @@ export class ActivityComponent implements OnInit{
         if (this.epr.person.maximumHR !== undefined) {
             this.maximumHR = this.epr.person.maximumHR
         }
+        if (this.epr.person.restingHR !== undefined) {
+            this.restingHR = this.epr.person.restingHR
+        }
+        if (this.restingHR == undefined) {
+            this.restingHR = 60
+        }
         if (this.epr.person.age !== undefined) {
             this.age = this.epr.person.age
         }
@@ -252,7 +263,7 @@ export class ActivityComponent implements OnInit{
             var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
 
             if (activity.kcal !== undefined) {
-                activity.zones = this.epr.getZones(activity)
+                activity.zones = this.epr.getZonesAndCalculateScores(activity)
                 var act : ActivityDay = {
                     duration: (activity.elapsed_time + this.activityArray[this.strava.duration - diffDays].duration),
                     kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal),
@@ -699,6 +710,7 @@ export class ActivityComponent implements OnInit{
     }
 
  */
+
 
     viewPA() {
         window.open("https://build.fhir.org/ig/HL7/physical-activity/measures.html", "_blank")

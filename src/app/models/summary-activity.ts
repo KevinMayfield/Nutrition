@@ -5,6 +5,7 @@ import {Stream, Zones} from "./stream";
 
 
 export interface SummaryActivity {
+  trimp?: number;
   zones: Zones[];
   stream?: Stream;
   suffer_score?: number;

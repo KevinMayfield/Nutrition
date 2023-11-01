@@ -24,10 +24,15 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field class="example-full-width">
-                <mat-label>Max HR</mat-label>
+                <mat-label>Max Heart Rate</mat-label>
                 <input matInput type="number" [(ngModel)]="maximumHR" (ngModelChange)="calculate()">
                 <span matSuffix>beats/min</span>
                 <mat-hint>Strava - My Performance</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Resting Heart Rate</mat-label>
+                <input matInput type="number" [(ngModel)]="restingHR" (ngModelChange)="calculate()">
+                <span matSuffix>beats/min</span>
             </mat-form-field>
             <mat-form-field class="example-full-width">
                 <mat-label>FTP</mat-label>
@@ -237,19 +242,13 @@
                                             {{round(activity.max_heartrate)}}</mat-chip> &nbsp; <b>bpm</b>
                                     </td>
                                 </tr>
-                                <tr *ngIf="activity.weighted_average_watts !== undefined">
-                                    <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">bolt</span>
-                                        Power Avg.</td>
-                                    <td><mat-chip style="background: {{getBackgroundPWRColor(activity.weighted_average_watts)}}; width: 50px" layout-align="center">
-                                        {{round(activity.weighted_average_watts)}}
-                                    </mat-chip>
-                                      &nbsp;  <b>Watts</b></td>
-                                    <td style="display: flex; justify-content: flex-end"><span *ngIf="activity.average_cadence !== undefined">
-                                    Cadence
+                                <tr>
+                                    <td style="display: flex; justify-content: flex-end"><span *ngIf="activity.trimp !== undefined">
+                                    TRaining IMPulse (TRIMP)
                              </span></td>
                                     <td>
-                                        <span *ngIf="activity.average_cadence !== undefined">
-                                        <b>{{round(activity.average_cadence)}} rpm</b>
+                                        <span *ngIf="activity.trimp !== undefined">
+                                        <b>{{round(activity.trimp)}}</b>
                                         </span>
                                     </td>
                                 </tr>
@@ -361,21 +360,21 @@
                                     <b>{{stress(activity)}}</b>
                                 </td>
                             </tr>
-                            <tr *ngIf="activity.np !== undefined" matTooltip="Normalized Power®, Training Stress Score® & Intensity Factor® are TrainingPeaks® registered trademarks">
-                                <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">bolt</span>
+                            <tr *ngIf="activity.np !== undefined">
+                                <td style="display: flex; justify-content: flex-end" [matTooltip]="registered"><span class="material-symbols-outlined">bolt</span>
                                     Normalized Power®</td>
                                 <td><mat-chip style="background: {{getBackgroundPWRColor(activity.np)}}; width: 50px" layout-align="center">
                                     {{round(activity.np)}}
                                 </mat-chip>
                                     &nbsp;<b>Watts</b>
                                 </td>
-                                <td style="display: flex; justify-content: flex-end">
+                                <td style="display: flex; justify-content: flex-end" [matTooltip]="registered">
                                     Intensity Factor®
                                 </td>
                                 <td>
                                     <b>{{intensityFactor(activity)}}%</b>
                                 </td>
-                                <td style="display: flex; justify-content: flex-end">
+                                <td style="display: flex; justify-content: flex-end" [matTooltip]="registered">
                                     Training Stress
                                 </td>
                                 <td>

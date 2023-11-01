@@ -2,6 +2,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {hrZone, Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {Zones} from "../models/stream";
+import {Sex} from "../models/sex";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ export class EPRService {
   person: Person = {
 
   };
+
+  ignoreElapsed = 120
 
   zoneChange: EventEmitter<hrZone> = new EventEmitter();
   constructor() {
@@ -23,6 +26,9 @@ export class EPRService {
     // These entries preserve existing data
     if (athlete.maximumHR === undefined && this.person.maximumHR !== undefined) {
       athlete.maximumHR = this.person.maximumHR
+    }
+    if (athlete.restingHR === undefined && this.person.restingHR !== undefined) {
+      athlete.restingHR = this.person.restingHR
     }
     if (athlete.age === undefined && this.person.age !== undefined) {
       athlete.age = this.person.age
@@ -47,6 +53,13 @@ export class EPRService {
         this.setPerson(this.person)
         this.zoneChange.emit(this.getHRZone())
       }
+  }
+  setRestingHR(restingHR: any) {
+    if (restingHR !== undefined && restingHR > 30 && this.person.restingHR !== restingHR) {
+      this.person.restingHR = restingHR
+      this.setPerson(this.person)
+      this.zoneChange.emit(this.getHRZone())
+    }
   }
 
   getDateAbs(time: Date) {
@@ -140,7 +153,7 @@ export class EPRService {
     return min + ' min'
   }
 
-  getZones(activity: SummaryActivity) : Zones[] {
+  getZonesAndCalculateScores(activity: SummaryActivity) : Zones[] {
     var zones : Zones[] = []
 
     if (activity.stream !== undefined) {
@@ -150,6 +163,7 @@ export class EPRService {
       var pwr : Zones = {
         distribution_buckets: [], resource_state: 0, sensor_based: false, type: "power"
       }
+       // Set up Heart Rate Zones
        if (activity.stream.heartrate !== undefined) {
 
          if (this.person.maximumHR !== undefined) {
@@ -166,10 +180,8 @@ export class EPRService {
            hr.distribution_buckets.push({max: hrzones.z5?.max, min: hrzones.z5?.min, time: 0})
 
          }
-
-
-
        }
+      // Set up Power Zones
       if (activity.stream.watts !== undefined && this.person.ftp !== undefined) {
 
         let pwrZone = this.getPWRZone()
@@ -183,6 +195,7 @@ export class EPRService {
           pwr.distribution_buckets.push({max: 2000, min: pwrZone.z7?.min, time: 0})
         }
       }
+      // Performance Zone calculations
       if (activity.stream.time !== undefined && activity.stream.distance) {
         var lastTime = 0;
         for (let i = 0; i < activity.stream.time.original_size; i++) {
@@ -190,7 +203,7 @@ export class EPRService {
           let distance = activity.stream.distance.data[i]
           let elapsed = duration - lastTime
 
-          if (distance !== undefined && distance > 0 && elapsed < 120) {
+          if (distance !== undefined && distance > 0 && elapsed < this.ignoreElapsed) {
 
             if (activity.stream.heartrate !== undefined && hr.distribution_buckets.length > 0) {
               for (let range of hr.distribution_buckets) {
@@ -211,10 +224,14 @@ export class EPRService {
               }
             }
           } else {
-          //  console.log('no distance')
+            //  console.log('no distance')
           }
           lastTime = duration
         }
+      }
+
+        // TSS Calculation
+      if (activity.stream.time !== undefined && activity.stream.distance) {
         if (activity.stream.watts !== undefined && hr.distribution_buckets.length > 0) {
           var rolling30: number[] = []
           for (let i = 0; i < activity.stream.time.original_size; i++) {
@@ -240,8 +257,34 @@ export class EPRService {
           rolling30.forEach((value => {
             tot30 += value
           }))
-          let avg30 =tot30/rolling30.length
+          let avg30 = tot30 / rolling30.length
           activity.np = Math.round(Math.sqrt(Math.sqrt(avg30)))
+        }
+      }
+
+        // TRIMP and hrTSS Calculation
+      if (activity.stream.time !== undefined && activity.stream.distance) {
+        if (activity.stream.heartrate !== undefined
+            && this.person.maximumHR !== undefined
+            && this.person.restingHR !== undefined) {
+          var hrReserve = this.person.maximumHR - this.person.restingHR
+          console.log(hrReserve)
+          var trimpExp = 0
+          var lastTime = 0;
+          for (let i = 0; i < activity.stream.time.original_size; i++) {
+            let duration = activity.stream.time.data[i]
+            let distance = activity.stream.distance.data[i]
+            let elapsed = duration - lastTime
+            lastTime = duration
+            if (distance > 0 && elapsed < this.ignoreElapsed) {
+              let genderFactor = 1.92
+              if (this.person.sex == Sex.Female) genderFactor = 1.67
+              let hrr = ((activity.stream.heartrate.data[i] - this.person.restingHR) / (hrReserve))
+              trimpExp += (elapsed / 60) * hrr * 0.64 * Math.exp(genderFactor * hrr)
+            }
+          }
+          console.log(trimpExp)
+          activity.trimp = Math.round(trimpExp)
         }
       }
       if (hr.distribution_buckets.length>0) zones.push(hr)
@@ -317,4 +360,6 @@ getHRZone() {
     }
     return undefined;
   }
+
+
 }
