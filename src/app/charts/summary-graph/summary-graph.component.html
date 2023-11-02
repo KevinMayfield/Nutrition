@@ -55,7 +55,7 @@
     <h4>Heart Rate Stress Scores (TRIMP)</h4>
     <ngx-charts-bar-vertical *ngIf="trimp!==undefined"
                              [view]="[containerRef.offsetWidth, 150]"
-                             [scheme]="colorNeutral"
+                             [scheme]="colorTrimp"
                              [results]="trimp"
                              [gradient]="gradient"
                              [xAxis]="showXAxis"
@@ -75,7 +75,7 @@
     <h5>Power Stress Score</h5>
     <ngx-charts-bar-vertical *ngIf="tss!==undefined"
                              [view]="[containerRef.offsetWidth, 150]"
-                             [scheme]="colorNeutral"
+                             [scheme]="colorTSS"
                              [results]="tss"
                              [gradient]="gradient"
                              [xAxis]="showXAxis"

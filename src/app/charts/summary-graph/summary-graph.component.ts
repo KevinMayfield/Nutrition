@@ -45,6 +45,16 @@ export class SummaryGraphComponent implements OnChanges {
       'lightblue'
     ], group: ScaleType.Ordinal, name: "", selectable: false
   }
+  colorTrimp: Color = {
+    domain: [
+      'lightblue'
+    ], group: ScaleType.Ordinal, name: "", selectable: false
+  }
+  colorTSS: Color = {
+    domain: [
+      'lightblue'
+    ], group: ScaleType.Ordinal, name: "", selectable: false
+  }
 
   // options
   showXAxis = true;
@@ -79,6 +89,8 @@ export class SummaryGraphComponent implements OnChanges {
     var calories: any[] = []
     var trimp: any[] = []
     var tss: any[] = []
+    this.colorTrimp.domain = []
+    this.colorTSS.domain = []
     if (this.activity !== undefined) {
       var day = 0;
       for (let act of this.activity) {
@@ -122,6 +134,16 @@ export class SummaryGraphComponent implements OnChanges {
            }
         }
         calories.push(entryCalories)
+        if (entryTrimp.value > 200) {
+          this.colorTrimp.domain.push('#C7B42C')
+        } else {
+          this.colorTrimp.domain.push('#5AA454')
+        }
+        if (entryTss.value > 200) {
+          this.colorTSS.domain.push('#C7B42C')
+        } else {
+          this.colorTSS.domain.push('#5AA454')
+        }
         trimp.push(entryTrimp)
         tss.push(entryTss)
         day++
