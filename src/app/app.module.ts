@@ -32,7 +32,7 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import { PowerGraphComponent } from './charts/power-graph/power-graph.component';
-import {BarChartModule, PieChartModule} from "@swimlane/ngx-charts";
+import {BarChartModule, LineChartModule, PieChartModule} from "@swimlane/ngx-charts";
 import { HeartGraphComponent } from './charts/heart-graph/heart-graph.component';
 import {MatChipsModule} from "@angular/material/chips";
 import { NutritionComponent } from './nutrition/nutrition.component';
@@ -44,6 +44,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {ReversePipe} from "./service/reverse-pipe";
 import { PersonComponent } from './person/person.component';
 import {DatePipe} from "@angular/common";
+import { SleepComponent } from './charts/sleep/sleep.component';
 
 @NgModule({
     declarations: [
@@ -60,7 +61,8 @@ import {DatePipe} from "@angular/common";
         SummaryGraphComponent,
         WeeklyGraphComponent,
         ReversePipe,
-        PersonComponent
+        PersonComponent,
+        SleepComponent
     ],
     imports: [
         BrowserModule,
@@ -95,7 +97,8 @@ import {DatePipe} from "@angular/common";
         MatDatepickerModule,
         MatNativeDateModule,
         MatToolbarModule,
-        PieChartModule
+        PieChartModule,
+        LineChartModule
     ],
     providers: [
         DatePipe,

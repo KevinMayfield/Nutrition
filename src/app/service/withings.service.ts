@@ -69,6 +69,7 @@ export class WithingsService {
                     sleepScore: sleep.data.sleep_score,
                     hr_average: sleep.data.hr_average
                   }
+
                   this.sleepMeasures.emit(measureDay)
                 }
               });

@@ -1,6 +1,7 @@
 <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
 
     <h3>Exercise energy (kcal)</h3>
+     <app-summary-graph [dayActivity]="activity" [zoneHR]="zoneHR"></app-summary-graph>
     <table>
         <tr *ngFor="let pie of stacked | reverse">
 
@@ -18,7 +19,7 @@
                 </td>
            </tr>
         </table>
-       <app-summary-graph [dayActivity]="activity" [zoneHR]="zoneHR"></app-summary-graph>
+
 
     <h3>Heart Rate</h3>
     <table>

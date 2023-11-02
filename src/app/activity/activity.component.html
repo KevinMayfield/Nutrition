@@ -95,7 +95,9 @@
                         </mat-grid-list>
                 </div>
             </div>
-
+            <span *ngIf="measures.length>1">
+                <app-sleep [measures]="measures"></app-sleep>
+            </span>
             <app-weekly-graph [dayActivity]="activityArray" ></app-weekly-graph>
 
         </mat-tab>

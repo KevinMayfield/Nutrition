@@ -1,0 +1,85 @@
+<div #containerRef>
+    <h3>Sleep</h3>
+    <!--
+<ngx-charts-bar-vertical *ngIf="hrv!==undefined"
+                         [view]="[containerRef.offsetWidth, 150]"
+                         [scheme]="colorScheme"
+                         [results]="hrv"
+                         [gradient]="gradient"
+                         [xAxis]="showXAxis"
+                         [yAxis]="showYAxis"
+                         [legend]="showLegend"
+                         [showXAxisLabel]="showXAxisLabel"
+                         [showYAxisLabel]="showYAxisLabel"
+
+                         yAxisLabel="HRV"
+                         [animations]="false"
+>
+
+</ngx-charts-bar-vertical> -->
+   <!-- <ngx-charts-bar-vertical *ngIf="avg_hearrate!==undefined"
+                             [view]="[containerRef.offsetWidth, 150]"
+                             [scheme]="colorScheme"
+                             [results]="avg_hearrate"
+                             [gradient]="gradient"
+                             [xAxis]="showXAxis"
+                             [yAxis]="showYAxis"
+                             [legend]="showLegend"
+                             [showXAxisLabel]="showXAxisLabel"
+                             [showYAxisLabel]="showYAxisLabel"
+
+                             yAxisLabel="Average HR"
+                             [animations]="false"
+    >
+
+    </ngx-charts-bar-vertical> -->
+
+    <ngx-charts-line-chart
+            [view]="[containerRef.offsetWidth, 200]"
+            [scheme]="colorSeries2"
+
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend"
+            xAxisLabel="Date"
+            yAxisLabel="Average Heart Rate"
+            [timeline]="timeline"
+            [results]="seriesHR"
+    >
+    </ngx-charts-line-chart>
+
+    <ngx-charts-bar-vertical *ngIf="sleepScore !== undefined"
+                             [view]="[containerRef.offsetWidth, 150]"
+                             [scheme]="colorSleep"
+                             [results]="sleepScore"
+                             [gradient]="gradient"
+                             [xAxis]="showXAxis"
+                             [yAxis]="showYAxis"
+                             [legend]="showLegend"
+                             [showXAxisLabel]="showXAxisLabel"
+                             [showYAxisLabel]="showYAxisLabel"
+
+                             yAxisLabel="Sleep Score"
+                             [animations]="false"
+    >
+
+    </ngx-charts-bar-vertical>
+
+    <ngx-charts-line-chart
+            [view]="[containerRef.offsetWidth, 200]"
+            [scheme]="colorSeries"
+
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend"
+            xAxisLabel="Date"
+            yAxisLabel="HRV"
+            [timeline]="timeline"
+            [results]="seriesHRV"
+    >
+    </ngx-charts-line-chart>
+</div>

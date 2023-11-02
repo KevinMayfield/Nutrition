@@ -16,6 +16,7 @@ import {ActivityDay, ActivitySession} from "../models/activity-day";
 import {MatDatepickerInputEvent} from "@angular/material/datepicker";
 import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {WithingsService} from "../service/withings.service";
+import {MeasuresDay} from "../models/measures-day";
 
 @Component({
   selector: 'app-resting-metabolic-rate',
@@ -59,6 +60,7 @@ export class ActivityComponent implements OnInit{
     activityArray : ActivityDay[] = []
     activities : SummaryActivity[] = []
     powerActivities: SummaryActivity[] = [];
+    measures: MeasuresDay[] = []
     legendHR = true;
     exerciseIntenses: ValueSetExpansionContains[] = [
         {
@@ -330,9 +332,21 @@ export class ActivityComponent implements OnInit{
         )
 
         if (this.withings.getAccessToken() !== undefined) {
+            // This forces an ordering of the results
+            for(var i= 0;i<this.strava.duration;i++) this.measures.push({ day: this.date(i)})
             this.withings.getSleep()
             this.withings.sleepMeasures.subscribe(measure => {
-                console.log(measure)
+                var today = this.strava.getToDate()
+                var activityDate = measure.day
+                if (activityDate !== undefined) {
+                    var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
+                    this.measures[this.strava.duration - diffDays].hrv = measure.hrv
+                    this.measures[this.strava.duration - diffDays].sleepScore = measure.sleepScore
+                    this.measures[this.strava.duration - diffDays].hr_average = measure.hr_average
+                    var tempAct: any[] = []
+                    for (let temp of this.measures) tempAct.push(temp)
+                    this.measures = tempAct
+                }
             })
         }
     }
@@ -802,5 +816,11 @@ export class ActivityComponent implements OnInit{
         } else {
             return 0
         }
+    }
+    date(number: number) {
+        var now = this.strava.getToDate();
+        var from = this.strava.getToDate();
+        from.setDate(now.getDate() - this.strava.duration + number );
+        return from;
     }
 }
