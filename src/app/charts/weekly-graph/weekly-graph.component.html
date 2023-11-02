@@ -1,27 +1,51 @@
 <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
-    <span *ngFor="let pie of stacked | reverse">
-            <h3>Week {{pie.name}}</h3>
-            <ngx-charts-advanced-pie-chart
-                    [view]="[containerRef.offsetWidth, 200]"
-                    [scheme]="colorStacked"
-                    label="Exercise energy (kcal) - Heart Rate Zone (Average for Activity)"
-                    [results]="pie.series"
-                    [gradient]="gradient"
-                    (select)="onSelect($event)"
-            >
-            </ngx-charts-advanced-pie-chart>
-            <span *ngIf="pie.hr !== undefined">
-                 <ngx-charts-advanced-pie-chart
-                         [view]="[containerRef.offsetWidth, 200]"
-                         [scheme]="colorStacked"
-                         label="Exercise duration (min) - Heart Rate Zone"
-                         [results]="pie.hr"
-                         [gradient]="gradient"
-                         (select)="onSelect($event)"
 
-                 >
-                </ngx-charts-advanced-pie-chart>
-            </span>
+    <h3>Exercise energy (kcal)</h3>
+    <table>
+        <tr *ngFor="let pie of stacked | reverse">
+
+                <td>Week {{pie.name}}</td>
+                <td>
+                    <ngx-charts-advanced-pie-chart
+                            [view]="[containerRef.offsetWidth, 200]"
+                            [scheme]="colorStacked"
+                            label="Exercise energy (kcal) - Heart Rate Zone (Average for Activity)"
+                            [results]="pie.series"
+                            [gradient]="gradient"
+                            (select)="onSelect($event)"
+                    >
+                    </ngx-charts-advanced-pie-chart>
+                </td>
+           </tr>
+        </table>
+       <app-summary-graph [dayActivity]="activity" [zoneHR]="zoneHR"></app-summary-graph>
+
+    <h3>Heart Rate</h3>
+    <table>
+       <tr *ngFor="let pie of stacked | reverse">
+            <td>Week {{pie.name}}</td>
+            <td>
+                <span *ngIf="pie.hr !== undefined">
+                     <ngx-charts-advanced-pie-chart
+                             [view]="[containerRef.offsetWidth, 200]"
+                             [scheme]="colorStacked"
+                             label="Exercise duration (min) - Heart Rate Zone"
+                             [results]="pie.hr"
+                             [gradient]="gradient"
+                             (select)="onSelect($event)"
+
+                     >
+                    </ngx-charts-advanced-pie-chart>
+                </span>
+            </td>
+       </tr>
+        </table>
+<app-summary-graph [dayActivity]="activity" [zoneHR]="zoneHR" type="heart"></app-summary-graph>
+    <h3>Power</h3>
+    <table>
+       <tr *ngFor="let pie of stacked | reverse">
+            <td>Week {{pie.name}}</td>
+            <td>
             <span *ngIf="pie.pwr !== undefined">
              <ngx-charts-advanced-pie-chart
                      [view]="[containerRef.offsetWidth, 200]"
@@ -34,7 +58,10 @@
              >
             </ngx-charts-advanced-pie-chart>
                 </span>
-       </span>
+           </td>
+       </tr>
+    </table>
+    <app-summary-graph [dayActivity]="activity" [zoneHR]="zoneHR" type="power"></app-summary-graph>
 </span>
 <!--
 <h4>Daily Average (per week)</h4>

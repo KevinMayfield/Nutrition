@@ -6,12 +6,14 @@ import {ActivityComponent} from "./activity/activity.component";
 import {AuthGuardService} from "./service/auth-guard.service";
 import {StravaComponent} from "./strava/strava.component";
 import {NutritionComponent} from "./nutrition/nutrition.component";
+import {PersonComponent} from "./person/person.component";
 
 const routes: Routes = [ {
   path: '', component: MainMenuComponent,
   children : [
     { path: '', component: ActivityComponent, canActivate: [AuthGuardService] },
     { path: 'bmi', component: BMIComponent},
+    { path: 'person', component: PersonComponent},
     { path: 'activity', component: ActivityComponent, canActivate: [AuthGuardService] },
     { path: 'nutrition', component: NutritionComponent },
     { path: '**', component: StravaComponent }

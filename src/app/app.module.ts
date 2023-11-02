@@ -42,6 +42,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {ReversePipe} from "./service/reverse-pipe";
+import { PersonComponent } from './person/person.component';
 
 @NgModule({
     declarations: [
@@ -57,7 +58,8 @@ import {ReversePipe} from "./service/reverse-pipe";
         NutritionComponent,
         SummaryGraphComponent,
         WeeklyGraphComponent,
-        ReversePipe
+        ReversePipe,
+        PersonComponent
     ],
     imports: [
         BrowserModule,

@@ -36,6 +36,9 @@ export class EPRService {
     if (athlete.height === undefined && this.person.height !== undefined) {
       athlete.height = this.person.height
     }
+    if (athlete.weight === undefined && this.person.weight !== undefined) {
+      athlete.weight = this.person.weight
+    }
     if (athlete.waist === undefined && this.person.waist !== undefined) {
       athlete.waist = this.person.waist
     }
@@ -93,6 +96,10 @@ export class EPRService {
   }
   setEthnic(ethnic: string) {
     this.person.ethnic = ethnic
+    this.setPerson(this.person)
+  }
+  setWeight(weight: number) {
+    this.person.weight = weight
     this.setPerson(this.person)
   }
   perKgKCal(number: number): number | undefined {
@@ -369,5 +376,6 @@ getHRZone() {
       return 0
     }
   }
+
 
 }

@@ -1,5 +1,69 @@
 /* You can add global styles to this file, and also import other style files */
 
+.example-full-width {
+  width: 100%;
+}
+.example-third-width {
+  width: 30%;
+}
+.example-half-width {
+  width: 50%;
+}
+table {
+  width: 100%;
+}
+.example-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #eee;
+}
+mat-sidenav {
+  width: 300px;
+}
+.example-form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+}
 .mat-tooltip  {
   white-space: pre-line;
 }
+
+.example-form2 {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.bigger {
+  font-size: larger;
+}
+
+.mat-grid-tile-content
+{
+  flex-direction: column;
+}
+.mat-grid-tile {
+  border: solid 0px lightgrey;
+}
+
+.green-progress .mat-progress-bar-fill::after {
+  background-color: green !important;
+}
+
+
+mat-chip {
+  justify-content: space-between;
+}
+
+.mat-mdc-chip-set {
+  max-width: 200px;
+}
+
+
+

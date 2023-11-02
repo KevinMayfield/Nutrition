@@ -13,8 +13,11 @@ import {ActivityType} from "../../models/activity-type";
   styleUrls: ['./summary-graph.component.scss']
 })
 export class SummaryGraphComponent implements OnChanges {
+
+  activity: ActivityDay[] = []
+
   @Input()
-  activity: ActivityDay[] | undefined
+  type : string = 'kcal'
 
   @Input()
   widthQuota: number = 1.1;

@@ -43,7 +43,7 @@ export class BMIComponent implements OnInit {
     waistratioColour: any;
     waistratioIcon: any;
     age: any;
-    opened = true;
+    opened = false;
 
     constructor(
                 private http: HttpClient,

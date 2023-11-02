@@ -1,0 +1,98 @@
+<div class="example-container">
+    <mat-toolbar layout-align="space-between center">
+            <span>
+            User Settings
+            </span>
+    </mat-toolbar>
+    <mat-card xmlns="http://www.w3.org/1999/html">
+        <mat-card-content>
+            <table>
+                <tr>
+                    <td style="width: 50%;">
+                        <div class="example-form">
+                            <mat-form-field class="example-full-width">
+                                <mat-label >Height</mat-label>
+                                <input matInput type="number" [(ngModel)]="height" required (ngModelChange)="calculate()">
+                                <span matSuffix>cm</span>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Age</mat-label>
+                                <input matInput type="number" min="18" max="120" [(ngModel)]="age" (ngModelChange)="calculate()">
+                                <span matSuffix>years</span>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Weight</mat-label>
+                                <input matInput type="number" [(ngModel)]="weight" required (ngModelChange)="calculate()">
+                                <span matSuffix>kg</span>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Waist</mat-label>
+                                <input matInput type="number" [(ngModel)]="waist" (ngModelChange)="calculate()">
+                                <span matSuffix>cm</span>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Sex</mat-label>
+                                <mat-select [(ngModel)]="administrativeGender" (ngModelChange)="calculate()">
+                                    <mat-option *ngFor="let gender of administrativeGenders" [value]="gender">{{gender.display}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width" >
+                                <mat-label>Ethnic Category</mat-label>
+                                <mat-select [(ngModel)]="ethnicCategory" (ngModelChange)="calculate()">
+                                    <mat-option *ngFor="let ethnic of ethnicCategories" [value]="ethnic">{{ethnic.display}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Max Heart Rate</mat-label>
+                                <input matInput type="number" [(ngModel)]="maximumHR" (ngModelChange)="calculate()">
+                                <span matSuffix>beats/min</span>
+                                <mat-hint>Strava - My Performance</mat-hint>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Resting Heart Rate</mat-label>
+                                <input matInput type="number" [(ngModel)]="restingHR" (ngModelChange)="calculate()">
+                                <span matSuffix>beats/min</span>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>FTP</mat-label>
+                                <input matInput type="number" [(ngModel)]="ftp" (ngModelChange)="calculate()" disabled>
+                                <span matSuffix>watts</span>
+                                <mat-hint>Strava - My Performance</mat-hint>
+                            </mat-form-field>
+                        </div>
+                    </td>
+                    <td style="width: 10%;"></td>
+                    <td>
+                         <span *ngIf="zoneHR !== undefined">
+                             <h2>Heart Rate Zones</h2>
+                             Based on maximum heart rate
+                             <br/>
+            <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
+                <mat-chip-option style="background: lightpink"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z5?.min}}-{{zoneHR.z5?.max}} Z5 - Anerobic</mat-chip-option>
+                <mat-chip-option style="background: lightsalmon"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z4?.min}}-{{zoneHR.z4?.max}} Z4 - Threshold</mat-chip-option>
+                <mat-chip-option style="background: lightgreen"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z3?.min}}-{{zoneHR.z3?.max}} Z3 - Tempo</mat-chip-option>
+                <mat-chip-option style="background: lightblue"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z2?.min}}-{{zoneHR.z2?.max}} Z2 - Endurance</mat-chip-option>
+                <mat-chip-option style="background: lightgrey"><span class="material-symbols-outlined">ecg_heart</span> {{zoneHR.z1?.min}}-{{zoneHR.z1?.max}} Z1 - Recovery</mat-chip-option>
+            </mat-chip-listbox>
+        </span>
+                        <span *ngIf="zonePWR !== undefined">
+                             <h2>Power Zones</h2>
+                             Based on functional threshold power (FTP)
+                             <br/>
+            <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
+                <mat-chip-option style="background: {{getBackgroundPWRZone(7)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z7?.min}}-{{zonePWR.z7?.max}} Z7 - Neuromuscular </mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(6)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z6?.min}}-{{zonePWR.z6?.max}} Z6 - Anaerobic </mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(5)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z5?.min}}-{{zonePWR.z5?.max}} Z5 - VO2Max </mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(4)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z4?.min}}-{{zonePWR.z4?.max}} Z4 - Threshold</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(3)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z3?.min}}-{{zonePWR.z3?.max}} Z3 - Tempo</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(2)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z2?.min}}-{{zonePWR.z2?.max}} Z2 - Endurance</mat-chip-option>
+                <mat-chip-option style="background: {{getBackgroundPWRZone(1)}};"><span class="material-symbols-outlined">bolt</span> {{zonePWR.z1?.min}}-{{zonePWR.z1?.max}} Z1 - Active Recovery</mat-chip-option>
+            </mat-chip-listbox>
+        </span>
+                    </td>
+                </tr>
+            </table>
+
+        </mat-card-content>
+    </mat-card>
+</div>

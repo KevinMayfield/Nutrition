@@ -2,73 +2,18 @@
     <mat-sidenav #sidenav mode="side" [(opened)]="opened">
         <div class="example-form">
             <mat-form-field class="example-full-width">
-                <mat-label >Height</mat-label>
-                <input matInput type="number" [(ngModel)]="height" required (ngModelChange)="calculate()">
-                <span matSuffix>cm</span>
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-                <mat-label>Age</mat-label>
-                <input matInput type="number" min="18" max="120" [(ngModel)]="age" (ngModelChange)="calculate()">
-                <span matSuffix>years</span>
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-                <mat-label>Weight</mat-label>
-                <input matInput type="number" [(ngModel)]="weight" required (ngModelChange)="calculate()">
-                <span matSuffix>kg</span>
-            </mat-form-field>
-
-            <mat-form-field class="example-full-width">
-                <mat-label>Sex</mat-label>
-                <mat-select [(ngModel)]="administrativeGender" (ngModelChange)="calculate()">
-                    <mat-option *ngFor="let gender of administrativeGenders" [value]="gender">{{gender.display}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-                <mat-label>Max Heart Rate</mat-label>
-                <input matInput type="number" [(ngModel)]="maximumHR" (ngModelChange)="calculate()">
-                <span matSuffix>beats/min</span>
-                <mat-hint>Strava - My Performance</mat-hint>
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-                <mat-label>Resting Heart Rate</mat-label>
-                <input matInput type="number" [(ngModel)]="restingHR" (ngModelChange)="calculate()">
-                <span matSuffix>beats/min</span>
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
                 <mat-label>FTP</mat-label>
                 <input matInput type="number" [(ngModel)]="ftp" (ngModelChange)="calculate()" disabled>
                 <span matSuffix>watts</span>
                 <mat-hint>Strava - My Performance</mat-hint>
             </mat-form-field>
         </div>
-        <span *ngIf="zoneHR !== undefined  && (this.selectedTabIndex == undefined || this.selectedTabIndex < 2)">
-            <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
-                <mat-chip-option style="background: lightpink"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z5?.min}}-{{zoneHR.z5?.max}} Z5 - Anerobic</mat-chip-option>
-                <mat-chip-option style="background: lightsalmon"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z4?.min}}-{{zoneHR.z4?.max}} Z4 - Threshold</mat-chip-option>
-                <mat-chip-option style="background: lightgreen"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z3?.min}}-{{zoneHR.z3?.max}} Z3 - Tempo</mat-chip-option>
-                <mat-chip-option style="background: lightblue"><span class="material-symbols-outlined">ecg_heart</span>{{zoneHR.z2?.min}}-{{zoneHR.z2?.max}} Z2 - Endurance</mat-chip-option>
-                <mat-chip-option style="background: lightgrey"><span class="material-symbols-outlined">ecg_heart</span> {{zoneHR.z1?.min}}-{{zoneHR.z1?.max}} Z1 - Recovery</mat-chip-option>
-            </mat-chip-listbox>
-        </span>
-        <span *ngIf="zonePWR !== undefined  && (this.selectedTabIndex !== undefined && this.selectedTabIndex > 1)">
-            <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection" >
-                <mat-chip-option style="background: {{getBackgroundPWRZone(7)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z7?.min}}-{{zonePWR.z7?.max}} Z7 - Neuromuscular </mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWRZone(6)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z6?.min}}-{{zonePWR.z6?.max}} Z6 - Anaerobic </mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWRZone(5)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z5?.min}}-{{zonePWR.z5?.max}} Z5 - VO2Max </mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWRZone(4)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z4?.min}}-{{zonePWR.z4?.max}} Z4 - Threshold</mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWRZone(3)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z3?.min}}-{{zonePWR.z3?.max}} Z3 - Tempo</mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWRZone(2)}};"><span class="material-symbols-outlined">bolt</span>{{zonePWR.z2?.min}}-{{zonePWR.z2?.max}} Z2 - Endurance</mat-chip-option>
-                <mat-chip-option style="background: {{getBackgroundPWRZone(1)}};"><span class="material-symbols-outlined">bolt</span> {{zonePWR.z1?.min}}-{{zonePWR.z1?.max}} Z1 - Active Recovery</mat-chip-option>
-            </mat-chip-listbox>
-        </span>
+
 
     </mat-sidenav>
     <mat-sidenav-content>
         <mat-toolbar layout-align="space-between center">
             <span>
-                <button mat-icon-button (click)="onClick()">
-                    <mat-icon>menu</mat-icon>
-                </button>
             Physical Activity
             </span>
             <mat-form-field  class="example-third-width">
@@ -94,20 +39,7 @@
              NUTRITION
 
              -->
-           <!-- <div class="example-form2" >
-                <mat-form-field class="example-half-width">
-                    <mat-label>How often do you exercise?</mat-label>
-                    <mat-select [(ngModel)]="exerciseFrequency" (ngModelChange)="calculate()">
-                        <mat-option *ngFor="let pal of exerciseFrequencies" [value]="pal">{{pal.display}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field class="example-half-width">
-                    <mat-label>How intense is your exercise?</mat-label>
-                    <mat-select [(ngModel)]="exerciseIntense" (ngModelChange)="calculate()">
-                        <mat-option *ngFor="let pal of exerciseIntenses" [value]="pal">{{pal.display}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div> -->
+
             <div class="example-full-width">
                 <h3>Energy Intake Estimates</h3>
                 <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
@@ -165,9 +97,6 @@
             </div>
 
             <app-weekly-graph [dayActivity]="activityArray" ></app-weekly-graph>
-            <h3>Activity Summary</h3>
-            <app-summary-graph [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
-
 
         </mat-tab>
         <!--

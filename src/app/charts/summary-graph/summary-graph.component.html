@@ -1,4 +1,5 @@
 <div #containerRef>
+    <span *ngIf="type ==='kcal'">
     <h4>Energy (kcal)</h4>
 <ngx-charts-bar-vertical-stacked *ngIf="calories!==undefined"
                                  [view]="[containerRef.offsetWidth, 150]"
@@ -49,8 +50,9 @@
 
     </ng-template>
 </ngx-charts-bar-vertical-stacked>
-    <h4>Stress Scores</h4>
-    <h5>Heart Rate based</h5>
+        </span>
+    <span *ngIf="type ==='heart'">
+    <h4>Heart Rate Stress Scores (TRIMP)</h4>
     <ngx-charts-bar-vertical *ngIf="trimp!==undefined"
                              [view]="[containerRef.offsetWidth, 150]"
                              [scheme]="colorNeutral"
@@ -68,7 +70,9 @@
     >
 
     </ngx-charts-bar-vertical>
-    <h5>Power Meter based</h5>
+    </span>
+    <span *ngIf="type ==='power'">
+    <h5>Power Stress Score</h5>
     <ngx-charts-bar-vertical *ngIf="tss!==undefined"
                              [view]="[containerRef.offsetWidth, 150]"
                              [scheme]="colorNeutral"
@@ -86,4 +90,5 @@
     >
 
     </ngx-charts-bar-vertical>
+    </span>
 </div>

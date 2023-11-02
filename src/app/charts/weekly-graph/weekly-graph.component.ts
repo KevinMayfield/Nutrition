@@ -30,8 +30,7 @@ export class WeeklyGraphComponent implements OnInit {
 
   activitiesWeek : ActivityWeek[] = []
 
-  @Input()
-  activity: ActivityDay[] | undefined
+  activity: ActivityDay[] = []
 
   @Input()
   widthQuota: number = 1;
