@@ -1,16 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {hrZone, pwrZone} from "../models/person";
 import { ValueSetExpansionContains} from "fhir/r4";
 import {HttpClient} from "@angular/common/http";
 import {EPRService} from "../service/epr.service";
 import {SmartService} from "../service/smart.service";
 import {StravaService} from "../service/strava.service";
+import {WithingsService} from "../service/withings.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 
 @Component({
   selector: 'app-person',
   templateUrl: './person.component.html',
-  styleUrls: ['./person.component.scss']
+  styleUrls: ['./person.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class PersonComponent implements OnInit {
   height: number | undefined;
@@ -33,11 +36,24 @@ export class PersonComponent implements OnInit {
       private http: HttpClient,
       private epr: EPRService,
       private smart: SmartService,
-      private strava: StravaService) {
+      private strava: StravaService,
+      private router: Router,
+      private route: ActivatedRoute,
+      private withings: WithingsService) {
   }
 
   ngOnInit(): void {
 
+    this.route.queryParams.subscribe(params => {
+      const code = params['code'];
+      const state = params['state'];
+      if (code !== undefined) {
+        if (state !== undefined && state === 'withings') {
+          // console.log('Withings detected');
+          this.doWithingsSetup(code, state);
+        }
+      }
+    });
     this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
       this.administrativeGenders = this.smart.getContainsExpansion(result)
       this.setGenders()
@@ -154,5 +170,32 @@ export class PersonComponent implements OnInit {
   round(val : number | undefined) {
     if (val == undefined) return 0
     return Math.round(val)
+  }
+
+  connectWithings(): void {
+    console.log(window.location.origin);
+    this.withings.authorise(window.location.origin + this.getPathName(window.location.pathname) + '/person');
+  }
+  getPathName(pathname: string): string {
+    if (pathname.includes('FHIR-R4')) return "/FHIR-R4-Demonstration";
+    return "";
+  }
+
+  doWithingsSetup(authorisationCode: string, state: any): void {
+
+    //  console.log(authorisationCode);
+    this.withings.tokenChange.subscribe(
+        (value) => {
+          this.router.navigateByUrl('/person');
+          console.log(value)
+        }
+    );
+    const url = window.location.href.split('?');
+    this.withings.getOAuth2AccessToken(authorisationCode, url[0]);
+  }
+
+  withingsConnected() {
+    if (this.withings.getAccessToken() !== undefined) return true
+    return false
   }
 }

@@ -12,10 +12,10 @@ const routes: Routes = [ {
   path: '', component: MainMenuComponent,
   children : [
     { path: '', component: ActivityComponent, canActivate: [AuthGuardService] },
-    { path: 'bmi', component: BMIComponent},
-    { path: 'person', component: PersonComponent},
+    { path: 'bmi', component: BMIComponent, canActivate: [AuthGuardService]},
+    { path: 'person', component: PersonComponent, canActivate: [AuthGuardService]},
     { path: 'activity', component: ActivityComponent, canActivate: [AuthGuardService] },
-    { path: 'nutrition', component: NutritionComponent },
+    { path: 'nutrition', component: NutritionComponent, canActivate: [AuthGuardService] },
     { path: '**', component: StravaComponent }
   ]
 }];

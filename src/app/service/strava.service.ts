@@ -97,6 +97,14 @@ export class StravaService {
     return new Date(this.to.toISOString());
   }
 
+  getNextToDay(): Date {
+    const temp = new Date();
+    this.to = new Date();
+    const next = new Date();
+    next.setDate(temp.getDate() + 1);
+    return next;
+  }
+
   getActivities(page?: number | undefined): void {
     if (page === undefined) {
       this.activityMap = new Map();

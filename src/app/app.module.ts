@@ -43,6 +43,7 @@ import {MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {ReversePipe} from "./service/reverse-pipe";
 import { PersonComponent } from './person/person.component';
+import {DatePipe} from "@angular/common";
 
 @NgModule({
     declarations: [
@@ -97,6 +98,7 @@ import { PersonComponent } from './person/person.component';
         PieChartModule
     ],
     providers: [
+        DatePipe,
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
     ],
   bootstrap: [AppComponent]

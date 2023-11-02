@@ -63,6 +63,17 @@
                     </td>
                     <td style="width: 10%;"></td>
                     <td>
+                        <h3>Connections</h3>
+                        <table>
+                            <tr>
+                                <td><img class="img-responsive" width="25" height="25" src="assets/withings.png" alt="image"></td>
+                                <td>Withings</td>
+                                <td>
+                                    <button (click)="connectWithings()" *ngIf="!withingsConnected()">Connect</button>
+                                    <button *ngIf="withingsConnected()">Disconnect</button>
+                                </td>
+                            </tr>
+                        </table>
                          <span *ngIf="zoneHR !== undefined">
                              <h2>Heart Rate Zones</h2>
                              Based on maximum heart rate

@@ -275,7 +275,7 @@ export class EPRService {
             && this.person.maximumHR !== undefined
             && this.person.restingHR !== undefined) {
           var hrReserve = this.person.maximumHR - this.person.restingHR
-          console.log(hrReserve)
+
           var trimpExp = 0
           var lastTime = 0;
           for (let i = 0; i < activity.stream.time.original_size; i++) {
@@ -290,7 +290,7 @@ export class EPRService {
               trimpExp += (elapsed / 60) * hrr * 0.64 * Math.exp(genderFactor * hrr)
             }
           }
-          console.log(trimpExp)
+
           activity.trimp = Math.round(trimpExp)
         }
       }
