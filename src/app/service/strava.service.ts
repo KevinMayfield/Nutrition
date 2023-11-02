@@ -28,6 +28,7 @@ export class StravaService {
   activity: EventEmitter<SummaryActivity> = new EventEmitter();
   constructor(private http: HttpClient) {
 
+    console.log('strava constructor called')
    this.setToDate(new Date());
 
    this.activity.subscribe(activity => {
@@ -49,9 +50,12 @@ export class StravaService {
   }
 
   setToDate(date : Date) {
+    console.log('Set To Date called '+ date)
     this.to = date;
     this.from = new Date(this.to.toISOString());
     this.from.setDate(this.from.getDate() - this.duration);
+    console.log('To date set to  '+ this.to)
+    console.log('From date set to '+ this.from)
   }
 
   getHeaders(): HttpHeaders {
@@ -98,11 +102,9 @@ export class StravaService {
   }
 
   getNextToDay(): Date {
-    const temp = new Date();
-    this.to = new Date();
-    const next = new Date();
-    next.setDate(temp.getDate() + 1);
-    return next;
+    var temp = new Date(this.getToDate().toISOString());
+    temp.setDate(temp.getDate() + 1);
+    return temp;
   }
 
   getActivities(page?: number | undefined): void {

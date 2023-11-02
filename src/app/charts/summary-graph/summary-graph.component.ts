@@ -23,7 +23,6 @@ export class SummaryGraphComponent implements OnChanges {
   widthQuota: number = 1.1;
 
   @Input() set dayActivity(activity: ActivityDay[]) {
-
     this.activity = activity
     this.refreshActivity()
   }
@@ -127,6 +126,7 @@ export class SummaryGraphComponent implements OnChanges {
         tss.push(entryTss)
         day++
       }
+
       this.calories = calories
       this.trimp = trimp
       this.tss = tss

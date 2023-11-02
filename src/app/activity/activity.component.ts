@@ -180,62 +180,82 @@ export class ActivityComponent implements OnInit{
 
         this.strava.loaded.subscribe(activity => {
 
-            var today = this.strava.getToDate()
+            var today = this.epr.getDateAbs(this.strava.getToDate())
             var activityDate = new Date(activity.start_date)
-            var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
-
-            if (activity.kcal !== undefined) {
-                activity.zones = this.epr.getZonesAndCalculateScores(activity)
-                var act : ActivityDay = {
-                    duration: (activity.elapsed_time + this.activityArray[this.strava.duration - diffDays].duration),
-                    kcal: (this.activityArray[this.strava.duration - diffDays].kcal + activity.kcal),
-                    sessions: this.activityArray[this.strava.duration - diffDays].sessions,
-                    day: activityDate
-                }
-                if (activity.average_heartrate !== undefined) {
-                    if (this.activityArray[this.strava.duration - diffDays].average_heartrate !== undefined) {
-
-                        // @ts-ignore
-                        act.average_heartrate = ((activity.average_heartrate * activity.elapsed_time) + (this.activityArray[this.strava.duration - diffDays].average_heartrate * this.activityArray[this.strava.duration - diffDays].duration)) / (this.activityArray[this.strava.duration - diffDays].duration + activity.elapsed_time)
-                    } else {
-                        act.average_heartrate = activity.average_heartrate
+            var diffDays = (today) - this.epr.getDateAbs(activityDate);
+            let bank = this.activityArray[this.strava.duration - diffDays]
+            if (bank == undefined) {
+                console.log(this.strava.getToDate() + ' ' + diffDays + activity.start_date)
+            } else {
+                if (activity.kcal !== undefined) {
+                    activity.zones = this.epr.getZonesAndCalculateScores(activity)
+                    var act: ActivityDay = {
+                        duration: (activity.elapsed_time + bank.duration),
+                        kcal: (bank.kcal + activity.kcal),
+                        sessions: bank.sessions,
+                        day: activityDate
                     }
-                }
-                // @ts-ignore
-                if (activity.max_heartrate !== undefined && (this.activityArray[this.strava.duration - diffDays].hr_max === undefined || (this.activityArray[this.strava.duration - diffDays].hr_max < activity.max_heartrate))) {
-                    act.hr_max = activity.max_heartrate
-                }
+                    if (activity.average_heartrate !== undefined) {
+                        if (bank.average_heartrate !== undefined) {
 
-
-                var session : ActivitySession = {
-                    name: activity.name,
-                    activity: activity
-                }
-                /*
-                if (activity.zones !== undefined && (this.epr.person.hrzones === undefined || this.epr.person.hrzones?.calculated)) {
-                    this.getZone(activity)
-                }
-                 */
-                if (activity.type !== undefined) session.type = activity.type
-                act.sessions.push(session)
-                this.activityArray[this.strava.duration - diffDays] = act
-                this.exerciseLevel = 0
-                this.exerciseDurationTotal = 0
-                for(let activity of this.activityArray) {
-                    // be a bit generous on amount of exercise for calculation
-                    if (activity.duration > (40 * 60)) {
-                        this.exerciseLevel++
-                        this.exerciseDurationTotal = this.exerciseDurationTotal + activity.duration
+                            // @ts-ignore
+                            act.average_heartrate = ((activity.average_heartrate * activity.elapsed_time) + (bank.average_heartrate * bank.duration)) / (bank.duration + activity.elapsed_time)
+                        } else {
+                            act.average_heartrate = activity.average_heartrate
+                        }
                     }
-                }
+                    // @ts-ignore
+                    if (activity.max_heartrate !== undefined && (bank.hr_max === undefined || (bank.hr_max < activity.max_heartrate))) {
+                        act.hr_max = activity.max_heartrate
+                    }
 
-                this.setSelectAnswers()
-                // supports activity detail
-                this.activities.push(activity)
-                if (activity.device_watts) {
-                    this.hasPowerData = true
-                    this.powerActivities.push(activity)
-                    this.dataSourceKJ = new MatTableDataSource<SummaryActivity>(this.powerActivities.sort((a,b) =>{
+
+                    var session: ActivitySession = {
+                        name: activity.name,
+                        activity: activity
+                    }
+                    /*
+                    if (activity.zones !== undefined && (this.epr.person.hrzones === undefined || this.epr.person.hrzones?.calculated)) {
+                        this.getZone(activity)
+                    }
+                     */
+                    if (activity.type !== undefined) session.type = activity.type
+                    act.sessions.push(session)
+                    this.activityArray[this.strava.duration - diffDays] = act
+                    this.exerciseLevel = 0
+                    this.exerciseDurationTotal = 0
+                    for (let activity of this.activityArray) {
+                        // be a bit generous on amount of exercise for calculation
+                        if (activity.duration > (40 * 60)) {
+                            this.exerciseLevel++
+                            this.exerciseDurationTotal = this.exerciseDurationTotal + activity.duration
+                        }
+                    }
+
+                    this.setSelectAnswers()
+                    // supports activity detail
+                    this.activities.push(activity)
+                    if (activity.device_watts) {
+                        this.hasPowerData = true
+                        this.powerActivities.push(activity)
+                        this.dataSourceKJ = new MatTableDataSource<SummaryActivity>(this.powerActivities.sort((a, b) => {
+                            if (a.start_date < b.start_date) {
+                                return 1;
+                            }
+
+                            if (a.start_date > b.start_date) {
+                                return -1;
+                            }
+
+                            return 0;
+                        }));
+                    }
+                    // force a change
+                    var tempAct: any[] = []
+                    for (let temp of this.activityArray) tempAct.push(temp)
+                    this.activityArray = tempAct
+
+                    this.dataSourceHR = new MatTableDataSource<SummaryActivity>(this.activities.sort((a, b) => {
                         if (a.start_date < b.start_date) {
                             return 1;
                         }
@@ -246,25 +266,9 @@ export class ActivityComponent implements OnInit{
 
                         return 0;
                     }));
+                    this.setSortHR()
+                    this.setSortPWR()
                 }
-                // force a change
-                var tempAct: any[] = []
-                for (let temp of this.activityArray) tempAct.push(temp)
-                this.activityArray = tempAct
-
-                this.dataSourceHR = new MatTableDataSource<SummaryActivity>(this.activities.sort((a,b) =>{
-                    if (a.start_date < b.start_date) {
-                        return 1;
-                    }
-
-                    if (a.start_date > b.start_date) {
-                        return -1;
-                    }
-
-                    return 0;
-                }));
-                this.setSortHR()
-                this.setSortPWR()
             }
 
         })
@@ -330,24 +334,27 @@ export class ActivityComponent implements OnInit{
                 })
             }
         )
-
-        if (this.withings.getAccessToken() !== undefined) {
-            // This forces an ordering of the results
-            for(var i= 0;i<this.strava.duration;i++) this.measures.push({ day: this.date(i)})
-            this.withings.getSleep()
-            this.withings.sleepMeasures.subscribe(measure => {
-                var today = this.strava.getToDate()
-                var activityDate = measure.day
-                if (activityDate !== undefined) {
-                    var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
+        this.withings.sleepMeasures.subscribe(measure => {
+            var today = this.strava.getToDate()
+            var activityDate = measure.day
+            if (activityDate !== undefined) {
+                var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
+                let bank = this.measures[this.strava.duration - diffDays]
+                if (bank !== undefined) {
                     this.measures[this.strava.duration - diffDays].hrv = measure.hrv
                     this.measures[this.strava.duration - diffDays].sleepScore = measure.sleepScore
                     this.measures[this.strava.duration - diffDays].hr_average = measure.hr_average
                     var tempAct: any[] = []
                     for (let temp of this.measures) tempAct.push(temp)
                     this.measures = tempAct
+                } else {
+                    console.log(today + ' ' + activityDate + ' ' + diffDays)
                 }
-            })
+            }
+        })
+        if (this.withings.getAccessToken() !== undefined) {
+           this.getWithings()
+
         }
     }
 
@@ -553,13 +560,23 @@ export class ActivityComponent implements OnInit{
             }
         };
     }
+    getWithings(){
+        // This forces an ordering of the results
+        if (this.withings.getAccessToken() !== undefined) {
 
+            let measures =[]
+            for (var i = 0; i < this.strava.duration; i++) measures.push({day: this.date(i)})
+            this.measures = measures
+            this.withings.getSleep()
+        }
+    }
     getStrava(){
         // token changed so clear results
-        this.activityArray = []
+        let activityArray = []
         this.activities = []
         this.powerActivities = [];
-        for(var i= 0;i<=this.strava.duration;i++) this.activityArray.push({ duration:0,kcal: 0, sessions: []})
+        for(var i= 0; i <= this.strava.duration; i++) activityArray.push({ duration:0,kcal: 0, sessions: []})
+        this.activityArray = activityArray
         this.strava.getAthlete().subscribe(athlete => {
             if (athlete.weight !== undefined) this.weight = athlete.weight
             this.epr.setPerson(athlete)
@@ -755,6 +772,7 @@ export class ActivityComponent implements OnInit{
         }
         this.strava.setToDate(this.endDate)
         this.getStrava()
+        this.getWithings()
     }
 
     tabChanged(event: Event) {

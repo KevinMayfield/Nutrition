@@ -1,7 +1,7 @@
 <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
 
     <h3>Exercise energy (kcal)</h3>
-     <app-summary-graph [dayActivity]="activity" [zoneHR]="zoneHR"></app-summary-graph>
+     <app-summary-graph  [dayActivity]="activity" [zoneHR]="zoneHR"></app-summary-graph>
     <table>
         <tr *ngFor="let pie of stacked | reverse">
 
@@ -14,6 +14,7 @@
                             [results]="pie.series"
                             [gradient]="gradient"
                             (select)="onSelect($event)"
+                            [animations]="false"
                     >
                     </ngx-charts-advanced-pie-chart>
                 </td>
@@ -34,14 +35,14 @@
                              [results]="pie.hr"
                              [gradient]="gradient"
                              (select)="onSelect($event)"
-
+                             [animations]="false"
                      >
                     </ngx-charts-advanced-pie-chart>
                 </span>
             </td>
        </tr>
         </table>
-<app-summary-graph [dayActivity]="activity" [zoneHR]="zoneHR" type="heart"></app-summary-graph>
+<app-summary-graph  [dayActivity]="activity" [zoneHR]="zoneHR" type="heart"></app-summary-graph>
     <h3>Power</h3>
     <table>
        <tr *ngFor="let pie of stacked | reverse">
@@ -55,14 +56,14 @@
                      [results]="pie.pwr"
                      [gradient]="gradient"
                      (select)="onSelect($event)"
-
+                     [animations]="false"
              >
             </ngx-charts-advanced-pie-chart>
                 </span>
            </td>
        </tr>
     </table>
-    <app-summary-graph [dayActivity]="activity" [zoneHR]="zoneHR" type="power"></app-summary-graph>
+    <app-summary-graph  [dayActivity]="activity" [zoneHR]="zoneHR" type="power"></app-summary-graph>
 </span>
 <!--
 <h4>Daily Average (per week)</h4>

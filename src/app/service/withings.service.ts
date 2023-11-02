@@ -20,7 +20,6 @@ export class WithingsService {
   url = 'https://wbsapi.withings.net';
   private redirect: string | undefined;
   constructor(private http: HttpClient,
-              private epr: EPRService,
               private strava: StravaService,
               private datePipe: DatePipe) { }
 
@@ -32,13 +31,13 @@ export class WithingsService {
 
 
   getSleep(): void {
-    console.log('getSleep')
+
     if (!this.hasAccessToken()) { return; }
     console.log('withings has access token')
 
     this.getAPISleepSummary().subscribe((sleepData) => {
           if (sleepData.status === 401) {
-            console.log('Withings 401', sleepData);
+            console.log('Delete access token Withings 401', sleepData);
             this.deleteAccessToken();
           }
           else if (sleepData.status === 403) {
@@ -158,16 +157,14 @@ export class WithingsService {
 
       const helper = new JwtHelperService();
 
-      /*
-      disabled 6 Mar 2023
-      if (this.isTokenExpired(token.body)) {
+      if (token !== undefined && token !== null && token.body !== undefined) {
+        if (this.isTokenExpired(token.body)) {
 
-        console.log('withings Token expired');
-        this.accessToken = undefined;
-        this.getRefreshToken();
-        return undefined;
-      } */
-      if (token !== undefined) {
+          console.log('withings Token expired');
+          this.accessToken = undefined;
+          this.getRefreshToken();
+          return undefined;
+        }
         this.accessToken = token.body.access_token;
         // @ts-ignore
         return this.accessToken;
@@ -176,38 +173,41 @@ export class WithingsService {
     return undefined;
   }
 
-/*
-  public getRefreshToken(): string {
+
+  public getRefreshToken() {
     console.log('refreshing token NOT YET IMPLEMENTED');
 
-    if (this.refreshingToken) { return; }
+    if (this.refreshingToken) { return ; }
     this.refreshingToken = true;
 
+    var withingsToken = localStorage.getItem('withingsToken')
 
 
-    const token: any = JSON.parse(localStorage.getItem('withingsToken'));
 
-    const url = 'https://wbsapi.withings.net/v2/oauth2';
+    if (withingsToken !== null) {
+      const token: any = JSON.parse(withingsToken);
+      const url = 'https://wbsapi.withings.net/v2/oauth2';
+      if (token !== undefined && token.refresh_token !== undefined) {
+        const bodge = 'action=requesttoken'
+            + 'grant_type=refresh_token'
+            + '&client_id=' + environment.withingClientId
+            + '&client_secret=' + environment.withingSecret
+            + '&refresh_token=' + token.refresh_token;
 
-
-    const bodge = 'action=requesttoken'
-      + 'grant_type=refresh_token'
-      + '&client_id=' + environment.withingClientId
-      + '&client_secret=' + environment.withingSecret
-      + '&refresh_token=' + token.refresh_token;
-
-    this.http.post<any>(url, bodge, { headers : {}} ).subscribe(
-        accesstoken => {
-          console.log('Withings refreshed token');
-          this.setAccessToken(accesstoken);
-          this.refreshingToken = false;
-        },
-        (err) => {
-          console.log(err);
-        }
-    );
+        this.http.post<any>(url, bodge, {headers: {}}).subscribe(
+            accesstoken => {
+              console.log('Withings refreshed token');
+              this.setAccessToken(accesstoken);
+              this.refreshingToken = false;
+            },
+            (err) => {
+              console.log(err);
+            }
+        );
+      }
+    }
   }
-*/
+
 
 
   public getOAuth2AccessToken(authorisationCode: string, routeUrl: string): void {
@@ -251,6 +251,7 @@ export class WithingsService {
 
   private deleteAccessToken(): void {
     this.accessToken = undefined;
+    console.log('removed withingToken - deleteAccessToken')
     localStorage.removeItem('withingsToken');
   }
 
@@ -258,8 +259,10 @@ export class WithingsService {
       decoded: any
   ): Date | null {
 
-    if (!decoded || !decoded.hasOwnProperty('expires_at')) {
+    if (!decoded || !decoded.hasOwnProperty('expires_in')) {
       // Invalid format
+      console.log(decoded)
+      console.log('removed withingToken - getTokenExpiration date')
       localStorage.removeItem('withingsToken');
       return null;
     }
@@ -274,10 +277,16 @@ export class WithingsService {
       token: any,
       offsetSeconds?: number
   ): boolean {
+    // TODO 7/Nov/2023
+    return false;
+
+    // TODO 7/Nov/2023
+    /*
     if (!token || token === '') {
       return true;
     }
     const date = this.getTokenExpirationDate(token);
+
     offsetSeconds = offsetSeconds || 0;
 
 
@@ -286,6 +295,8 @@ export class WithingsService {
     }
 
     return !(date.valueOf() > new Date().valueOf() + offsetSeconds * 1000);
+
+     */
   }
 
 
