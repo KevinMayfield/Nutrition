@@ -174,11 +174,12 @@ export class PersonComponent implements OnInit {
 
   connectWithings(): void {
     console.log(window.location.origin);
-    this.withings.authorise(window.location.origin + this.getPathName(window.location.pathname) + '/person');
+    this.withings.authorise(window.location.origin + this.getPathName(window.location.pathname) );
   }
   getPathName(pathname: string): string {
+    console.log(pathname)
     if (pathname.includes('FHIR-R4')) return "/FHIR-R4-Demonstration";
-    return "";
+    return pathname;
   }
 
   doWithingsSetup(authorisationCode: string, state: any): void {
