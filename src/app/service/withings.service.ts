@@ -158,7 +158,7 @@ export class WithingsService {
       const helper = new JwtHelperService();
 
       if (token !== undefined && token !== null && token.body !== undefined) {
-        if (this.isTokenExpired(token.body)) {
+        if (this.isTokenExpired(token)) {
 
           console.log('withings Token expired');
           this.accessToken = undefined;
@@ -185,7 +185,8 @@ export class WithingsService {
 
 
     if (withingsToken !== null) {
-      const token: any = JSON.parse(withingsToken);
+      const temp: any = JSON.parse(withingsToken);
+      const token = temp.body
       const url = 'https://wbsapi.withings.net/v2/oauth2';
       if (token !== undefined && token.refresh_token !== undefined) {
         const bodge = 'action=requesttoken'
@@ -197,6 +198,7 @@ export class WithingsService {
         this.http.post<any>(url, bodge, {headers: {}}).subscribe(
             accesstoken => {
               console.log('Withings refreshed token');
+              console.log(accesstoken);
               this.setAccessToken(accesstoken);
               this.refreshingToken = false;
             },
@@ -259,17 +261,15 @@ export class WithingsService {
       decoded: any
   ): Date | null {
 
-    if (!decoded || !decoded.hasOwnProperty('expires_in')) {
+    if (!decoded || !decoded.hasOwnProperty('expires_at')) {
       // Invalid format
       console.log(decoded)
       console.log('removed withingToken - getTokenExpiration date')
-   //   localStorage.removeItem('withingsToken');
       return null;
     }
 
     const date = new Date(0);
     date.setUTCSeconds(decoded.expires_at);
-
     return date;
   }
 
@@ -277,11 +277,7 @@ export class WithingsService {
       token: any,
       offsetSeconds?: number
   ): boolean {
-    // TODO 7/Nov/2023
-    return false;
 
-    // TODO 7/Nov/2023
-    /*
     if (!token || token === '') {
       return true;
     }
@@ -289,14 +285,11 @@ export class WithingsService {
 
     offsetSeconds = offsetSeconds || 0;
 
-
     if (date === null) {
       return false;
+    } else {
+      return !(date.valueOf() > new Date().valueOf() + offsetSeconds * 1000);
     }
-
-    return !(date.valueOf() > new Date().valueOf() + offsetSeconds * 1000);
-
-     */
   }
 
 
@@ -325,7 +318,10 @@ export class WithingsService {
 */
   setAccessToken(token: any): void {
     // Create an expires at ..... don't know when we got the token
-    token.expires_at = Math.round((new Date().valueOf()) / 1000) + token.expires_in;
+    let timeObject = new Date();
+    const milliseconds = token.body.expires_in * 1000; // 10 seconds = 10000 milliseconds
+    timeObject = new Date(timeObject.getTime() + milliseconds);
+    token.expires_at = Math.round(timeObject.getTime() / 1000)
     console.log('Withing accesToken')
     console.log(token)
     localStorage.setItem('withingsToken', JSON.stringify(token));
