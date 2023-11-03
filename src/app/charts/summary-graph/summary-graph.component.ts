@@ -134,27 +134,8 @@ export class SummaryGraphComponent implements OnChanges {
            }
         }
         calories.push(entryCalories)
-        if (entryTrimp.value > 500) {
-          this.colorTrimp.domain.push('#A10A28')
-        } else
-        if (entryTrimp.value > 350) {
-          this.colorTrimp.domain.push('#C7B42C')
-        } else if (entryTrimp.value > 200) {
-          this.colorTrimp.domain.push('#5AA454')
-        } else {
-          this.colorTrimp.domain.push('#7aa3e5')
-        }
-
-        if (entryTss.value > 450) {
-          this.colorTSS.domain.push('#A10A28')
-        } else
-        if (entryTss.value > 300) {
-          this.colorTSS.domain.push('#C7B42C')
-        } else if (entryTss.value > 150) {
-          this.colorTSS.domain.push('#5AA454')
-        } else {
-          this.colorTSS.domain.push('#7aa3e5')
-        }
+        this.colorTrimp.domain.push(this.epr.getTrimpColour(entryTrimp.value))
+        this.colorTSS.domain.push(this.epr.getTSSColour(entryTss.value))
         trimp.push(entryTrimp)
         tss.push(entryTss)
         day++

@@ -18,6 +18,21 @@ import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {WithingsService} from "../service/withings.service";
 import {MeasuresDay} from "../models/measures-day";
 
+class ActivityWeek {
+    week?: number;
+    duration: number = 0;
+    kcal: number = 0;
+    num_activities: number = 0;
+    zones: DaySummary[] =[]
+}
+
+class DaySummary {
+    kcal?: number = 0;
+    duration: number = 0;
+    zone?: number;
+    num_activities?: number = 0;
+}
+
 @Component({
   selector: 'app-resting-metabolic-rate',
   templateUrl: './activity.component.html',
@@ -59,6 +74,7 @@ export class ActivityComponent implements OnInit{
     administrativeGender :ValueSetExpansionContains | undefined
     activityArray : ActivityDay[] = []
     activities : SummaryActivity[] = []
+    activitiesWeek : ActivityWeek[] = []
     powerActivities: SummaryActivity[] = [];
     measures: MeasuresDay[] = []
     legendHR = true;
@@ -125,6 +141,35 @@ export class ActivityComponent implements OnInit{
     endDate: Date = new Date();
     selectedTabIndex: any;
     ftp: number | undefined;
+
+    /* PIE */
+
+    multiHR: any[] | undefined;
+    multiPWR: any[] | undefined;
+    yScaleMax =0;
+    stacked: any[] | undefined;
+    gradient = false;
+
+    colorFTP: Color = {
+        domain: this.epr.getFTPColours(),
+        group: ScaleType.Ordinal,
+        name: "",
+        selectable: false
+    }
+
+    colorStacked: Color = {
+        domain: [
+            'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
+        ], group: ScaleType.Ordinal, name: "", selectable: false
+    }
+
+    colorSingle: Color = {
+        domain: [
+            'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
+        ], group: ScaleType.Ordinal, name: "", selectable: false
+    }
+
+
     constructor(
         private http: HttpClient,
         private epr: EPRService,
@@ -142,6 +187,9 @@ export class ActivityComponent implements OnInit{
             this.administrativeGenders = this.smart.getContainsExpansion(result)
             this.setGenders()
         })
+        if (this.epr.person !== undefined && this.epr.person.ftp !== undefined) {
+            this.colorFTP.domain = this.epr.getFTPColours()
+        }
 
         this.zoneHR = this.epr.getHRZone()
 
@@ -268,6 +316,7 @@ export class ActivityComponent implements OnInit{
                     }));
                     this.setSortHR()
                     this.setSortPWR()
+                    this.refreshActivity()
                 }
             }
 
@@ -812,20 +861,12 @@ export class ActivityComponent implements OnInit{
         }
 
     }
-
-    getBackgroundStress(activity: SummaryActivity) :string {
-        let stress = this.stress(activity)
-        if (stress < 150) return 'lightblue';
-        if (stress < 300) return 'lightgreen';
-        if (stress < 450) return '#FFF59D'
-        return 'lightcoral'
+    getBackgroundTrimp(trimp : number) :string {
+        return this.epr.getTrimpColour(trimp)
     }
     getBackgroundTSS(activity: SummaryActivity) :string {
         let stress = this.stressTraining(activity)
-        if (stress < 150) return 'lightgreen';
-        if (stress < 300) return '#FFF59D';
-        if (stress < 450) return 'lightpink'
-        return 'lightcoral'
+        return this.epr.getTSSColour(stress)
     }
 
     intensityFactor(activity: SummaryActivity) {
@@ -841,4 +882,370 @@ export class ActivityComponent implements OnInit{
         from.setDate(now.getDate() - this.strava.duration + number );
         return from;
     }
+    /* PIE Chart data */
+
+    refreshActivity() {
+        console.log('Refresh Activity')
+        this.activitiesWeek = []
+        if (this.activityArray !== undefined) {
+            var sortedActivity: ActivityDay[] = this.activityArray.sort((n1,n2) => {
+                // @ts-ignore
+                if (n1.day > n2.day) {
+                    return 1;
+                }
+
+                // @ts-ignore
+                if (n1.day < n2.day) {
+                    return -1;
+                }
+                return 0;
+            });
+
+            for (let activityDay of sortedActivity) {
+                for (let session of activityDay.sessions) {
+                    if (session.activity !== undefined) {
+                        let exercise = session.activity
+                        if (activityDay.day !== undefined) {
+                            let weekNo = this.getWeekNumber(activityDay.day)
+                            var week: ActivityWeek | undefined = undefined;
+                            for (let wk of this.activitiesWeek) {
+                                if (wk.week === weekNo) week = wk
+                            }
+                            if (week == undefined) {
+                                // @ts-ignore
+                                week = {
+                                    zones: [],
+                                    duration: exercise.elapsed_time,
+                                    kcal: 0,
+                                    num_activities: 1,
+                                    week: weekNo
+                                }
+                                if (exercise.kcal !== undefined) week.kcal = exercise.kcal
+                                for(let f=0;f<5;f++) {
+                                    let daySummary: DaySummary = {
+                                        zone: (f+1),
+                                        kcal: 0,
+                                        duration: 0,
+                                        num_activities:0
+                                    }
+                                    week.zones.push(daySummary)
+                                }
+                                this.activitiesWeek.push(week)
+                            } else {
+                                week.duration = week.duration + exercise.elapsed_time
+                                if (exercise.kcal !== undefined) week.kcal = week.kcal + exercise.kcal
+                                week.num_activities = (week.num_activities + 1)
+                            }
+                            let zone = this.getZone(exercise)
+                            for (let day of week.zones) {
+                                if (day.zone == zone) {
+
+                                    // @ts-ignore
+                                    if (exercise.kcal !== undefined) day.kcal = day.kcal + exercise.kcal
+
+                                    day.duration = day.duration + exercise.elapsed_time
+                                    // @ts-ignore
+                                    day.num_activities = (+day.num_activities + 1)
+                                }
+                            }
+                        } else {
+                            //    console.log(exercise)
+                        }
+                    }
+                }
+            }
+            this.stacked = undefined
+
+            this.colorSingle.domain = []
+            var stacked = []
+
+            var domain = []
+
+            this.refreshPowerActivity()
+            this.refreshHRActivity()
+
+            for (let wk of this.activitiesWeek) {
+                // @ts-ignore
+                let isoDate = this.getSundayFromWeekNum(wk.week)
+                let iso= isoDate.toLocaleDateString()
+
+                // @ts-ignore
+                var entry = {"name": wk.week + ' ' + iso,
+                    "series": [],
+                    "pwr": [],
+                    "hr": []
+                }
+                for (let f=0;f<5;f++) {
+                    let ser = {
+                        name: 'Heart rate Zone '+(f+1),
+                        value: 0,
+                        extra: {
+                            wk: {}
+                        }
+                    }
+                    // @ts-ignore
+                    entry.series.push(ser)
+                }
+                for (let zone of wk.zones) {
+
+                    if (zone.zone !== undefined) {
+                        var ent = entry.series[zone.zone - 1]
+                        if (zone.kcal !== undefined) {
+                            // @ts-ignore
+                            ent.value = ent.value + Math.round(zone.kcal)
+                            // @ts-ignore
+                            ent.extra.wk = zone
+
+                        }
+                    }
+                }
+                stacked.push(entry)
+
+                let avg_dur = Math.round(wk.duration / (7 *60))
+                if (avg_dur < 20) {  domain.push('lightgrey') }
+                else if (avg_dur < 40 ) { domain.push('lightblue') }
+                else if (avg_dur < 60 ) {  domain.push('lightgreen') }
+                else if (avg_dur < 240 ) {   domain.push('lightsalmon') }
+                else  {   domain.push('lightpink') }
+            }
+
+            for (let stack of stacked) {
+                let week = +stack.name.split(' ')[0]
+                let wkPower = this.getPWRWeek(week)
+                stack.pwr = []
+                wkPower.forEach((value, index) => {
+                    // @ts-ignore
+                    stack.pwr.push({
+                        name: 'Power Zone '+ (index+1),
+                        value: value.value
+                    })
+                });
+                let wkHR = this.getHRWeek(week)
+                stack.hr = []
+                wkHR.forEach((value, index) => {
+                    // @ts-ignore
+                    stack.hr.push({
+                        name: 'Heart rate Zone '+ (index+1),
+                        value: value.value
+                    })
+                });
+            }
+
+            this.stacked  = stacked.sort((n1,n2) => {
+                if (n1.name < n2.name) {
+                    return 1;
+                }
+                if (n1.name > n2.name) {
+                    return -1;
+                }
+                return 0;
+            });
+            this.colorSingle.domain = domain
+        }
+    }
+    getWeekNumber(d : Date) {
+        return this.epr.getWeekNumber(d);
+    }
+    getSundayFromWeekNum(weekNum : number) {
+        var sunday = new Date(this.strava.getToDate().getFullYear(), 0, (1 + (weekNum - 1) * 7));
+        while (sunday.getDay() !== 0) {
+            sunday.setDate(sunday.getDate() + 1);
+        }
+        return sunday;
+    }
+    getZone(activity: SummaryActivity) {
+        let zone = this.epr.getHRZone()
+        if (zone == undefined) return 0;
+        if (activity == undefined) return 1;
+
+        if (activity.average_heartrate == undefined) return 1
+        // @ts-ignore
+        if (activity.average_heartrate < zone.z1?.min) return 1
+        // @ts-ignore
+        if (activity.average_heartrate < zone.z2?.min) return 1
+        // @ts-ignore
+        if (activity.average_heartrate < zone.z3?.min) return 2
+        // @ts-ignore
+        if (activity.average_heartrate < zone.z4?.min) {
+            return 3
+        }
+        // @ts-ignore
+        if (activity.average_heartrate < zone.z5?.min) {
+            return 4
+        }
+        return 5
+    }
+    getPWRWeek(weekNo : number) {
+
+        let single: any[] = []
+        if (this.multiPWR !== undefined) {
+            for (let bar of this.multiPWR) {
+                var singleBar: any = {
+                    name: bar.name,
+                    value: 0
+                }
+                for (let wk of bar.series) {
+                    if (this.yScaleMax<wk.value) this.yScaleMax = wk.value
+                    if (wk.name === weekNo ) {
+                        if (wk.value !== undefined) {
+                            singleBar.value = wk.value
+                        }
+                    }
+                }
+                single.push(singleBar)
+            }
+        }
+        return single
+    }
+    getHRWeek(weekNo : number) {
+
+        let single: any[] = []
+        if (this.multiHR !== undefined) {
+            for (let bar of this.multiHR) {
+                var singleBar: any = {
+                    name: bar.name,
+                    value: 0
+                }
+                for (let wk of bar.series) {
+                    if (this.yScaleMax<wk.value) this.yScaleMax = wk.value
+                    if (wk.name === weekNo ) {
+                        if (wk.value !== undefined) {
+                            singleBar.value = wk.value
+                        }
+                    }
+                }
+                single.push(singleBar)
+            }
+        }
+        return single
+    }
+    private refreshPowerActivity() {
+        this.multiPWR = undefined
+
+        this.yScaleMax = 0
+        var multi = []
+        var zones = this.epr.getPWRZone()
+        multi.push({name : zones?.z1.min , series: []})
+        multi.push({name : zones?.z2.min , series: []})
+        multi.push({name : zones?.z3.min , series: []})
+        multi.push({name : zones?.z4.min , series: []})
+        multi.push({name : zones?.z5.min , series: []})
+        multi.push({name : zones?.z6.min , series: []})
+        multi.push({name : zones?.z7.min , series: []})
+
+        if (this.activityArray !== undefined) {
+
+            for (let act of this.activityArray) {
+                if (act.sessions !== undefined && act.day !== undefined) {
+                    for(let session of act.sessions) {
+                        if (session.activity !== undefined) {
+                            if (session.activity.zones !== undefined) {
+                                for (let zone of session.activity.zones) {
+                                    if (zone.type === 'power') {
+                                        for (let bucket of zone.distribution_buckets) {
+                                            for (let mul of multi) {
+                                                if (bucket.min == mul.name) {
+                                                    let weekNo = this.epr.getWeekNumber(act.day)
+
+                                                    var fd: any = undefined
+                                                    for (let series of mul.series) {
+                                                        // @ts-ignore
+                                                        if (series.name === weekNo) {
+                                                            fd = series
+                                                        }
+                                                    }
+                                                    if (fd === undefined) {
+                                                        fd = {
+                                                            name: weekNo,
+                                                            value: Math.round(bucket.time / 60)
+                                                        }
+                                                        // @ts-ignore
+                                                        mul.series.push(fd)
+                                                    } else {
+                                                        fd.value = fd.value + Math.round(bucket.time / 60)
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        this.multiPWR = multi
+    }
+
+    private refreshHRActivity() {
+        this.multiHR = undefined
+
+        this.yScaleMax = 0
+        var multi = []
+        var zones = this.epr.getHRZone()
+        if (zones!== undefined) {
+
+            // @ts-ignore
+            multi.push({name : zones.z1.min , series: []})
+            // @ts-ignore
+            multi.push({name : zones.z2.min , series: []})
+            // @ts-ignore
+            multi.push({name : zones.z3.min , series: []})
+            // @ts-ignore
+            multi.push({name : zones.z4.min , series: []})
+            // @ts-ignore
+            multi.push({name : zones.z5.min , series: []})
+
+
+            if (this.activityArray !== undefined) {
+
+                for (let act of this.activityArray) {
+                    if (act.sessions !== undefined && act.day !== undefined) {
+                        for (let session of act.sessions) {
+                            if (session.activity !== undefined) {
+                                if (session.activity.zones !== undefined) {
+                                    for (let zone of session.activity.zones) {
+                                        if (zone.type === 'heartrate') {
+                                            for (let bucket of zone.distribution_buckets) {
+                                                for (let mul of multi) {
+                                                    if (bucket.min == mul.name) {
+                                                        let weekNo = this.epr.getWeekNumber(act.day)
+
+                                                        var fd: any = undefined
+                                                        for (let series of mul.series) {
+                                                            // @ts-ignore
+                                                            if (series.name === weekNo) {
+                                                                fd = series
+                                                            }
+                                                        }
+                                                        if (fd === undefined) {
+                                                            fd = {
+                                                                name: weekNo,
+                                                                value: Math.round(bucket.time / 60)
+                                                            }
+                                                            // @ts-ignore
+                                                            mul.series.push(fd)
+                                                        } else {
+                                                            fd.value = fd.value + Math.round(bucket.time / 60)
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        this.multiHR = multi
+    }
+
 }

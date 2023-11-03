@@ -37,7 +37,6 @@ import { HeartGraphComponent } from './charts/heart-graph/heart-graph.component'
 import {MatChipsModule} from "@angular/material/chips";
 import { NutritionComponent } from './nutrition/nutrition.component';
 import { SummaryGraphComponent } from './charts/summary-graph/summary-graph.component';
-import { WeeklyGraphComponent } from './charts/weekly-graph/weekly-graph.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {MatToolbarModule} from "@angular/material/toolbar";
@@ -59,7 +58,6 @@ import { SleepComponent } from './charts/sleep/sleep.component';
         HeartGraphComponent,
         NutritionComponent,
         SummaryGraphComponent,
-        WeeklyGraphComponent,
         ReversePipe,
         PersonComponent,
         SleepComponent

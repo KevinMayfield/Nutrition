@@ -26,7 +26,7 @@
 <mat-card xmlns="http://www.w3.org/1999/html">
     <mat-card-content>
     <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectionchange)="tabChanged($event)">
-        <mat-tab label="Summary (Energy/kcal)">
+        <mat-tab label="Summary">
             <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Time-based Measures"
@@ -98,15 +98,34 @@
             <span *ngIf="measures.length>1">
                 <app-sleep [measures]="measures"></app-sleep>
             </span>
-            <app-weekly-graph [dayActivity]="activityArray" ></app-weekly-graph>
+            <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
+            <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
+                <h3>Exercise energy (kcal)</h3>
+                <table>
+                    <tr *ngFor="let pie of stacked">
 
+                            <td>Week {{pie.name}}</td>
+                            <td>
+                                <ngx-charts-advanced-pie-chart
+                                        [view]="[containerRef.offsetWidth, 200]"
+                                        [scheme]="colorStacked"
+                                        label="Exercise energy (kcal) - Heart Rate Zone (Average for Activity)"
+                                        [results]="pie.series"
+                                        [gradient]="gradient"
+                                        [animations]="false"
+                                >
+                                </ngx-charts-advanced-pie-chart>
+                            </td>
+                       </tr>
+                    </table>
+            </span>
         </mat-tab>
         <!--
 
         HEART RATE
 
         -->
-        <mat-tab label="Physical Activity Log (Heart Rate)">
+        <mat-tab label="Heart Rate">
             <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Activity-based Measures"
@@ -114,6 +133,29 @@
                         icon="info">
                 <button td-message-actions mat-button (click)="viewPA()">View More</button>
             </td-message>
+            <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR" type="heart"></app-summary-graph>
+            <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
+
+                    <h3>Heart Rate</h3>
+                    <table>
+                       <tr *ngFor="let pie of stacked">
+                            <td>Week {{pie.name}}</td>
+                            <td>
+                                <span *ngIf="pie.hr !== undefined">
+                                     <ngx-charts-advanced-pie-chart
+                                             [view]="[containerRef.offsetWidth, 200]"
+                                             [scheme]="colorStacked"
+                                             label="Exercise duration (min) - Heart Rate Zone"
+                                             [results]="pie.hr"
+                                             [gradient]="gradient"
+                                             [animations]="false"
+                                     >
+                                    </ngx-charts-advanced-pie-chart>
+                                </span>
+                            </td>
+                       </tr>
+                    </table>
+            </span>
              <div>
                 <table mat-table [dataSource]="dataSourceHR" class="mat-elevation-z8"
                        matSort #hrSort="matSort" (matSortChange)="announceSortChange($event)"
@@ -124,42 +166,38 @@
                         <td mat-cell *matCellDef="let activity">
                             <div layout="column" layout-align="space-around start">
                                 <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
-                                <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
-                                        {{getType(activity.type)}}
-                                </span> </a>
-                                <table>
-                                    <tr>
-                                        <td style="display: flex; justify-content: flex-end">Total time</td>
-                                        <td><b>{{duration(activity.moving_time/60)}}</b></td>
-                                    </tr>
-                                    <tr *ngIf="activity.elapsed_time != activity.moving_time">
-                                        <td style="display: flex; justify-content: flex-end"><i>Idle time</i></td>
-                                        <td><b><i>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</i></b></td>
-                                    </tr>
-                                    <tr *ngIf="activity.elapsed_time != activity.moving_time">
-                                        <td style="display: flex; justify-content: flex-end">Moving time</td>
-                                        <td><b>{{duration((activity.elapsed_time)/60)}}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: flex; justify-content: flex-end">Distance</td>
-                                        <td><b>{{round(activity.distance/1000)}} km</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: flex; justify-content: flex-end">Elevation</td>
-                                        <td><b>{{round(activity.total_elevation_gain)}} m</b></td>
-                                    </tr>
-                                </table>
+
                             </div>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="heart">
                         <th mat-header-cell *matHeaderCellDef style="width: 80%;"> </th>
                         <td mat-cell *matCellDef="let activity">
-                            <h3>{{activity.name}}</h3>
+                            <span layout="row">
+                                <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank">
+                                <span *ngIf="activity.type !== undefined" class="material-symbols-outlined">{{getType(activity.type)}}</span>
+                                </a>
+                                &nbsp;&nbsp;
+                                <h3>{{activity.name}}</h3>
+                            </span>
                             <br/>
                             <app-heart-graph [activity]="activity"></app-heart-graph>
                             <hr/>
                             <table>
+                                <tr>
+                                    <td style="display: flex; justify-content: flex-end">Total time</td>
+                                    <td><b>{{duration(activity.moving_time/60)}}</b></td>
+                                    <td style="display: flex; justify-content: flex-end">Distance</td>
+                                    <td><b>{{round(activity.distance/1000)}} km</b></td>
+                                    <td style="display: flex; justify-content: flex-end">Elevation</td>
+                                    <td><b>{{round(activity.total_elevation_gain)}} m</b></td>
+                                </tr>
+                                <tr *ngIf="activity.elapsed_time != activity.moving_time">
+                                    <td style="display: flex; justify-content: flex-end"><i>Idle time</i></td>
+                                    <td><b><i>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</i></b></td>
+                                    <td style="display: flex; justify-content: flex-end">Moving time</td>
+                                    <td><b>{{duration((activity.elapsed_time)/60)}}</b></td>
+                                </tr>
                                 <tr>
                                     <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">local_pizza</span> Energy</td>
                                     <td><b>{{round(activity.kcal)}} kcal</b></td>
@@ -179,7 +217,8 @@
                              </span></td>
                                     <td>
                                         <span *ngIf="activity.trimp !== undefined">
-                                        <b>{{round(activity.trimp)}}</b>
+                                            <mat-chip style="background: {{getBackgroundTrimp(activity.trimp)}}; width: 50px" layout-align="center">
+                                            {{round(activity.trimp)}}</mat-chip>
                                         </span>
                                     </td>
                                 </tr>
@@ -200,7 +239,7 @@
              </div>
                 <mat-paginator #paginatorHR [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
         </mat-tab>
-        <mat-tab *ngIf="hasPowerData" label="Physical Activity Log (Power)">
+        <mat-tab *ngIf="hasPowerData" label="Power">
             <td-message
                     label="Information"
                     sublabel="For detailed breakdown of power data see power-meter.cc"
@@ -208,7 +247,28 @@
                     icon="info">
                 <button td-message-actions mat-button (click)="viewPower()">Power-Meter.cc</button>
             </td-message>
-
+            <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR" type="power"></app-summary-graph>
+            <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
+                <h3>Power</h3>
+                <table>
+                    <tr *ngFor="let pie of stacked">
+                        <td>Week {{pie.name}}</td>
+                        <td>
+                            <span *ngIf="pie.pwr !== undefined">
+                             <ngx-charts-advanced-pie-chart
+                                     [view]="[containerRef.offsetWidth, 200]"
+                                     [scheme]="colorFTP"
+                                     label="Exercise duration (min) - Power Zone"
+                                     [results]="pie.pwr"
+                                     [gradient]="gradient"
+                                     [animations]="false"
+                             >
+                            </ngx-charts-advanced-pie-chart>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </span>
             <h3>Activity Logs</h3>
             <div>
             <table mat-table [dataSource]="dataSourceKJ" class="mat-elevation-z8"
@@ -221,42 +281,39 @@
 
                         <div layout="column" layout-align="space-around start">
                             <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
-                            <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank"><span *ngIf="activity.type !== undefined" class="material-symbols-outlined">
-                                        {{getType(activity.type)}}
-                                </span> </a>
-                            <table>
-                                <tr>
-                                    <td style="display: flex; justify-content: flex-end">Total time</td>
-                                    <td><b>{{duration(activity.moving_time/60)}}</b></td>
-                                </tr>
-                                <tr *ngIf="activity.elapsed_time != activity.moving_time">
-                                    <td><i>Idle time</i></td>
-                                    <td><b><i>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</i></b></td>
-                                </tr>
-                                <tr *ngIf="activity.elapsed_time != activity.moving_time">
-                                    <td style="display: flex; justify-content: flex-end">Moving time</td>
-                                    <td><b>{{duration((activity.elapsed_time)/60)}}</b></td>
-                                </tr>
-                                <tr>
-                                    <td style="display: flex; justify-content: flex-end">Distance</td>
-                                    <td><b>{{round(activity.distance/1000)}} km</b></td>
-                                </tr>
-                                <tr>
-                                    <td style="display: flex; justify-content: flex-end">Elevation</td>
-                                    <td><b>{{round(activity.total_elevation_gain)}} m</b></td>
-                                </tr>
-                            </table>
+
                         </div>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="power">
                     <th mat-header-cell *matHeaderCellDef > </th>
                     <td mat-cell *matCellDef="let activity">
-                         <h3>{{activity.name}}</h3>
+                        <span layout="row">
+                                <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank">
+                                <span *ngIf="activity.type !== undefined" class="material-symbols-outlined">{{getType(activity.type)}}</span>
+                                </a>
+                                &nbsp;&nbsp;
+                                <h3>{{activity.name}}</h3>
+                            </span>
                         <br/>
                         <app-power-graph [activity]="activity"></app-power-graph>
                         <hr/>
                         <table>
+                            <tr>
+                                <td style="display: flex; justify-content: flex-end">Total time</td>
+                                <td><b>{{duration(activity.moving_time/60)}}</b></td>
+                                <td style="display: flex; justify-content: flex-end">Distance</td>
+                                <td><b>{{round(activity.distance/1000)}} km</b></td>
+                                <td style="display: flex; justify-content: flex-end">Elevation</td>
+                                <td><b>{{round(activity.total_elevation_gain)}} m</b></td>
+                            </tr>
+                            <tr *ngIf="activity.elapsed_time != activity.moving_time">
+                                <td><i>Idle time</i></td>
+                                <td><b><i>{{duration((activity.elapsed_time - activity.moving_time)/60)}}</i></b></td>
+
+                                <td style="display: flex; justify-content: flex-end">Moving time</td>
+                                <td><b>{{duration((activity.elapsed_time)/60)}}</b></td>
+                            </tr>
                             <tr>
                                 <td style="display: flex; justify-content: flex-end"><span class="material-symbols-outlined">local_pizza</span> Energy</td>
                                 <td><b>{{round(activity.kcal)}} kcal</b></td>

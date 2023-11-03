@@ -251,8 +251,8 @@ export class WithingsService {
 
   private deleteAccessToken(): void {
     this.accessToken = undefined;
-    console.log('removed withingToken - deleteAccessToken')
-    localStorage.removeItem('withingsToken');
+   console.log('removed withingToken - deleteAccessToken')
+   // localStorage.removeItem('withingsToken');
   }
 
   private getTokenExpirationDate(
@@ -263,7 +263,7 @@ export class WithingsService {
       // Invalid format
       console.log(decoded)
       console.log('removed withingToken - getTokenExpiration date')
-      localStorage.removeItem('withingsToken');
+   //   localStorage.removeItem('withingsToken');
       return null;
     }
 
@@ -326,6 +326,8 @@ export class WithingsService {
   setAccessToken(token: any): void {
     // Create an expires at ..... don't know when we got the token
     token.expires_at = Math.round((new Date().valueOf()) / 1000) + token.expires_in;
+    console.log('Withing accesToken')
+    console.log(token)
     localStorage.setItem('withingsToken', JSON.stringify(token));
     this.accessToken = token.access_token;
     console.log('Stored access token');

@@ -377,5 +377,30 @@ getHRZone() {
     }
   }
 
+  getTrimpColour(trimp: number) : string {
+    if (trimp > 500) {
+      return '#A10A28'
+    } else
+    if (trimp > 350) {
+      return '#C7B42C'
+    } else if (trimp > 200) {
+      return '#5AA454'
+    } else {
+      return '#7aa3e5'
+    }
+  }
+  getTSSColour(entryTss: number): string {
+    if (entryTss > 450) {
+      return '#A10A28'
+    } else
+    if (entryTss > 300) {
+      return '#C7B42C'
+    } else if (entryTss > 150) {
+      return '#5AA454'
+    } else {
+      return '#7aa3e5'
+    }
+  }
+
 
 }
