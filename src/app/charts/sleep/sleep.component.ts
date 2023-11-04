@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
-import {ActivityDay} from "../../models/activity-day";
-import {MeasuresDay} from "../../models/measures-day";
 import {Color, ScaleType} from "@swimlane/ngx-charts";
+import {Observations} from "../../models/observations";
+import {curveBasis} from "d3-shape";
 
 @Component({
   selector: 'app-sleep',
@@ -9,21 +9,25 @@ import {Color, ScaleType} from "@swimlane/ngx-charts";
   styleUrls: ['./sleep.component.scss']
 })
 export class SleepComponent {
-  measure : MeasuresDay[] = []
+  measure :Observations[] = []
 
   sleepScore: any[] | undefined
   hrv: any[] | undefined
   avg_hearrate : any[] | undefined
    seriesHRV: any[] | undefined
     seriesHR: any[] | undefined
+    series: any[] | undefined
+
   showXAxis = true;
   showYAxis = true;
   gradient = false;
   showLegend = false;
+  timeline: boolean = false;
+    curve = curveBasis
   showXAxisLabel = false;
-
   showYAxisLabel = true;
-
+    scaleMin= 99999;
+    scaleMax= 0;
   colorScheme: Color = {
     domain: [
        'lightblue'
@@ -42,8 +46,8 @@ export class SleepComponent {
         domain: [ '#5AA454','#7aa3e5','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
         , group: ScaleType.Ordinal, name: "", selectable: false
     };
-    timeline: boolean = false;
-  @Input() set measures(measure: MeasuresDay[]) {
+
+  @Input() set measures(measure: Observations[]) {
 
     this.measure = measure
     this.refreshActivity()
@@ -56,6 +60,7 @@ export class SleepComponent {
     this.avg_hearrate = undefined
       this.seriesHRV = undefined
       this.seriesHR = undefined
+      this.series = undefined
     var sleepScore: any[] = []
     var hrv: any[] = []
     var avg_heartrate: any[] = []
@@ -75,7 +80,7 @@ export class SleepComponent {
 
 
           let entSleep = {
-             name: measure.day,
+              name: measure.day,
               value: 0
           }
           if (measure.sleepScore !== undefined) {
@@ -89,18 +94,26 @@ export class SleepComponent {
           sleepScore.push(entSleep)
 
           let entHrv = {
-            name: measure.day,
-            value: 0
+              name: measure.day,
+              value: 0
           }
-          if (measure.hrv !== undefined) entHrv.value = measure.hrv
+          if (measure.hrv !== undefined) {
+              if (this.scaleMax < measure.hrv) this.scaleMax = measure.hrv
+              if (this.scaleMin > measure.hrv) this.scaleMin = measure.hrv
+              entHrv.value = measure.hrv
+          }
           hrv.push(entHrv)
 
 
           let entAvgHeartrate = {
-            name: measure.day,
-            value: 0
+              name: measure.day,
+              value: 0
           }
-          if (measure.hr_average !== undefined) entAvgHeartrate.value = measure.hr_average
+          if (measure.hr_average !== undefined) {
+              if (this.scaleMax < measure.hr_average) this.scaleMax = measure.hr_average
+              if (this.scaleMin > measure.hr_average) this.scaleMin = measure.hr_average
+              entAvgHeartrate.value = measure.hr_average
+          }
           avg_heartrate.push(entAvgHeartrate)
 
           if (measure.hr_average !== undefined) {
@@ -114,5 +127,9 @@ export class SleepComponent {
     this.avg_hearrate = avg_heartrate
       this.seriesHRV = seriesHRV
       this.seriesHR = seriesHR
+    var series = []
+    series.push(seriesHRV[0])
+      series.push(seriesHR[0])
+      this.series = series
   }
 }

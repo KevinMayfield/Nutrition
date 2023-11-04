@@ -16,7 +16,8 @@ import {ActivityDay, ActivitySession} from "../models/activity-day";
 import {MatDatepickerInputEvent} from "@angular/material/datepicker";
 import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {WithingsService} from "../service/withings.service";
-import {MeasuresDay} from "../models/measures-day";
+import {Observations} from "../models/observations";
+import {MeasurementSetting} from "../models/enums/MeasurementSetting";
 
 class ActivityWeek {
     week?: number;
@@ -76,7 +77,8 @@ export class ActivityComponent implements OnInit{
     activities : SummaryActivity[] = []
     activitiesWeek : ActivityWeek[] = []
     powerActivities: SummaryActivity[] = [];
-    measures: MeasuresDay[] = []
+    sleepMeasures: Observations[] = []
+    bodyMeasures: Observations[] = []
     legendHR = true;
     exerciseIntenses: ValueSetExpansionContains[] = [
         {
@@ -383,19 +385,22 @@ export class ActivityComponent implements OnInit{
                 })
             }
         )
+        this.withings.bodyMeasures.subscribe(measures => {
+            this.bodyMeasures = measures
+        })
         this.withings.sleepMeasures.subscribe(measure => {
             var today = this.strava.getToDate()
             var activityDate = measure.day
             if (activityDate !== undefined) {
                 var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
-                let bank = this.measures[this.strava.duration - diffDays]
+                let bank = this.sleepMeasures[this.strava.duration - diffDays]
                 if (bank !== undefined) {
-                    this.measures[this.strava.duration - diffDays].hrv = measure.hrv
-                    this.measures[this.strava.duration - diffDays].sleepScore = measure.sleepScore
-                    this.measures[this.strava.duration - diffDays].hr_average = measure.hr_average
+                    this.sleepMeasures[this.strava.duration - diffDays].hrv = measure.hrv
+                    this.sleepMeasures[this.strava.duration - diffDays].sleepScore = measure.sleepScore
+                    this.sleepMeasures[this.strava.duration - diffDays].hr_average = measure.hr_average
                     var tempAct: any[] = []
-                    for (let temp of this.measures) tempAct.push(temp)
-                    this.measures = tempAct
+                    for (let temp of this.sleepMeasures) tempAct.push(temp)
+                    this.sleepMeasures = tempAct
                 } else {
                     console.log(today + ' ' + activityDate + ' ' + diffDays)
                 }
@@ -614,9 +619,11 @@ export class ActivityComponent implements OnInit{
         if (this.withings.getAccessToken() !== undefined) {
 
             let measures =[]
-            for (var i = 0; i < this.strava.duration; i++) measures.push({day: this.date(i)})
-            this.measures = measures
+            for (var i = 0; i < this.strava.duration; i++) measures.push({day: this.date(i),
+                measurementSetting: MeasurementSetting.home})
+            this.sleepMeasures = measures
             this.withings.getSleep()
+            this.withings.getMeasures()
         }
     }
     getStrava(){
@@ -761,47 +768,6 @@ export class ActivityComponent implements OnInit{
         }
         return undefined
     }
-
-
-/*
-    getZone(activity: any) {
-        if (activity === undefined || activity.zones == undefined || activity.zones.length == 0) return
-        for (let zone of activity.zones) {
-            if (zone.type ==='heartrate') {
-
-                var hrzones : hrZone = {
-                    calculated: false,
-                    maximumHR: Math.round(1.034 * zone.distribution_buckets[4].min)
-                }
-                hrzones.z1 = {
-                    min : zone.distribution_buckets[0].min,
-                    max: zone.distribution_buckets[0].max
-                }
-                hrzones.z2 = {
-                    min : zone.distribution_buckets[1].min,
-                    max: zone.distribution_buckets[1].max
-                }
-                hrzones.z3 = {
-                    min : zone.distribution_buckets[2].min,
-                    max: zone.distribution_buckets[2].max
-                }
-                hrzones.z4 = {
-                    min : zone.distribution_buckets[3].min,
-                    max: zone.distribution_buckets[3].max
-                }
-                hrzones.z5 = {
-                    min : zone.distribution_buckets[4].min,
-                    max: zone.distribution_buckets[4].max
-                }
-
-                this.epr.setHRZone(hrzones)
-            } else {
-                console.log(zone.type)
-            }
-        }
-    }
-
- */
 
 
     viewPA() {

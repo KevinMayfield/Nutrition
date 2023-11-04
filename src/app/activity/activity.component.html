@@ -95,9 +95,13 @@
                         </mat-grid-list>
                 </div>
             </div>
-            <span *ngIf="measures.length>1">
-                <app-sleep [measures]="measures"></app-sleep>
+            <span *ngIf="sleepMeasures.length>1">
+                <app-sleep [measures]="sleepMeasures"></app-sleep>
             </span>
+            <span *ngIf="bodyMeasures.length>1">
+                <app-body-measures [observations]="bodyMeasures"></app-body-measures>
+            </span>
+
             <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
                 <h3>Exercise energy (kcal)</h3>

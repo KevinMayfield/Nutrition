@@ -3,10 +3,10 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {EPRService} from "./epr.service";
 import {DatePipe} from '@angular/common';
 import {StravaService} from "./strava.service";
-import {MeasuresDay} from "../models/measures-day";
+import {Observations} from "../models/observations";
+import {MeasurementSetting} from "../models/enums/MeasurementSetting";
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,94 @@ export class WithingsService {
 
   tokenChange: EventEmitter<any> = new EventEmitter();
 
-  sleepMeasures: EventEmitter<MeasuresDay> = new EventEmitter();
+  sleepMeasures: EventEmitter<Observations> = new EventEmitter();
+  bodyMeasures: EventEmitter<Observations[]> = new EventEmitter();
+  public async getMeasures(): Promise<void> {
+
+    if (!this.hasAccessToken()) {
+      return;
+    }
+    // @ts-ignore
+    this.getAPIMeasures().subscribe((result) => {
+          if (result.status === 401) {
+            console.log('Withings 401', result);
+            this.deleteAccessToken();
+          } else {
+            if (result.body !== undefined && result.body.measuregrps !== undefined) {
+              let count = 0;
+              let observations: Observations[] = [];
+              for (const grp of result.body.measuregrps) {
+                count--;
+                const obsDate = new Date(+grp.date * 1000);
+
+                const obs: Observations = {
+                  day: obsDate,
+                  measurementSetting: MeasurementSetting.home
+                };
+                const tobs: Observations = {
+                  day: obsDate,
+                  measurementSetting: MeasurementSetting.home
+                };
+                // console.log(obs);
+                for (const measure of grp.measures) {
+                  switch (measure.type) {
+                    case 1:
+                      obs.weight = +measure.value / 1000;
+                      break;
+                    case 76:
+                      obs.muscle_mass = +measure.value / 100;
+                      break;
+                    case 5 :
+                      // free fat mass
+                      break;
+                    case 8:
+                      obs.fat_mass = +measure.value / 100;
+                      break;
+                    case 11:
+                      obs.heartrate = +measure.value;
+                      break;
+                    case 12:
+                      // 5 figure temp?
+                      break;
+                    case 77:
+                      obs.hydration = +measure.value / 100;
+                      break;
+                    case 71:
+                      obs.bodytemp = +measure.value / 1000;
+                      break;
+                    case 73:
+                      obs.skintemp = +measure.value / 1000;
+                      break;
+                    case 91:
+                      tobs.pwv = +measure.value / 1000;
+                      break;
+                    case 9 :
+                      obs.diastolic = +measure.value / 1000;
+                      break;
+                    case 10 :
+                      obs.systolic = +measure.value / 1000;
+                      break;
+                    case 88 :
+                      obs.bone_mass = +measure.value / 1000;
+                      break;
+                    default:
+                      console.log(measure.type + ' ' + measure.value);
+                  }
+                }
+                observations.push(obs);
+              }
+              this.bodyMeasures.emit(observations)
+            }
+          }
+        },
+        (err) => {
+          console.log(err);
+          if (err.status === 401) {
+
+          }
+        }
+    );
+  }
 
 
 
@@ -62,8 +149,9 @@ export class WithingsService {
                       });
                     }
                   }
-                  let measureDay: MeasuresDay = {
+                  let measureDay: Observations = {
                     day: startdate,
+                    measurementSetting: MeasurementSetting.home,
                     hrv: hrvSum/count,
                     sleepScore: sleep.data.sleep_score,
                     hr_average: sleep.data.hr_average
@@ -103,6 +191,24 @@ export class WithingsService {
         + '&data_fields=sdnn_1,rmssd';
 
     return this.http.post<any>(this.url + '/v2/sleep', hrv, { headers} );
+
+  }
+  private getAPIMeasures(): Observable<any> {
+
+    // Use the postman collection for details
+
+    // https://developer.withings.com/api-reference/#tag/measure/operation/measure-getmeas
+
+    const headers = this.getAPIHeaders();
+
+    const bodge = 'action=getmeas'
+        + '&meastypes=1,5,8,9,10,11,12,54,71,73,77,76,88,91,123,135,136,137,138,139'
+        + '&category=1'
+        + '&startdate=' + Math.floor(this.strava.getFromDate().getTime() / 1000)
+        + '&enddate=' + Math.floor(this.strava.getNextToDay().getTime() / 1000);
+    // + '&lastupdate='+Math.floor(lastUpdate.getTime()/1000);
+
+    return this.http.post<any>(this.url + '/measure', bodge, { headers} );
 
   }
 
@@ -190,16 +296,17 @@ export class WithingsService {
       const url = 'https://wbsapi.withings.net/v2/oauth2';
       if (token !== undefined && token.refresh_token !== undefined) {
         const bodge = 'action=requesttoken'
-            + 'grant_type=refresh_token'
             + '&client_id=' + environment.withingClientId
             + '&client_secret=' + environment.withingSecret
+            + 'grant_type=refresh_token'
+            + '&code=' + temp.authorisationCode;
             + '&refresh_token=' + token.refresh_token;
 
         this.http.post<any>(url, bodge, {headers: {}}).subscribe(
             accesstoken => {
               console.log('Withings refreshed token');
               console.log(accesstoken);
-              this.setAccessToken(accesstoken);
+              this.setAccessToken(accesstoken, temp.autauthorisationCode);
               this.refreshingToken = false;
             },
             (err) => {
@@ -233,7 +340,7 @@ export class WithingsService {
     this.http.post<any>(url, bodge, { headers} ).subscribe(
         token => {
           console.log('withings Access Token');
-          this.setAccessToken(token);
+          this.setAccessToken(token, authorisationCode);
         },
         (err) => {
           console.log(err);
@@ -255,6 +362,10 @@ export class WithingsService {
     this.accessToken = undefined;
    console.log('removed withingToken - deleteAccessToken')
    // localStorage.removeItem('withingsToken');
+  }
+  killLocalStorage() {
+    console.log('removed withingToken - killLocalStorage')
+    localStorage.removeItem('withingsToken');
   }
 
   private getTokenExpirationDate(
@@ -316,12 +427,13 @@ export class WithingsService {
     return headers;
   }
 */
-  setAccessToken(token: any): void {
+  setAccessToken(token: any, authorisationCode: string): void {
     // Create an expires at ..... don't know when we got the token
     let timeObject = new Date();
     const milliseconds = token.body.expires_in * 1000; // 10 seconds = 10000 milliseconds
     timeObject = new Date(timeObject.getTime() + milliseconds);
     token.expires_at = Math.round(timeObject.getTime() / 1000)
+    token.authorisationCode = authorisationCode
     console.log('Withing accesToken')
     console.log(token)
     localStorage.setItem('withingsToken', JSON.stringify(token));

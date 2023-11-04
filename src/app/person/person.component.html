@@ -70,7 +70,7 @@
                                 <td>Withings</td>
                                 <td>
                                     <button (click)="connectWithings()" *ngIf="!withingsConnected()">Connect</button>
-                                    <button *ngIf="withingsConnected()">Disconnect</button>
+                                    <button *ngIf="withingsConnected()" (click)="disconnectWithings()">Disconnect</button>
                                 </td>
                             </tr>
                         </table>

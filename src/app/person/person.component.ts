@@ -199,4 +199,8 @@ export class PersonComponent implements OnInit {
     if (this.withings.getAccessToken() !== undefined) return true
     return false
   }
+
+  disconnectWithings() {
+    this.withings.killLocalStorage()
+  }
 }

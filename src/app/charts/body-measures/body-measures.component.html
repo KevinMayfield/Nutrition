@@ -1,0 +1,104 @@
+<div #containerRef>
+    <mat-accordion>
+        <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Weight
+            </mat-panel-title>
+            <mat-panel-description>
+                Body Weight
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+            <ngx-charts-line-chart
+                    [view]="[containerRef.offsetWidth, 200]"
+                    [scheme]="colorSeries"
+
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [curve]="curve"
+                    [yScaleMin]="weightMin"
+                    [yScaleMax]="weightMax"
+                    [legend]="false"
+                    xAxisLabel="Date"
+                    yAxisLabel="Body Weight"
+                    [timeline]="timeline"
+                    [results]="weights"
+            >
+            </ngx-charts-line-chart>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Muscle Mass
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ngx-charts-line-chart
+                    [view]="[containerRef.offsetWidth, 200]"
+                    [scheme]="colorSeries"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [yScaleMin]="muscleMin"
+                    [yScaleMax]="muscleMax"
+                    [legend]="false"
+                    xAxisLabel="Date"
+                    yAxisLabel="Muscle Mass"
+                    [timeline]="timeline"
+                    [results]="muscle"
+            >
+            </ngx-charts-line-chart>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Fat Mass
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ngx-charts-line-chart
+                    [view]="[containerRef.offsetWidth, 200]"
+                    [scheme]="colorSeries"
+
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [yScaleMin]="fatMin"
+                    [yScaleMax]="fatMax"
+                    [legend]="false"
+                    xAxisLabel="Date"
+                    yAxisLabel="Fat Mass"
+                    [timeline]="timeline"
+                    [results]="fats"
+            >
+            </ngx-charts-line-chart>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Hydration
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ngx-charts-line-chart
+                    [view]="[containerRef.offsetWidth, 200]"
+                    [scheme]="colorSeries"
+
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [curve]="curve"
+                    [yScaleMin]="hydrationMin"
+                    [yScaleMax]="hydrationMax"
+                    [legend]="false"
+                    xAxisLabel="Date"
+                    yAxisLabel="Water Mass"
+                    [timeline]="timeline"
+                    [results]="hydration"
+            >
+            </ngx-charts-line-chart>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>

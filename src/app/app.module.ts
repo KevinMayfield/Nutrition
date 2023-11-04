@@ -44,6 +44,8 @@ import {ReversePipe} from "./service/reverse-pipe";
 import { PersonComponent } from './person/person.component';
 import {DatePipe} from "@angular/common";
 import { SleepComponent } from './charts/sleep/sleep.component';
+import { BodyMeasuresComponent } from './charts/body-measures/body-measures.component';
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
     declarations: [
@@ -60,7 +62,8 @@ import { SleepComponent } from './charts/sleep/sleep.component';
         SummaryGraphComponent,
         ReversePipe,
         PersonComponent,
-        SleepComponent
+        SleepComponent,
+        BodyMeasuresComponent
     ],
     imports: [
         BrowserModule,
@@ -96,7 +99,8 @@ import { SleepComponent } from './charts/sleep/sleep.component';
         MatNativeDateModule,
         MatToolbarModule,
         PieChartModule,
-        LineChartModule
+        LineChartModule,
+        MatExpansionModule
     ],
     providers: [
         DatePipe,
