@@ -6,11 +6,19 @@
                 Weight
             </mat-panel-title>
             <mat-panel-description>
-                Body Weight
+                <table>
+                    <tr>
+                        <td> {{getLast(weights)}} Kg </td>
+                        <td> Average {{round2DP(avgWeight)}} Kg </td>
+
+                        <td> Difference {{round2DP(getLast(weights) - avgWeight)}} Kg </td>
+                    </tr>
+                </table>
             </mat-panel-description>
         </mat-expansion-panel-header>
+            <div #panelRef>
             <ngx-charts-line-chart
-                    [view]="[containerRef.offsetWidth, 200]"
+                    [view]="[panelRef.offsetWidth, 200]"
                     [scheme]="colorSeries"
 
                     [showXAxisLabel]="showXAxisLabel"
@@ -27,38 +35,27 @@
                     [results]="weights"
             >
             </ngx-charts-line-chart>
-        </mat-expansion-panel>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Muscle Mass
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <ngx-charts-line-chart
-                    [view]="[containerRef.offsetWidth, 200]"
-                    [scheme]="colorSeries"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxis]="true"
-                    [yAxis]="true"
-                    [yScaleMin]="muscleMin"
-                    [yScaleMax]="muscleMax"
-                    [legend]="false"
-                    xAxisLabel="Date"
-                    yAxisLabel="Muscle Mass"
-                    [timeline]="timeline"
-                    [results]="muscle"
-            >
-            </ngx-charts-line-chart>
+            </div>
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Fat Mass
                 </mat-panel-title>
+                <mat-panel-description>
+                    <table>
+                        <tr>
+                            <td> {{getLast(fats)}} Kg ({{round1DP(getLast(fats) * 100 / getLast(weights))}} %)</td>
+                            <td> Average {{round2DP(avgFat)}} Kg </td>
+
+                            <td> Difference {{round2DP(getLast(fats) - avgFat)}} Kg </td>
+                        </tr>
+                    </table>
+                </mat-panel-description>
             </mat-expansion-panel-header>
+            <div #panelRef>
             <ngx-charts-line-chart
-                    [view]="[containerRef.offsetWidth, 200]"
+                    [view]="[panelRef.offsetWidth, 200]"
                     [scheme]="colorSeries"
 
                     [showXAxisLabel]="showXAxisLabel"
@@ -74,15 +71,62 @@
                     [results]="fats"
             >
             </ngx-charts-line-chart>
+            </div>
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Hydration
+                    Muscle Mass
                 </mat-panel-title>
+                <mat-panel-description>
+                    <table>
+                        <tr>
+                            <td> {{getLast(muscle)}} Kg ({{round1DP(getLast(muscle) * 100 / getLast(weights))}} %)</td>
+                            <td> Average {{round2DP(avgMuscle)}} Kg </td>
+
+                            <td> Difference {{round2DP(getLast(muscle) - avgMuscle)}} Kg </td>
+                        </tr>
+                    </table>
+                </mat-panel-description>
             </mat-expansion-panel-header>
+            <div #panelRef>
             <ngx-charts-line-chart
-                    [view]="[containerRef.offsetWidth, 200]"
+                    [view]="[panelRef.offsetWidth, 200]"
+                    [scheme]="colorSeries"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxis]="true"
+                    [yAxis]="true"
+                    [yScaleMin]="muscleMin"
+                    [yScaleMax]="muscleMax"
+                    [legend]="false"
+                    xAxisLabel="Date"
+                    yAxisLabel="Muscle Mass"
+                    [timeline]="timeline"
+                    [results]="muscle"
+            >
+            </ngx-charts-line-chart>
+            </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Water Mass
+                </mat-panel-title>
+                <mat-panel-description>
+                    <table>
+                        <tr>
+                        <td> {{getLast(hydration)}} Kg ({{round1DP(getLast(hydration) * 100 / getLast(weights))}} %)</td>
+                        <td> Average {{round2DP(avgHydration)}} Kg </td>
+
+                        <td> Difference {{round2DP(getLast(hydration) - avgHydration)}} Kg </td>
+                        </tr>
+                    </table>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div #panelRef>
+            <ngx-charts-line-chart
+                    [view]="[panelRef.offsetWidth, 200]"
                     [scheme]="colorSeries"
 
                     [showXAxisLabel]="showXAxisLabel"
@@ -94,11 +138,12 @@
                     [yScaleMax]="hydrationMax"
                     [legend]="false"
                     xAxisLabel="Date"
-                    yAxisLabel="Water Mass"
+                    yAxisLabel="Body Water"
                     [timeline]="timeline"
                     [results]="hydration"
             >
             </ngx-charts-line-chart>
+            </div>
         </mat-expansion-panel>
     </mat-accordion>
 </div>

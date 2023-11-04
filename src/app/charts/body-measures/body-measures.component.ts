@@ -1,7 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {Observations} from "../../models/observations";
-import {Color, ScaleType} from "@swimlane/ngx-charts";
+import {ScaleType} from "@swimlane/ngx-charts";
 import {curveBasis} from 'd3-shape';
+
 @Component({
   selector: 'app-body-measures',
   templateUrl: './body-measures.component.html',
@@ -11,6 +12,7 @@ export class BodyMeasuresComponent {
   measures :Observations[] = []
   weights: any[] | undefined
   muscle: any[] | undefined
+
   fats: any[] | undefined
   hydration: any[] | undefined
   @Input() set observations(measure: Observations[]) {
@@ -34,7 +36,13 @@ export class BodyMeasuresComponent {
   fatMax= 0;
   hydrationMin= 99999;
   hydrationMax= 0;
+
+  avgWeight = 0
+  avgFat = 0
+  avgMuscle = 0
+  avgHydration = 0
   curve = curveBasis
+  schemeType: ScaleType = ScaleType.Linear;
 
   private refreshActivity() {
     this.weights = []
@@ -58,7 +66,7 @@ export class BodyMeasuresComponent {
       }]
     var hydration: any[] = [
       {
-        name: 'Water Mass',
+        name: 'Body Water',
         series: []
       }]
     this.measures.forEach(observations => {
@@ -103,5 +111,46 @@ export class BodyMeasuresComponent {
     this.hydration = hydration
     this.weights = weights
     this.fats = fats
+    var sum = 0
+    muscle[0].series.forEach((entry: any) => {
+      sum += entry.value
+    })
+    this.avgMuscle = sum / muscle[0].series.length
+    sum = 0
+    weights[0].series.forEach((entry: any) => {
+      sum += entry.value
+    })
+    this.avgWeight = sum / weights[0].series.length
+    sum = 0
+    fats[0].series.forEach((entry: any) => {
+      sum += entry.value
+    })
+    this.avgFat = sum / fats[0].series.length
+    sum = 0
+    hydration[0].series.forEach((entry: any) => {
+      sum += entry.value
+    })
+    this.avgHydration = sum / hydration[0].series.length
+  }
+
+  getLast(series: any[] | undefined) {
+      if (series == undefined) return undefined
+      if (series.length === 0 ) return undefined
+      var latest : any = undefined
+      series[0].series.forEach((entry : any) => {
+        if (latest == undefined) latest = entry
+        else if (latest.name < entry.name) {
+          console.log(entry)
+          latest = entry
+        }
+      })
+    if (latest !== undefined) return latest.value
+    return undefined
+  }
+  round2DP(value : number) {
+    return Math.round(value * 100) / 100
+  }
+  round1DP(value : number) {
+    return Math.round(value * 10) / 10
   }
 }
