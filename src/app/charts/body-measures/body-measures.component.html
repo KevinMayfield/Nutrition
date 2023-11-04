@@ -1,16 +1,15 @@
 <div #containerRef>
+    <h3>Weight</h3>
     <mat-accordion>
         <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                Weight
+                Weight - {{getLast(weights)}} Kg
             </mat-panel-title>
             <mat-panel-description>
                 <table>
                     <tr>
-                        <td> {{getLast(weights)}} Kg </td>
                         <td> Average {{round2DP(avgWeight)}} Kg </td>
-
                         <td> Difference {{round2DP(getLast(weights) - avgWeight)}} Kg </td>
                     </tr>
                 </table>
@@ -20,7 +19,6 @@
             <ngx-charts-line-chart
                     [view]="[panelRef.offsetWidth, 200]"
                     [scheme]="colorSeries"
-
                     [showXAxisLabel]="showXAxisLabel"
                     [showYAxisLabel]="showYAxisLabel"
                     [xAxis]="true"
@@ -40,14 +38,12 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Fat Mass
+                    Fat Mass - {{getLast(fats)}} Kg ({{round1DP(getLast(fats) * 100 / getLast(weights))}} %)
                 </mat-panel-title>
                 <mat-panel-description>
                     <table>
                         <tr>
-                            <td> {{getLast(fats)}} Kg ({{round1DP(getLast(fats) * 100 / getLast(weights))}} %)</td>
                             <td> Average {{round2DP(avgFat)}} Kg </td>
-
                             <td> Difference {{round2DP(getLast(fats) - avgFat)}} Kg </td>
                         </tr>
                     </table>
@@ -76,14 +72,12 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Muscle Mass
+                    Muscle Mass - {{getLast(muscle)}} Kg ({{round1DP(getLast(muscle) * 100 / getLast(weights))}} %)
                 </mat-panel-title>
                 <mat-panel-description>
                     <table>
                         <tr>
-                            <td> {{getLast(muscle)}} Kg ({{round1DP(getLast(muscle) * 100 / getLast(weights))}} %)</td>
                             <td> Average {{round2DP(avgMuscle)}} Kg </td>
-
                             <td> Difference {{round2DP(getLast(muscle) - avgMuscle)}} Kg </td>
                         </tr>
                     </table>
@@ -111,14 +105,12 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Water Mass
+                    Body Water - {{getLast(hydration)}} Kg ({{round1DP(getLast(hydration) * 100 / getLast(weights))}} %)
                 </mat-panel-title>
                 <mat-panel-description>
                     <table>
                         <tr>
-                        <td> {{getLast(hydration)}} Kg ({{round1DP(getLast(hydration) * 100 / getLast(weights))}} %)</td>
                         <td> Average {{round2DP(avgHydration)}} Kg </td>
-
                         <td> Difference {{round2DP(getLast(hydration) - avgHydration)}} Kg </td>
                         </tr>
                     </table>

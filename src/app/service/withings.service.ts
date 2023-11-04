@@ -285,11 +285,7 @@ export class WithingsService {
 
     if (this.refreshingToken) { return ; }
     this.refreshingToken = true;
-
     var withingsToken = localStorage.getItem('withingsToken')
-
-
-
     if (withingsToken !== null) {
       const temp: any = JSON.parse(withingsToken);
       const token = temp.body
@@ -298,15 +294,16 @@ export class WithingsService {
         const bodge = 'action=requesttoken'
             + '&client_id=' + environment.withingClientId
             + '&client_secret=' + environment.withingSecret
-            + 'grant_type=refresh_token'
+            + '&grant_type=refresh_token'
+            + '&refresh_token=' + token.refresh_token
             + '&code=' + temp.authorisationCode;
-            + '&refresh_token=' + token.refresh_token;
+            + '&redirect_uri=' + temp.routeUrl;
 
         this.http.post<any>(url, bodge, {headers: {}}).subscribe(
             accesstoken => {
               console.log('Withings refreshed token');
               console.log(accesstoken);
-              this.setAccessToken(accesstoken, temp.autauthorisationCode);
+              this.setAccessToken(accesstoken, temp.autauthorisationCode, temp.routeUrl);
               this.refreshingToken = false;
             },
             (err) => {
@@ -317,17 +314,13 @@ export class WithingsService {
     }
   }
 
-
-
   public getOAuth2AccessToken(authorisationCode: string, routeUrl: string): void {
 
 
     // https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-getaccesstoken
 
     const headers = {};
-
     const url = 'https://wbsapi.withings.net/v2/oauth2';
-
     const bodge = 'action=requesttoken'
         + '&grant_type=authorization_code'
         + '&client_id=' + environment.withingClientId
@@ -336,11 +329,10 @@ export class WithingsService {
         + '&code=' + authorisationCode;
 
 
-
     this.http.post<any>(url, bodge, { headers} ).subscribe(
         token => {
           console.log('withings Access Token');
-          this.setAccessToken(token, authorisationCode);
+          this.setAccessToken(token, authorisationCode, routeUrl);
         },
         (err) => {
           console.log(err);
@@ -427,13 +419,14 @@ export class WithingsService {
     return headers;
   }
 */
-  setAccessToken(token: any, authorisationCode: string): void {
+  setAccessToken(token: any, authorisationCode: string, routeUrl: string): void {
     // Create an expires at ..... don't know when we got the token
     let timeObject = new Date();
     const milliseconds = token.body.expires_in * 1000; // 10 seconds = 10000 milliseconds
     timeObject = new Date(timeObject.getTime() + milliseconds);
     token.expires_at = Math.round(timeObject.getTime() / 1000)
     token.authorisationCode = authorisationCode
+    token.routeUrl = routeUrl
     console.log('Withing accesToken')
     console.log(token)
     localStorage.setItem('withingsToken', JSON.stringify(token));

@@ -1,7 +1,7 @@
 <div #containerRef>
     <h3>Sleep</h3>
     <ngx-charts-line-chart
-            [view]="[containerRef.offsetWidth, 200]"
+            [view]="[containerRef.offsetWidth, 250]"
             [scheme]="colorSeries"
 
             [showXAxisLabel]="showXAxisLabel"
@@ -12,28 +12,17 @@
             [curve]="curve"
             [yAxis]="true"
             [legend]="true"
+            [legendPosition]="legendPosition"
             xAxisLabel="Date"
             [timeline]="timeline"
             [results]="series"
     >
     </ngx-charts-line-chart>
- <!--
-    <ngx-charts-line-chart
-            [view]="[containerRef.offsetWidth, 200]"
-            [scheme]="colorSeries2"
+<!-- These breaks allow for legend display TODO -->
+    <br/>
+    <br/>
+    <br/>
 
-            [showXAxisLabel]="showXAxisLabel"
-            [showYAxisLabel]="showYAxisLabel"
-            [xAxis]="showXAxis"
-            [yAxis]="showYAxis"
-            [legend]="showLegend"
-            xAxisLabel="Date"
-            yAxisLabel="Average Heart Rate"
-            [timeline]="timeline"
-            [results]="seriesHR"
-    >
-    </ngx-charts-line-chart>
--->
     <ngx-charts-bar-vertical *ngIf="sleepScore !== undefined"
                              [view]="[containerRef.offsetWidth, 150]"
                              [scheme]="colorSleep"

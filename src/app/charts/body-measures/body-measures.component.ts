@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {Observations} from "../../models/observations";
 import {ScaleType} from "@swimlane/ngx-charts";
-import {curveBasis} from 'd3-shape';
+import {curveBasis, curveCatmullRom} from 'd3-shape';
 
 @Component({
   selector: 'app-body-measures',
@@ -41,7 +41,8 @@ export class BodyMeasuresComponent {
   avgFat = 0
   avgMuscle = 0
   avgHydration = 0
-  curve = curveBasis
+  //curve = curveBasis
+  curve = curveCatmullRom
   schemeType: ScaleType = ScaleType.Linear;
 
   private refreshActivity() {

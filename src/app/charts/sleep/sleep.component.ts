@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
-import {Color, ScaleType} from "@swimlane/ngx-charts";
+import {Color, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
 import {Observations} from "../../models/observations";
-import {curveBasis} from "d3-shape";
+import {curveBasis, curveCatmullRom} from "d3-shape";
 
 @Component({
   selector: 'app-sleep',
@@ -23,7 +23,8 @@ export class SleepComponent {
   gradient = false;
   showLegend = false;
   timeline: boolean = false;
-    curve = curveBasis
+    curve = curveCatmullRom
+    //  curve = curveBasis
   showXAxisLabel = false;
   showYAxisLabel = true;
     scaleMin= 99999;
@@ -46,6 +47,7 @@ export class SleepComponent {
         domain: [ '#5AA454','#7aa3e5','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
         , group: ScaleType.Ordinal, name: "", selectable: false
     };
+    legendPosition: LegendPosition = LegendPosition.Below;
 
   @Input() set measures(measure: Observations[]) {
 
