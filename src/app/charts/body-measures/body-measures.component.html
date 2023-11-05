@@ -20,7 +20,16 @@
                     Blood Pressure - {{round(getLast(bpSeries))}}/{{round(getLastSingle(bpSeries[1]))}} mmHg
                 </mat-panel-title>
                 <mat-panel-description>
+                     <span *ngIf="(getLast(bpSeries) > 135 || getLastSingle(bpSeries[1]) > 85)">
+                            <button mat-flat-button color="accent">High</button>
+                         </span>
+                     <span *ngIf="(getLast(bpSeries) < 89 || getLastSingle(bpSeries[1]) < 59)">
+                            <button mat-flat-button color="accent">Low</button>
+                     </span>
                      <span *ngIf="bpReferenceLines.length > 1">
+                         <span *ngIf="(getLastSingle(bpSeries[1])- bpReferenceLines[1].value > 5) || (getLast(bpSeries) - bpReferenceLines[0].value > 5)">
+                            <button mat-flat-button color="accent">Overtraining?</button>
+                         </span>
                          Average Blood Pressure {{bpReferenceLines[0].value}}/{{bpReferenceLines[1].value}}
                      </span>
                 </mat-panel-description>
@@ -56,11 +65,17 @@
     <mat-accordion>
         <mat-expansion-panel>
         <mat-expansion-panel-header>
-            <mat-panel-title>
+            <mat-panel-title >
                 Weight - {{round1DP(getLast(weights))}} Kg
             </mat-panel-title>
             <mat-panel-description>
                 <span *ngIf="weightReferenceLines.length > 0">
+                         <span *ngIf="(getLast(weights) - weightReferenceLines[0].value) > 0.4">
+                            <button mat-flat-button [ngStyle]="{'background':'lightgreen'}">Full</button>
+                         </span>
+                          <span *ngIf="(getLast(weights) - weightReferenceLines[0].value) < -0.7">
+                            <button mat-flat-button color="accent">Refuel & Drink</button>
+                         </span>
                          Average Weight {{round1DP(weightReferenceLines[0].value)}} Kg
                 </span>
             </mat-panel-description>
@@ -127,6 +142,9 @@
                 </mat-panel-title>
                 <mat-panel-description>
                       <span *ngIf="muscleReferenceLines.length > 0">
+                           <span *ngIf="(getLast(muscle) - muscleReferenceLines[0].value) < -0.2">
+                            <button mat-flat-button color="accent">Check Carbs Intake</button>
+                         </span>
                          Average Muscle Mass {{round1DP(muscleReferenceLines[0].value)}} Kg
                     </span>
                 </mat-panel-description>
@@ -160,6 +178,12 @@
                 </mat-panel-title>
                 <mat-panel-description>
                       <span *ngIf="hydrationReferenceLines.length > 0">
+                           <span *ngIf="(getLast(hydration) - hydrationReferenceLines[0].value) > 0.3">
+                            <button mat-flat-button [ngStyle]="{'background':'lightgreen'}">Hydrated</button>
+                         </span>
+                          <span *ngIf="(getLast(hydration) - hydrationReferenceLines[0].value) < -0.5">
+                            <button mat-flat-button color="accent">Dehydrated</button>
+                         </span>
                          Average Body Water {{round1DP(hydrationReferenceLines[0].value)}} Kg
                 </span>
                 </mat-panel-description>

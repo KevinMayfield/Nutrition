@@ -8,6 +8,18 @@
                 </mat-panel-title>
                 <mat-panel-description>
                      <span *ngIf="referenceLines.length > 1">
+                         <span *ngIf="(round(getLast(seriesHRV)) - referenceLines[1].value) < -5">
+                            <button mat-flat-button [ngStyle]="{'background':'lightsalmon'}">Low HRV</button>
+                         </span>
+                          <span *ngIf="(round(getLast(seriesHRV)) - referenceLines[1].value) > 5">
+                            <button mat-flat-button color="primary">Rested (HRV)</button>
+                         </span>
+                         <span *ngIf="(round(getLast(seriesHR)) - referenceLines[0].value) > 5">
+                            <button mat-flat-button color="accent">High HR</button>
+                         </span>
+                          <span *ngIf="(round(getLast(seriesHR)) - referenceLines[0].value) < -5">
+                            <button mat-flat-button color="primary">Rested (HR)</button>
+                         </span>
                          Average Heart Rate {{referenceLines[0].value}} Average HRV {{referenceLines[1].value}}
                      </span>
                 </mat-panel-description>

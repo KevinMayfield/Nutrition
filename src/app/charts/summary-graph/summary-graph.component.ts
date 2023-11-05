@@ -73,7 +73,7 @@ export class SummaryGraphComponent implements OnChanges {
   //  this.view = [innerWidth / this.widthQuota, this.view[1]];
   }
   onSelect(event: any) {
-    console.log(event);
+
 
   }
 /*
