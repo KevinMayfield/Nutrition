@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {Color, ScaleType} from "@swimlane/ngx-charts";
+import {Color, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
 import {EPRService} from "../../service/epr.service";
 import {ActivityDay, ActivitySession} from "../../models/activity-day";
 import {hrZone} from "../../models/person";
@@ -36,9 +36,9 @@ export class SummaryGraphComponent implements OnChanges {
  // view: [number, number] = [800, 300];
 
   colorScheme: Color = {
-    domain: [
-      'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
-    ], group: ScaleType.Ordinal, name: "", selectable: false
+
+      domain: [ '#7aa3e5','#5AA454','#C7B42C','#A10A28'],
+    group: ScaleType.Ordinal, name: "", selectable: false
   }
   colorNeutral: Color = {
     domain: [
@@ -65,6 +65,7 @@ export class SummaryGraphComponent implements OnChanges {
   xAxisLabel = 'Range';
   showYAxisLabel = true;
   yAxisLabel = 'kcal';
+  legendPosition: LegendPosition = LegendPosition.Below;
 
   constructor(
       private epr: EPRService,
@@ -106,9 +107,9 @@ export class SummaryGraphComponent implements OnChanges {
           "name": this.date(day),
           "value": 0
         }
-        for (let f=0;f<5;f++) {
+        for (let f=0;f<4;f++) {
           let ser :any = {
-            name: (f+1),
+            name: 'Heart Rate based Load Zone ' + (f+1),
             value: 0,
             extra: {
               session: []
@@ -158,7 +159,11 @@ export class SummaryGraphComponent implements OnChanges {
     let zone = this.epr.getHRZone()
     if (zone == undefined) return 0;
     if (session.activity == undefined) return 1;
-
+    if (session.activity.trimp !== undefined) {
+     return this.epr.getTrimpZone(session.activity.trimp)
+    }
+    return 1
+    /*
     if (session.activity.average_heartrate == undefined) return 1
     // @ts-ignore
     if (session.activity.average_heartrate < zone.z1?.min) return 1
@@ -176,6 +181,8 @@ export class SummaryGraphComponent implements OnChanges {
       return 4
     }
     return 5
+
+     */
   }
   dayOfWeek(number: number) {
     var now = this.strava.getToDate();

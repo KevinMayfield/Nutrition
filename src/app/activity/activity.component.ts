@@ -18,6 +18,7 @@ import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {WithingsService} from "../service/withings.service";
 import {Observations} from "../models/observations";
 import {MeasurementSetting} from "../models/enums/MeasurementSetting";
+import {curveCatmullRom} from "d3-shape";
 
 class ActivityWeek {
     week?: number;
@@ -43,7 +44,7 @@ class DaySummary {
 export class ActivityComponent implements OnInit{
 
     colorScheme: Color = {
-        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+        domain: ['#7aa3e5','#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
         group: ScaleType.Ordinal,
         name: "",
         selectable: false
@@ -1253,4 +1254,15 @@ export class ActivityComponent implements OnInit{
         return `${(c.label)} (grams)`;
     }
 
+    protected readonly curveCatmullRom = curveCatmullRom;
+
+    totalPie(pie: any) : number {
+        let total = 0
+        if (pie.length !== undefined) {
+            for (let entry of pie) {
+                total += entry.value
+            }
+        }
+        return total
+    }
 }

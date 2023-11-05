@@ -79,33 +79,45 @@
                         </mat-grid-list>
                 </div>
             </div>
+            <!--
+
+            Energy summary bar chart
+
+            -->
+            <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
+            <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
+                <mat-accordion>
+                    <mat-expansion-panel *ngFor="let pie of stacked">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Week {{pie.name}}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Total Energy {{totalPie(pie.series)}} kcal. (Average per day {{round(totalPie(pie.series)/7)}} kcal)
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                             <ngx-charts-advanced-pie-chart
+                                     [view]="[containerRef.offsetWidth, 200]"
+                                     [scheme]="colorStacked"
+                                     label="Exercise energy (kcal) - Heart Rate Zone (Average for Activity)"
+                                     [results]="pie.series"
+                                     [gradient]="gradient"
+                                     [animations]="false"
+                             >
+                                </ngx-charts-advanced-pie-chart>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </span>
+            <!--
+
+            Body Measures
+
+            -->
             <span *ngIf="sleepMeasures.length>1">
                 <app-sleep [measures]="sleepMeasures"></app-sleep>
             </span>
             <span *ngIf="bodyMeasures.length>1">
                 <app-body-measures [observations]="bodyMeasures"></app-body-measures>
-            </span>
-
-            <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
-            <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
-                <h3>Exercise energy (kcal)</h3>
-                <table>
-                    <tr *ngFor="let pie of stacked">
-
-                            <td>Week {{pie.name}}</td>
-                            <td>
-                                <ngx-charts-advanced-pie-chart
-                                        [view]="[containerRef.offsetWidth, 200]"
-                                        [scheme]="colorStacked"
-                                        label="Exercise energy (kcal) - Heart Rate Zone (Average for Activity)"
-                                        [results]="pie.series"
-                                        [gradient]="gradient"
-                                        [animations]="false"
-                                >
-                                </ngx-charts-advanced-pie-chart>
-                            </td>
-                       </tr>
-                    </table>
             </span>
         </mat-tab>
         <!--
@@ -125,11 +137,19 @@
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
 
                     <h3>Heart Rate</h3>
-                    <table>
-                       <tr *ngFor="let pie of stacked">
-                            <td>Week {{pie.name}}</td>
-                            <td>
+                <mat-accordion>
+                    <mat-expansion-panel *ngFor="let pie of stacked">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Week {{pie.name}}
+                            </mat-panel-title>
+                            <mat-panel-description>
                                 <span *ngIf="pie.hr !== undefined">
+                                Total Duration {{totalPie(pie.hr)}} mins
+                                </span>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                           <span *ngIf="pie.hr !== undefined">
                                      <ngx-charts-advanced-pie-chart
                                              [view]="[containerRef.offsetWidth, 200]"
                                              [scheme]="colorStacked"
@@ -140,9 +160,8 @@
                                      >
                                     </ngx-charts-advanced-pie-chart>
                                 </span>
-                            </td>
-                       </tr>
-                    </table>
+                    </mat-expansion-panel>
+                </mat-accordion>
             </span>
              <div>
                 <table mat-table [dataSource]="dataSourceHR" class="mat-elevation-z8"
@@ -238,24 +257,31 @@
             <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR" type="power"></app-summary-graph>
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
                 <h3>Power</h3>
-                <table>
-                    <tr *ngFor="let pie of stacked">
-                        <td>Week {{pie.name}}</td>
-                        <td>
-                            <span *ngIf="pie.pwr !== undefined">
-                             <ngx-charts-advanced-pie-chart
-                                     [view]="[containerRef.offsetWidth, 200]"
-                                     [scheme]="colorFTP"
-                                     label="Exercise duration (min) - Power Zone"
-                                     [results]="pie.pwr"
-                                     [gradient]="gradient"
-                                     [animations]="false"
-                             >
+                <mat-accordion>
+                    <mat-expansion-panel *ngFor="let pie of stacked">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Week {{pie.name}}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                <span *ngIf="pie.pwr !== undefined">
+                                Total Duration {{totalPie(pie.pwr)}} mins
+                                </span>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                           <span *ngIf="pie.pwr !== undefined">
+                                   <ngx-charts-advanced-pie-chart
+                                           [view]="[containerRef.offsetWidth, 200]"
+                                           [scheme]="colorFTP"
+                                           label="Exercise duration (min) - Power Zone"
+                                           [results]="pie.pwr"
+                                           [gradient]="gradient"
+                                           [animations]="false"
+                                   >
                             </ngx-charts-advanced-pie-chart>
-                            </span>
-                        </td>
-                    </tr>
-                </table>
+                                </span>
+                    </mat-expansion-panel>
+                </mat-accordion>
             </span>
             <h3>Activity Logs</h3>
             <div>

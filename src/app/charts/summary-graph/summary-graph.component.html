@@ -1,6 +1,6 @@
 <div #containerRef>
     <span *ngIf="type ==='kcal'">
-    <h4>Energy (kcal)</h4>
+    <h3>Energy (kcal)</h3>
                 <ngx-charts-bar-vertical-stacked *ngIf="calories!==undefined"
                                                  [view]="[containerRef.offsetWidth, 150]"
                                          [scheme]="colorScheme"
@@ -8,7 +8,8 @@
                                          [gradient]="gradient"
                                          [xAxis]="showXAxis"
                                          [yAxis]="showYAxis"
-                                         [legend]="showLegend"
+                                         [legend]="true"
+                                                    [legendPosition]="legendPosition"
                                          [showXAxisLabel]="showXAxisLabel"
                                          [showYAxisLabel]="showYAxisLabel"
                                          [xAxisLabel]="xAxisLabel"
@@ -50,6 +51,9 @@
 
                     </ng-template>
                 </ngx-charts-bar-vertical-stacked>
+            <br/>
+        <br/>
+        <br/>
         </span>
     <span *ngIf="type ==='heart'">
     <h4>Heart Rate Stress Scores (TRIMP)</h4>
