@@ -134,4 +134,30 @@ export class SleepComponent {
       series.push(seriesHR[0])
       this.series = series
   }
+
+    getLast(series: any[] | undefined) {
+        if (series == undefined) return undefined
+        if (series.length === 0 ) return undefined
+        var latest : any = undefined
+        if (series[0].series !== undefined) {
+            series[0].series.forEach((entry: any) => {
+                if (latest == undefined) latest = entry
+                else if (latest.name < entry.name) {
+                    latest = entry
+                }
+            })
+        } else {
+            series.forEach((entry: any) => {
+                if (latest == undefined) latest = entry
+                else if (latest.name < entry.name) {
+                    latest = entry
+                }
+            })
+        }
+        if (latest !== undefined) return latest.value
+        return undefined
+    }
+    round(value : number) {
+        return Math.round(value )
+    }
 }

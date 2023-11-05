@@ -63,33 +63,17 @@
                            >
                                      </ngx-charts-advanced-pie-chart>
                       </mat-grid-tile>
-                        <mat-grid-tile style="background: lightgoldenrodyellow" layout-align="centre ">
+                        <mat-grid-tile layout-align="centre ">
                             <span class="bigger">{{exerciseIntense?.display}}</span>
                             <br/>
-                            <span *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-light'" >
-                                    <span class="bigger">{{perKgKCal(3*4)}} -> {{perKgKCal(5*4)}} kcal</span>
-                                <br/>
-                                 <br/>
-                                <small>{{perKgKCal(3)}}-{{perKgKCal(5)}} grams of carbohydrate per day</small>
-                            </span>
-                            <span *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate'" >
-                                 <span class="bigger">{{perKgKCal(5*4)}} -> {{perKgKCal(7*4)}} kcal</span>
-                                <br/>
-                                 <br/>
-                                <small>{{perKgKCal(5)}}-{{perKgKCal(7)}} grams of carbohydrate per day</small>
-                            </span>
-                            <span *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'moderate-high'" >
-                                <span class="bigger">{{perKgKCal(6*4)}} -> {{perKgKCal(10*4)}} kcal</span>
-                                <br/>
-                                 <br/>
-                                <small>{{perKgKCal(6)}}-{{perKgKCal(10)}} grams of carbohydrate per day</small>
-                            </span>
-                            <span *ngIf="exerciseIntense == undefined || exerciseIntense.code === 'very-high'" >
-                                <span class="bigger">{{perKgKCal(8*4)}} -> {{perKgKCal(12*4)}} kcal</span>
-                                <br/>
-                                 <br/>
-                                <small>{{perKgKCal(8)}}-{{perKgKCal(12)}} grams of carbohydrate per day</small>
-                            </span>
+                            <ngx-charts-tree-map
+                                    [view]="viewEnergyPie"
+                                    [scheme]="colorScheme"
+                                    [results]="exerciseEnergy"
+                                    [animations]="false"
+                                    [labelFormatting]="labelFormatting">
+                            </ngx-charts-tree-map>
+
                         </mat-grid-tile>
 
                         </mat-grid-list>

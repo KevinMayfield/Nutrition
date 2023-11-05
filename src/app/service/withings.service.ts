@@ -88,10 +88,10 @@ export class WithingsService {
                       tobs.pwv = +measure.value / 1000;
                       break;
                     case 9 :
-                      obs.diastolic = +measure.value / 1000;
+                      obs.diastolic = +measure.value;
                       break;
                     case 10 :
-                      obs.systolic = +measure.value / 1000;
+                      obs.systolic = +measure.value;
                       break;
                     case 88 :
                       obs.bone_mass = +measure.value / 1000;

@@ -1,4 +1,53 @@
 <div #containerRef>
+    <h3>Blood Pressure</h3>
+ <!--   <ngx-charts-box-chart
+            [view]="[panelRef.offsetWidth, 200]"
+            [scheme]="colorSeries"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="false"
+            xAxisLabel="Date"
+            yAxisLabel="Body Weight"
+            [results]="bpSeries"
+    >
+    </ngx-charts-box-chart> -->
+    <mat-accordion>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Blood Pressure - {{round(getLast(bpSeries))}}/{{round(getLastSingle(bpSeries[1]))}} mmHg
+                </mat-panel-title>
+                <mat-panel-description>
+
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+                <ngx-charts-line-chart
+                        [view]="[containerRef.offsetWidth, 250]"
+                        [scheme]="colorSeries"
+
+                        [showXAxisLabel]="false"
+                        [showYAxisLabel]="true"
+                        [xAxis]="true"
+                        [curve]="curve"
+                        [yAxis]="true"
+                        [legend]="true"
+                        [yScaleMin]="scaleMin"
+                        [yScaleMax]="scaleMax"
+                        [legendPosition]="legendPosition"
+                        xAxisLabel="Date"
+                        yAxisLabel="mmHg"
+                        [timeline]="timeline"
+                        [results]="bpSeries"
+                >
+                </ngx-charts-line-chart>
+                <!-- These breaks allow for legend display TODO -->
+                <br/>
+                <br/>
+                <br/>
+        </mat-expansion-panel>
+    </mat-accordion>
     <h3>Weight</h3>
     <mat-accordion>
         <mat-expansion-panel>
@@ -53,7 +102,7 @@
             <ngx-charts-line-chart
                     [view]="[panelRef.offsetWidth, 200]"
                     [scheme]="colorSeries"
-
+                    [curve]="curve"
                     [showXAxisLabel]="showXAxisLabel"
                     [showYAxisLabel]="showYAxisLabel"
                     [xAxis]="true"
@@ -89,6 +138,7 @@
                     [scheme]="colorSeries"
                     [showXAxisLabel]="showXAxisLabel"
                     [showYAxisLabel]="showYAxisLabel"
+                    [curve]="curve"
                     [xAxis]="true"
                     [yAxis]="true"
                     [yScaleMin]="muscleMin"

@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {Observations} from "../../models/observations";
-import {ScaleType} from "@swimlane/ngx-charts";
+import {BoxChartMultiSeries, BoxChartSeries, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
 import {curveBasis, curveCatmullRom} from 'd3-shape';
 
 @Component({
@@ -15,6 +15,7 @@ export class BodyMeasuresComponent {
 
   fats: any[] | undefined
   hydration: any[] | undefined
+  bpSeries : any;
   @Input() set observations(measure: Observations[]) {
 
     this.measures = measure
@@ -44,12 +45,16 @@ export class BodyMeasuresComponent {
   //curve = curveBasis
   curve = curveCatmullRom
   schemeType: ScaleType = ScaleType.Linear;
+  legendPosition: LegendPosition = LegendPosition.Below;
+  scaleMin = 9999;
+  scaleMax = 0;
 
   private refreshActivity() {
     this.weights = []
     this.muscle = []
     this.fats = []
     this.hydration = []
+    this.bpSeries = []
     var weights: any[] = [
       {
         name: 'Body Weight',
@@ -70,6 +75,16 @@ export class BodyMeasuresComponent {
         name: 'Body Water',
         series: []
       }]
+    var bp : any[]= [
+      {
+        name: 'Systole',
+        series: []
+      },
+      {
+        name: 'Diastole',
+        series: []
+      }
+    ]
     this.measures.forEach(observations => {
         if (observations.weight !== undefined) {
           if (observations.weight < this.weightMin) this.weightMin = observations.weight
@@ -107,11 +122,29 @@ export class BodyMeasuresComponent {
         }
         hydration[0].series.push(weight)
       }
+      if (observations.diastolic !== undefined || observations.systolic !== undefined) {
+        if (observations.diastolic !== undefined) {
+          if (observations.diastolic < this.scaleMin) this.scaleMin = observations.diastolic
+          bp[1].series.push({
+            name: observations.day,
+            value: observations.diastolic
+          })
+        }
+        if (observations.systolic !== undefined) {
+          if (observations.systolic > this.scaleMax) this.scaleMax = observations.systolic
+          bp[0].series.push({
+            name: observations.day,
+            value: observations.systolic
+          })
+        }
+      }
     })
     this.muscle = muscle
     this.hydration = hydration
     this.weights = weights
     this.fats = fats
+    this.bpSeries = bp
+    console.log(bp)
     var sum = 0
     muscle[0].series.forEach((entry: any) => {
       sum += entry.value
@@ -135,16 +168,38 @@ export class BodyMeasuresComponent {
   }
 
   getLast(series: any[] | undefined) {
-      if (series == undefined) return undefined
-      if (series.length === 0 ) return undefined
-      var latest : any = undefined
-      series[0].series.forEach((entry : any) => {
+    if (series == undefined) return undefined
+    if (series.length === 0 ) return undefined
+    var latest : any = undefined
+    if (series[0] !== undefined && series[0].series !== undefined) {
+      series[0].series.forEach((entry: any) => {
         if (latest == undefined) latest = entry
         else if (latest.name < entry.name) {
-          console.log(entry)
           latest = entry
         }
       })
+    } else {
+      series.forEach((entry: any) => {
+        if (latest == undefined) latest = entry
+        else if (latest.name < entry.name) {
+          latest = entry
+        }
+      })
+    }
+    if (latest !== undefined) return latest.value
+    return undefined
+  }
+  getLastSingle(series: any| undefined) {
+    if (series == undefined) return undefined
+    var latest : any = undefined
+    if ( series.series !== undefined) {
+      series.series.forEach((entry: any) => {
+        if (latest == undefined) latest = entry
+        else if (latest.name < entry.name) {
+          latest = entry
+        }
+      })
+    }
     if (latest !== undefined) return latest.value
     return undefined
   }
@@ -153,5 +208,8 @@ export class BodyMeasuresComponent {
   }
   round1DP(value : number) {
     return Math.round(value * 10) / 10
+  }
+  round(value : number) {
+    return Math.round(value )
   }
 }

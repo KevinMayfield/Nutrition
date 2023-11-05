@@ -53,11 +53,11 @@ export class ActivityComponent implements OnInit{
     viewEnergyPie:  [number, number] = [500, 200];
     energy= [{
         "name": "Base Metabolic Rate",
-        "value": 8940000
+        "value": 0
     },
     {
         "name": "Daily Calorie Needs",
-        "value": 5000000
+        "value": 0
     }];
 
     height: number | undefined;
@@ -80,6 +80,16 @@ export class ActivityComponent implements OnInit{
     sleepMeasures: Observations[] = []
     bodyMeasures: Observations[] = []
     legendHR = true;
+    exerciseEnergy= [
+        {
+            "name": "Lower Intake",
+            "value": 8940000
+        },
+        {
+            "name": "Upper Intake",
+            "value": 5000000
+        }
+    ];
     exerciseIntenses: ValueSetExpansionContains[] = [
         {
             code: 'very-light',
@@ -670,8 +680,29 @@ export class ActivityComponent implements OnInit{
             }
             for (let intense of this.exerciseIntenses) {
                 if (intense.code === pal) {
-
                     this.exerciseIntense = intense
+                    let lower = 3
+                    let upper = 5
+                    if (intense.code === 'moderate') {
+                        lower = 5
+                        upper = 7
+                    } else if (intense.code === 'moderate-high') {
+                        lower = 6
+                        upper = 10
+                    } else if (intense.code === 'very-high') {
+                        lower = 8
+                        upper = 12
+                    }
+                    this.exerciseEnergy = [
+                        {
+                            "name": "Daily Carbohydrate Intake (Lower)",
+                            "value": this.perKgKCal(lower)
+                        },
+                        {
+                            "name": "Daily Carbohydrate Intake (Upper)",
+                            "value": this.perKgKCal(upper)
+                        }
+                    ];
                 }
             }
             this.calculateEnergy()
@@ -682,8 +713,10 @@ export class ActivityComponent implements OnInit{
         return Math.round(val)
     }
 
-    perKgKCal(number: number): number | undefined {
-       return this.epr.perKgKCal(number)
+    perKgKCal(number: number): number  {
+       let value = this.epr.perKgKCal(number)
+        if (value === undefined) return 0
+        return value
     }
     perKgMl(number: number): number | undefined {
         return this.epr.perKgMl(number)
@@ -849,6 +882,7 @@ export class ActivityComponent implements OnInit{
         return from;
     }
     /* PIE Chart data */
+
 
     refreshActivity() {
         console.log('Refresh Activity')
@@ -1212,6 +1246,11 @@ export class ActivityComponent implements OnInit{
             }
         }
         this.multiHR = multi
+    }
+
+    labelFormatting(c : any) {
+
+        return `${(c.label)} (grams)`;
     }
 
 }

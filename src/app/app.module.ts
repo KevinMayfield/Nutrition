@@ -32,7 +32,7 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import { PowerGraphComponent } from './charts/power-graph/power-graph.component';
-import {BarChartModule, LineChartModule, PieChartModule} from "@swimlane/ngx-charts";
+import {BarChartModule, BoxChartModule, LineChartModule, PieChartModule, TreeMapModule} from "@swimlane/ngx-charts";
 import { HeartGraphComponent } from './charts/heart-graph/heart-graph.component';
 import {MatChipsModule} from "@angular/material/chips";
 import { NutritionComponent } from './nutrition/nutrition.component';
@@ -100,7 +100,9 @@ import {MatExpansionModule} from "@angular/material/expansion";
         MatToolbarModule,
         PieChartModule,
         LineChartModule,
-        MatExpansionModule
+        MatExpansionModule,
+        TreeMapModule,
+        BoxChartModule
     ],
     providers: [
         DatePipe,

@@ -1,58 +1,61 @@
 <div #containerRef>
     <h3>Sleep</h3>
-    <ngx-charts-line-chart
-            [view]="[containerRef.offsetWidth, 250]"
-            [scheme]="colorSeries"
+    <mat-accordion>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Sleep Average Heart Rate - {{round(getLast(seriesHR))}} bpm
+                </mat-panel-title>
+                <mat-panel-description>
+                    Sleep Heart Rate Variablity {{round(getLast(seriesHRV))}}
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ngx-charts-line-chart
+                    [view]="[containerRef.offsetWidth, 250]"
+                    [scheme]="colorSeries"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxis]="showXAxis"
+                    [yScaleMin]="scaleMin"
+                    [yScaleMax]="scaleMax"
+                    [curve]="curve"
+                    [yAxis]="true"
+                    [legend]="true"
+                    [legendPosition]="legendPosition"
+                    xAxisLabel="Date"
+                    [timeline]="timeline"
+                    [results]="series"
+            >
+            </ngx-charts-line-chart>
+            <!-- These breaks allow for legend display TODO -->
+            <br/>
+            <br/>
+            <br/>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Sleep Score - {{round(getLast(sleepScore))}} %
+                </mat-panel-title>
+                <mat-panel-description>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ngx-charts-bar-vertical *ngIf="sleepScore !== undefined"
+                                     [view]="[containerRef.offsetWidth, 150]"
+                                     [scheme]="colorSleep"
+                                     [results]="sleepScore"
+                                     [gradient]="gradient"
+                                     [xAxis]="showXAxis"
+                                     [yAxis]="showYAxis"
+                                     [legend]="showLegend"
+                                     [showXAxisLabel]="showXAxisLabel"
+                                     [showYAxisLabel]="showYAxisLabel"
 
-            [showXAxisLabel]="showXAxisLabel"
-            [showYAxisLabel]="showYAxisLabel"
-            [xAxis]="showXAxis"
-            [yScaleMin]="scaleMin"
-            [yScaleMax]="scaleMax"
-            [curve]="curve"
-            [yAxis]="true"
-            [legend]="true"
-            [legendPosition]="legendPosition"
-            xAxisLabel="Date"
-            [timeline]="timeline"
-            [results]="series"
-    >
-    </ngx-charts-line-chart>
-<!-- These breaks allow for legend display TODO -->
-    <br/>
-    <br/>
-    <br/>
+                                     yAxisLabel="Sleep Score %"
+                                     [animations]="false"
+            >
 
-    <ngx-charts-bar-vertical *ngIf="sleepScore !== undefined"
-                             [view]="[containerRef.offsetWidth, 150]"
-                             [scheme]="colorSleep"
-                             [results]="sleepScore"
-                             [gradient]="gradient"
-                             [xAxis]="showXAxis"
-                             [yAxis]="showYAxis"
-                             [legend]="showLegend"
-                             [showXAxisLabel]="showXAxisLabel"
-                             [showYAxisLabel]="showYAxisLabel"
-
-                             yAxisLabel="Sleep Score %"
-                             [animations]="false"
-    >
-
-    </ngx-charts-bar-vertical>
-<!--
-    <ngx-charts-line-chart
-            [view]="[containerRef.offsetWidth, 200]"
-            [scheme]="colorSeries"
-
-            [showXAxisLabel]="showXAxisLabel"
-            [showYAxisLabel]="showYAxisLabel"
-            [xAxis]="showXAxis"
-            [yAxis]="showYAxis"
-            [legend]="showLegend"
-            xAxisLabel="Date"
-            yAxisLabel="HRV"
-            [timeline]="timeline"
-            [results]="seriesHRV"
-    >
-    </ngx-charts-line-chart> -->
+            </ngx-charts-bar-vertical>
+        </mat-expansion-panel>
+    </mat-accordion>
 </div>
