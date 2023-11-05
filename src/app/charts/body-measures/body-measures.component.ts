@@ -2,6 +2,8 @@ import {Component, Input} from '@angular/core';
 import {Observations} from "../../models/observations";
 import {BoxChartMultiSeries, BoxChartSeries, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
 import {curveBasis, curveCatmullRom} from 'd3-shape';
+import {EPRService} from "../../service/epr.service";
+import {StravaService} from "../../service/strava.service";
 
 @Component({
   selector: 'app-body-measures',
@@ -54,6 +56,9 @@ export class BodyMeasuresComponent {
   fatsReferenceLines: any[] = [];
   weightReferenceLines: any[] = [];
 
+  constructor(public epr: EPRService){
+    //  this.view = [innerWidth / this.widthQuota, this.view[1]];
+  }
   private refreshActivity() {
     this.weights = []
     this.muscle = []

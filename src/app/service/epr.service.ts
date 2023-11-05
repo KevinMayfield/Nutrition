@@ -13,9 +13,24 @@ export class EPRService {
 
   };
 
+  // Traffic Lights \/  \/
+  weightWarnLow = -0.7
+  weightWarnHigh = 0.4
+
+  muscleWarnLow = -0.5 // Glycogen is roughly 1.2
+
+  hydratedWarnHigh= 0.3;
+  hydratedWarnLow= -0.5;
+
+  hrvRested = 5
+  hrvWarnLow = -5
+  hrWarnHigh = 5
+  hrRested = -5
+  // /\ Traffic Lights /\
   ignoreElapsed = 120
 
   zoneChange: EventEmitter<hrZone> = new EventEmitter();
+
   constructor() {
     var person = localStorage.getItem('activityPerson')
     if (person !== null) this.person = JSON.parse(person)

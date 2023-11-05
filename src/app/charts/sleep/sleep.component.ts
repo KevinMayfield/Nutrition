@@ -2,6 +2,8 @@ import {Component, Input} from '@angular/core';
 import {Color, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
 import {Observations} from "../../models/observations";
 import {curveBasis, curveCatmullRom} from "d3-shape";
+import {EPRService} from "../../service/epr.service";
+import {StravaService} from "../../service/strava.service";
 
 @Component({
   selector: 'app-sleep',
@@ -55,6 +57,8 @@ export class SleepComponent {
     this.measure = measure
     this.refreshActivity()
   }
+
+    constructor(public epr: EPRService){}
 
   private refreshActivity() {
     this.sleepScore = undefined
