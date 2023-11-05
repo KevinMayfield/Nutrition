@@ -48,6 +48,7 @@ export class SleepComponent {
         , group: ScaleType.Ordinal, name: "", selectable: false
     };
     legendPosition: LegendPosition = LegendPosition.Below;
+    referenceLines= [{ name: 'hr', value: 50 }];
 
   @Input() set measures(measure: Observations[]) {
 
@@ -129,6 +130,32 @@ export class SleepComponent {
     this.avg_hearrate = avg_heartrate
       this.seriesHRV = seriesHRV
       this.seriesHR = seriesHR
+      let referenceLines = []
+      let sum = 0
+
+      if (this.seriesHR.length > 0 && this.seriesHR[0].series !== undefined) {
+          sum =0
+          this.seriesHR[0].series.forEach((entry: any) => {
+              sum += entry.value
+          })
+          referenceLines.push({
+              name: 'Average Heart Rate',
+              value: Math.round(sum / this.seriesHR[0].series.length)
+          })
+      }
+      if (this.seriesHRV.length > 0 && this.seriesHRV[0].series !== undefined) {
+          sum =0
+          this.seriesHRV[0].series.forEach((entry: any) => {
+              sum += entry.value
+          })
+          referenceLines.push({
+              name: 'Average Heart Rate Variability',
+              value: Math.round(sum / this.seriesHRV[0].series.length)
+          })
+      }
+
+      this.referenceLines = referenceLines
+
     var series = []
     series.push(seriesHRV[0])
       series.push(seriesHR[0])

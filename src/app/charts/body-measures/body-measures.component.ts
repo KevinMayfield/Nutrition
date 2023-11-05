@@ -48,6 +48,11 @@ export class BodyMeasuresComponent {
   legendPosition: LegendPosition = LegendPosition.Below;
   scaleMin = 9999;
   scaleMax = 0;
+  bpReferenceLines: any[] = [];
+  hydrationReferenceLines: any[] = [];
+  muscleReferenceLines: any[] = [];
+  fatsReferenceLines: any[] = [];
+  weightReferenceLines: any[] = [];
 
   private refreshActivity() {
     this.weights = []
@@ -144,27 +149,68 @@ export class BodyMeasuresComponent {
     this.weights = weights
     this.fats = fats
     this.bpSeries = bp
-    console.log(bp)
+
     var sum = 0
+    let referenceLines = []
+
+    if (this.bpSeries.length > 0 && this.bpSeries[0].series !== undefined) {
+      sum =0
+      this.bpSeries[0].series.forEach((entry: any) => {
+        sum += entry.value
+      })
+      referenceLines.push({
+        name: 'Average Systolic',
+        value: Math.round(sum / this.bpSeries[0].series.length)
+      })
+    }
+    if (this.bpSeries.length > 1 && this.bpSeries[1].series !== undefined) {
+      sum =0
+      this.bpSeries[1].series.forEach((entry: any) => {
+        sum += entry.value
+      })
+      referenceLines.push({
+        name: 'Average Diastolic',
+        value: Math.round(sum / this.bpSeries[1].series.length)
+      })
+    }
+    this.bpReferenceLines = referenceLines
+
+    sum=0
     muscle[0].series.forEach((entry: any) => {
       sum += entry.value
     })
     this.avgMuscle = sum / muscle[0].series.length
+    this.muscleReferenceLines = [{
+      name: 'Average',
+      value: this.avgMuscle
+    }]
     sum = 0
     weights[0].series.forEach((entry: any) => {
       sum += entry.value
     })
     this.avgWeight = sum / weights[0].series.length
+    this.weightReferenceLines = [{
+      name: 'Average',
+      value: this.avgWeight
+    }]
     sum = 0
     fats[0].series.forEach((entry: any) => {
       sum += entry.value
     })
     this.avgFat = sum / fats[0].series.length
+    this.fatsReferenceLines = [{
+      name: 'Average',
+      value: this.avgFat
+    }]
     sum = 0
     hydration[0].series.forEach((entry: any) => {
       sum += entry.value
     })
     this.avgHydration = sum / hydration[0].series.length
+    this.hydrationReferenceLines = [{
+      name: 'Average',
+      value: this.avgHydration
+    }]
   }
 
   getLast(series: any[] | undefined) {

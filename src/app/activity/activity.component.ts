@@ -413,7 +413,7 @@ export class ActivityComponent implements OnInit{
                     for (let temp of this.sleepMeasures) tempAct.push(temp)
                     this.sleepMeasures = tempAct
                 } else {
-                    console.log(today + ' ' + activityDate + ' ' + diffDays)
+                    //console.log(today + ' ' + activityDate + ' ' + diffDays)
                 }
             }
         })

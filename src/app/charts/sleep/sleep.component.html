@@ -4,10 +4,12 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Sleep Average Heart Rate - {{round(getLast(seriesHR))}} bpm
+                    Sleep Average Heart Rate - {{round(getLast(seriesHR))}} bpm. HRV {{round(getLast(seriesHRV))}}
                 </mat-panel-title>
                 <mat-panel-description>
-                    Sleep Heart Rate Variablity {{round(getLast(seriesHRV))}}
+                     <span *ngIf="referenceLines.length > 1">
+                         Average Heart Rate {{referenceLines[0].value}} Average HRV {{referenceLines[1].value}}
+                     </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
             <ngx-charts-line-chart
@@ -24,6 +26,8 @@
                     [legendPosition]="legendPosition"
                     xAxisLabel="Date"
                     [timeline]="timeline"
+                    [referenceLines]="referenceLines"
+                    [showRefLines]="true"
                     [results]="series"
             >
             </ngx-charts-line-chart>

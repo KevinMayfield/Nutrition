@@ -20,7 +20,9 @@
                     Blood Pressure - {{round(getLast(bpSeries))}}/{{round(getLastSingle(bpSeries[1]))}} mmHg
                 </mat-panel-title>
                 <mat-panel-description>
-
+                     <span *ngIf="bpReferenceLines.length > 1">
+                         Average Blood Pressure {{bpReferenceLines[0].value}}/{{bpReferenceLines[1].value}}
+                     </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
                 <ngx-charts-line-chart
@@ -38,6 +40,8 @@
                         [legendPosition]="legendPosition"
                         xAxisLabel="Date"
                         yAxisLabel="mmHg"
+                        [referenceLines]="bpReferenceLines"
+                        [showRefLines]="true"
                         [timeline]="timeline"
                         [results]="bpSeries"
                 >
@@ -53,15 +57,12 @@
         <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                Weight - {{getLast(weights)}} Kg
+                Weight - {{round1DP(getLast(weights))}} Kg
             </mat-panel-title>
             <mat-panel-description>
-                <table>
-                    <tr>
-                        <td> Average {{round2DP(avgWeight)}} Kg </td>
-                        <td> Difference {{round2DP(getLast(weights) - avgWeight)}} Kg </td>
-                    </tr>
-                </table>
+                <span *ngIf="weightReferenceLines.length > 0">
+                         Average Weight {{round1DP(weightReferenceLines[0].value)}} Kg
+                </span>
             </mat-panel-description>
         </mat-expansion-panel-header>
             <div #panelRef>
@@ -80,6 +81,8 @@
                     yAxisLabel="Body Weight"
                     [timeline]="timeline"
                     [results]="weights"
+                    [referenceLines]="weightReferenceLines"
+                    [showRefLines]="true"
             >
             </ngx-charts-line-chart>
             </div>
@@ -87,15 +90,12 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Fat Mass - {{getLast(fats)}} Kg ({{round1DP(getLast(fats) * 100 / getLast(weights))}} %)
+                    Fat Mass - {{round1DP(getLast(fats))}} Kg ({{round1DP(getLast(fats) * 100 / getLast(weights))}} %)
                 </mat-panel-title>
                 <mat-panel-description>
-                    <table>
-                        <tr>
-                            <td> Average {{round2DP(avgFat)}} Kg </td>
-                            <td> Difference {{round2DP(getLast(fats) - avgFat)}} Kg </td>
-                        </tr>
-                    </table>
+                      <span *ngIf="fatsReferenceLines.length > 0">
+                         Average Fat Mass {{round1DP(fatsReferenceLines[0].value)}} Kg
+                </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
             <div #panelRef>
@@ -114,6 +114,8 @@
                     yAxisLabel="Fat Mass"
                     [timeline]="timeline"
                     [results]="fats"
+                    [referenceLines]="fatsReferenceLines"
+                    [showRefLines]="true"
             >
             </ngx-charts-line-chart>
             </div>
@@ -121,15 +123,12 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Muscle Mass - {{getLast(muscle)}} Kg ({{round1DP(getLast(muscle) * 100 / getLast(weights))}} %)
+                    Muscle Mass - {{round1DP(getLast(muscle))}} Kg ({{round1DP(getLast(muscle) * 100 / getLast(weights))}} %)
                 </mat-panel-title>
                 <mat-panel-description>
-                    <table>
-                        <tr>
-                            <td> Average {{round2DP(avgMuscle)}} Kg </td>
-                            <td> Difference {{round2DP(getLast(muscle) - avgMuscle)}} Kg </td>
-                        </tr>
-                    </table>
+                      <span *ngIf="muscleReferenceLines.length > 0">
+                         Average Muscle Mass {{round1DP(muscleReferenceLines[0].value)}} Kg
+                    </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
             <div #panelRef>
@@ -148,6 +147,8 @@
                     yAxisLabel="Muscle Mass"
                     [timeline]="timeline"
                     [results]="muscle"
+                    [referenceLines]="muscleReferenceLines"
+                    [showRefLines]="true"
             >
             </ngx-charts-line-chart>
             </div>
@@ -155,15 +156,12 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Body Water - {{getLast(hydration)}} Kg ({{round1DP(getLast(hydration) * 100 / getLast(weights))}} %)
+                    Body Water - {{round1DP(getLast(hydration))}} Kg ({{round1DP(getLast(hydration) * 100 / getLast(weights))}} %)
                 </mat-panel-title>
                 <mat-panel-description>
-                    <table>
-                        <tr>
-                        <td> Average {{round2DP(avgHydration)}} Kg </td>
-                        <td> Difference {{round2DP(getLast(hydration) - avgHydration)}} Kg </td>
-                        </tr>
-                    </table>
+                      <span *ngIf="hydrationReferenceLines.length > 0">
+                         Average Body Water {{round1DP(hydrationReferenceLines[0].value)}} Kg
+                </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
             <div #panelRef>
@@ -183,6 +181,8 @@
                     yAxisLabel="Body Water"
                     [timeline]="timeline"
                     [results]="hydration"
+                    [referenceLines]="hydrationReferenceLines"
+                    [showRefLines]="true"
             >
             </ngx-charts-line-chart>
             </div>
