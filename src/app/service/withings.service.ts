@@ -35,6 +35,14 @@ export class WithingsService {
     if (!this.hasAccessToken()) {
       return;
     }
+    /*
+
+    Withing actual api reports this is not implemented, docs say otherwise
+    this.getAPIInterDayMeasures().subscribe(result=> {
+      console.log(result)
+    })
+
+     */
     // @ts-ignore
     this.getAPIMeasures().subscribe((result) => {
           if (result.status === 401) {
@@ -76,6 +84,9 @@ export class WithingsService {
                       break;
                     case 12:
                       // 5 figure temp?
+                      break;
+                    case 54:
+                      console.log('SPO2 ' + measure.value)
                       break;
                     case 77:
                       obs.hydration = +measure.value / 100;
@@ -209,6 +220,18 @@ export class WithingsService {
         + '&startdate=' + Math.floor(this.strava.getFromDate().getTime() / 1000)
         + '&enddate=' + Math.floor(this.strava.getNextToDay().getTime() / 1000);
     // + '&lastupdate='+Math.floor(lastUpdate.getTime()/1000);
+
+    return this.http.post<any>(this.url + '/measure', bodge, { headers} );
+
+  }
+  private getAPIInterDayMeasures(): Observable<any> {
+    // withings api reports this is not implemented
+    const headers = this.getAPIHeaders();
+
+    const bodge = 'action=getintradayactivity'
+        + '&datafields=steps,spo2_auto'
+        + '&startdate=' + Math.floor(this.strava.getFromDate().getTime() / 1000)
+        + '&enddate=' + Math.floor(this.strava.getNextToDay().getTime() / 1000);
 
     return this.http.post<any>(this.url + '/measure', bodge, { headers} );
 

@@ -16,10 +16,10 @@ export class AuthService {
 
   public isAuthenticated(): boolean {
     const token = this.localStore.getData('stravaAccessToken');
-    console.log('AuthService ' + token)
+
     // Check whether the token is expired and return
     // true or false
-   console.log('strava jwt '+ this.strava.isTokenExpired(token))
+
     return !this.strava.isTokenExpired(token); //!this.jwtHelper.isTokenExpired(token);
   }
 }
