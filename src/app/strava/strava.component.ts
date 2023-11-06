@@ -65,7 +65,7 @@ These values are stored locally in your web browser, the application does not st
 
 
     getPathName(pathname: string): string {
-        localStorage.setItem('wellness',pathname)
+
         return pathname;
 
         /*if (pathname.includes('FHIR-R4')) return "/FHIR-R4-Demonstration";

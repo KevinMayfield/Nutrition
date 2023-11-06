@@ -201,6 +201,6 @@ export class PersonComponent implements OnInit {
   }
 
   disconnectWithings() {
-    this.withings.killLocalStorage()
+    this.withings.clearLocalStore()
   }
 }

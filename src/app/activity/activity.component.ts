@@ -235,9 +235,14 @@ export class ActivityComponent implements OnInit{
             this.calculate()
         }
         this.getStrava()
+        if (this.withings.getAccessToken() !== undefined) {
+            this.getWithings()
+
+        }
         this.strava.tokenChange.subscribe(()=> {
             this.getStrava()
         })
+
 
         this.strava.loaded.subscribe(activity => {
 
@@ -417,10 +422,7 @@ export class ActivityComponent implements OnInit{
                 }
             }
         })
-        if (this.withings.getAccessToken() !== undefined) {
-           this.getWithings()
 
-        }
     }
 
     ngAfterViewInit(): void {
@@ -626,6 +628,7 @@ export class ActivityComponent implements OnInit{
         };
     }
     getWithings(){
+        console.log('GET Withings')
         // This forces an ordering of the results
         if (this.withings.getAccessToken() !== undefined) {
 
@@ -638,6 +641,7 @@ export class ActivityComponent implements OnInit{
         }
     }
     getStrava(){
+        console.log('GET Strava')
         // token changed so clear results
         let activityArray = []
         this.activities = []

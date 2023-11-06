@@ -3,6 +3,7 @@ import {hrZone, Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {Zones} from "../models/stream";
 import {Sex} from "../models/sex";
+import {LocalService} from "./local.service";
 
 @Injectable({
   providedIn: 'root'
@@ -31,9 +32,9 @@ export class EPRService {
 
   zoneChange: EventEmitter<hrZone> = new EventEmitter();
 
-  constructor() {
-    var person = localStorage.getItem('activityPerson')
-    if (person !== null) this.person = JSON.parse(person)
+  constructor(private localStore: LocalService) {
+   var person = localStore.getData('activityPerson')
+   if (person !== null && person !== undefined && person !== '') this.person = JSON.parse(person)
   }
 
   setPerson(athlete: Person) {
@@ -62,7 +63,7 @@ export class EPRService {
     }
 
     this.person = athlete
-    localStorage.setItem('activityPerson', JSON.stringify(this.person))
+    this.localStore.saveData('activityPerson', JSON.stringify(this.person))
   }
 
   setMaximumHR(maximumHR : number) {

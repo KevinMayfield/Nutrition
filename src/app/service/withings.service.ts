@@ -7,6 +7,7 @@ import {DatePipe} from '@angular/common';
 import {StravaService} from "./strava.service";
 import {Observations} from "../models/observations";
 import {MeasurementSetting} from "../models/enums/MeasurementSetting";
+import {LocalService} from "./local.service";
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class WithingsService {
   url = 'https://wbsapi.withings.net';
   private redirect: string | undefined;
   constructor(private http: HttpClient,
+              private localStore: LocalService,
               private strava: StravaService,
               private datePipe: DatePipe) { }
 
@@ -238,7 +240,6 @@ export class WithingsService {
       routeUrl = routeUrl.substring(0, routeUrl.length - 1);
     }
     this.redirect = routeUrl;
-    localStorage.setItem('appRoute', routeUrl);
     window.location.href = 'https://account.withings.com/oauth2_user/authorize2?response_type=code&client_id='
         + environment.withingClientId
         + '&redirect_uri=' + routeUrl
@@ -257,9 +258,10 @@ export class WithingsService {
 
   getAccessToken(): string | undefined {
   //  console.log('Get Access token');
-    if (localStorage.getItem('withingsToken') !== undefined) {
-      // @ts-ignore
-      const token: any = JSON.parse(localStorage.getItem('withingsToken'));
+    let tolkien = this.localStore.getData('withingsToken')
+    if (tolkien !== undefined && tolkien !== '') {
+
+      const token: any = JSON.parse(tolkien);
 
       const helper = new JwtHelperService();
 
@@ -285,7 +287,7 @@ export class WithingsService {
 
     if (this.refreshingToken) { return ; }
     this.refreshingToken = true;
-    var withingsToken = localStorage.getItem('withingsToken')
+    var withingsToken = this.localStore.getData('withingsToken')
     if (withingsToken !== null) {
       const temp: any = JSON.parse(withingsToken);
       const token = temp.body
@@ -353,11 +355,11 @@ export class WithingsService {
   private deleteAccessToken(): void {
     this.accessToken = undefined;
    console.log('removed withingToken - deleteAccessToken')
-   // localStorage.removeItem('withingsToken');
+   // this.localStore.removeItem('withingsToken');
   }
-  killLocalStorage() {
-    console.log('removed withingToken - killLocalStorage')
-    localStorage.removeItem('withingsToken');
+  clearLocalStore() {
+    console.log('removed withingToken -ClearlocalStore')
+    this.localStore.removeData('withingsToken');
   }
 
   private getTokenExpirationDate(
@@ -429,7 +431,7 @@ export class WithingsService {
     token.routeUrl = routeUrl
     console.log('Withing accesToken')
     console.log(token)
-    localStorage.setItem('withingsToken', JSON.stringify(token));
+    this.localStore.saveData('withingsToken', JSON.stringify(token));
     this.accessToken = token.access_token;
     console.log('Stored access token');
     this.tokenChange.emit(token);

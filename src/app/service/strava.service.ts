@@ -5,6 +5,7 @@ import {environment} from '../../environments/environment';
 import {Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {ActivityType} from "../models/activity-type";
+import {LocalService} from "./local.service";
 
 
 
@@ -26,7 +27,7 @@ export class StravaService {
 
   loaded: EventEmitter<SummaryActivity> = new EventEmitter();
   activity: EventEmitter<SummaryActivity> = new EventEmitter();
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private localStore: LocalService) {
 
     console.log('strava constructor called')
    this.setToDate(new Date());
@@ -77,7 +78,7 @@ export class StravaService {
   }
 
   public getTokenAthlete(): Person | undefined {
-     var tokenStr = localStorage.getItem('stravaAccessToken')
+     var tokenStr = this.localStore.getData('stravaAccessToken')
      if (tokenStr === undefined) {
        return undefined
      }
@@ -178,7 +179,7 @@ export class StravaService {
 
   setAccessToken(token: { access_token: undefined; }): void {
     console.log(JSON.stringify(token))
-    localStorage.setItem('stravaAccessToken', JSON.stringify(token));
+    this.localStore.saveData('stravaAccessToken', JSON.stringify(token));
     this.accessToken = token.access_token;
     this.tokenChange.emit(token);
   }
@@ -189,9 +190,9 @@ export class StravaService {
   }
   getAccessToken(): string | undefined {
 
-    if (localStorage.getItem('stravaAccessToken') !== undefined) {
-      // @ts-ignore
-      const token: any = JSON.parse(localStorage.getItem('stravaAccessToken'));
+    if (this.localStore.getData('stravaAccessToken') !== undefined) {
+
+      const token: any = JSON.parse(this.localStore.getData('stravaAccessToken'));
 
       if (this.isTokenExpired(token)) {
         console.log('Strava refresh token');
@@ -213,7 +214,7 @@ export class StravaService {
     console.log('Strava token expired');
 
     // @ts-ignore
-    const token: any = JSON.parse(localStorage.getItem('stravaAccessToken'));
+    const token: any = JSON.parse(this.localStore.getItem('stravaAccessToken'));
     const headers = new HttpHeaders(
     );
 
