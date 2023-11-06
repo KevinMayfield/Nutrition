@@ -209,8 +209,7 @@ export class StravaService {
     this.refreshingToken = true;
     console.log('Strava token expired');
 
-    // @ts-ignore
-    const token: any = JSON.parse(this.localStore.getItem('stravaAccessToken'));
+    const token: any = JSON.parse(this.localStore.getData('stravaAccessToken'));
     const headers = new HttpHeaders(
     );
 

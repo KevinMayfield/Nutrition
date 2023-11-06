@@ -241,6 +241,7 @@ export class ActivityComponent implements OnInit{
         }
         this.strava.tokenChange.subscribe(()=> {
             this.getStrava()
+            this.getWithings()
         })
 
 
@@ -1275,7 +1276,7 @@ export class ActivityComponent implements OnInit{
         let thisWeek = this.getWeekNumber(new Date())
         if (thisWeek === week) {
             let dayOfWeek = (new Date()).getDay()
-            return dayOfWeek
+            return dayOfWeek + 1
         }
         return 7;
     }
