@@ -93,7 +93,7 @@
                                 Week {{pie.name}}
                             </mat-panel-title>
                             <mat-panel-description>
-                               Average {{round(totalPie(pie.series)/7)}} kcal per day
+                               Average {{round(totalPie(pie.series)/getDays(pie.name))}} kcal per day
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                              <ngx-charts-advanced-pie-chart

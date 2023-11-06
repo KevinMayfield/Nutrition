@@ -1269,4 +1269,14 @@ export class ActivityComponent implements OnInit{
         }
         return total
     }
+
+    getDays(series: string) {
+        let week = +series.split(' ')[0]
+        let thisWeek = this.getWeekNumber(new Date())
+        if (thisWeek === week) {
+            let dayOfWeek = (new Date()).getDay()
+            return dayOfWeek
+        }
+        return 7;
+    }
 }

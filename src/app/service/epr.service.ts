@@ -323,7 +323,7 @@ getHRZone() {
         calculated: true,
         maximumHR: Math.round(maximumHR),
         z1: {
-          min: Math.round(maximumHR * 0.5),
+          min: Math.round(0),
           max: Math.round(maximumHR * 0.6)
         },
         z2: {
