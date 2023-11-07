@@ -245,9 +245,11 @@ export class ActivityComponent implements OnInit{
             this.getWithings()
         }
         this.withings.tokenChange.subscribe(() => {
+            console.log('New Withings token - getData()')
             this.getWithings()
         })
         this.strava.tokenChange.subscribe(()=> {
+            console.log('New Strava token - getData()')
             this.getStrava()
 
         })
@@ -637,7 +639,7 @@ export class ActivityComponent implements OnInit{
         };
     }
     getWithings(){
-        console.log('GET Withings')
+        console.log('get Withings Triggered')
         // This forces an ordering of the results
         if (this.withings.getAccessToken() !== undefined) {
 
@@ -650,7 +652,7 @@ export class ActivityComponent implements OnInit{
         }
     }
     getStrava(){
-        console.log('GET Strava')
+        console.log('get Strava Triggered')
         // token changed so clear results
         let activityArray = []
         this.activities = []

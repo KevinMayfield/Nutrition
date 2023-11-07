@@ -306,12 +306,15 @@ export class WithingsService {
 
 
   public getRefreshToken() {
-    console.log('refreshing token');
 
-    if (this.refreshingToken) { return ; }
+
+    if (this.refreshingToken) {
+     // console.log('already inprogress refreshing token');
+      return ; }
     this.refreshingToken = true;
     var withingsToken = this.localStore.getData('withingsToken')
     if (withingsToken !== null) {
+      console.log('withings refreshing token');
       const temp: any = JSON.parse(withingsToken);
       const token = temp.body
       const url = 'https://wbsapi.withings.net/v2/oauth2';
@@ -326,7 +329,7 @@ export class WithingsService {
 
         this.http.post<any>(url, bodge, {headers: {}}).subscribe(
             accesstoken => {
-              console.log('Withings refreshed token');
+
               console.log(accesstoken);
               this.setAccessToken(accesstoken, temp.autauthorisationCode, temp.routeUrl);
               this.refreshingToken = false;
@@ -335,7 +338,11 @@ export class WithingsService {
               console.log(err);
             }
         );
+      } else {
+        console.log('withings refresh token - missing');
       }
+    } else {
+      console.log('withings token - missing');
     }
   }
 
@@ -452,11 +459,9 @@ export class WithingsService {
     token.expires_at = Math.round(timeObject.getTime() / 1000)
     token.authorisationCode = authorisationCode
     token.routeUrl = routeUrl
-    console.log('Withing accesToken')
-    console.log(token)
+    console.log('new Withing accessToken')
     this.localStore.saveData('withingsToken', JSON.stringify(token));
     this.accessToken = token.access_token;
-    console.log('Stored access token');
     this.tokenChange.emit(token);
   }
 
