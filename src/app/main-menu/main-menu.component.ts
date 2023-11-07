@@ -58,17 +58,19 @@ export class MainMenuComponent implements OnInit{
 
 
     addEvent(change: string, event: MatDatepickerInputEvent<Date>) {
+      /*
         while (this.endDate.getDay() !=6) {
             console.log(this.endDate)
             this.endDate.setDate(this.endDate.getDate() +1);
-        }
+        }*/
         this.strava.setToDate(this.endDate)
     }
     getEndDate() {
         this.endDate = new Date();
+        /*
         while (this.endDate.getDay() !=6) {
             this.endDate.setDate(this.endDate.getDate() +1);
-        }
+        }*/
         this.strava.setToDate(this.endDate)
     }
 }

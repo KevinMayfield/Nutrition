@@ -1288,6 +1288,11 @@ export class ActivityComponent implements OnInit{
             let dayOfWeek = (new Date()).getDay()
             return dayOfWeek + 1
         }
+        let startWeek = this.getWeekNumber(this.strava.getFromDate())
+        if (startWeek === week) {
+            console.log(this.strava.getFromDate())
+            console.log(this.epr.getthis.strava.getFromDate())
+        }
         return 7;
     }
 }

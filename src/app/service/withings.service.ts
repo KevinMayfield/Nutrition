@@ -385,7 +385,6 @@ export class WithingsService {
   private deleteAccessToken(): void {
     this.accessToken = undefined;
    console.log('removed withingToken - deleteAccessToken')
-   // this.localStore.removeItem('withingsToken');
   }
   clearLocalStore() {
     console.log('removed withingToken -ClearlocalStore')
