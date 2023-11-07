@@ -134,7 +134,7 @@
                             </mat-panel-title>
                             <mat-panel-description>
                                 <span *ngIf="pie.hr !== undefined">
-                                Total Duration {{totalPie(pie.hr)}} mins
+                                Average Duration {{round(totalPie(pie.hr)/getDays(pie.name))}} mins per day
                                 </span>
                             </mat-panel-description>
                         </mat-expansion-panel-header>
@@ -254,7 +254,7 @@
                             </mat-panel-title>
                             <mat-panel-description>
                                 <span *ngIf="pie.pwr !== undefined">
-                                Total Duration {{totalPie(pie.pwr)}} mins
+                                Average Duration {{round(totalPie(pie.pwr)/getDays(pie.name))}} mins per day
                                 </span>
                             </mat-panel-description>
                         </mat-expansion-panel-header>

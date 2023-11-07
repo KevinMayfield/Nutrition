@@ -1290,8 +1290,8 @@ export class ActivityComponent implements OnInit{
         }
         let startWeek = this.getWeekNumber(this.strava.getFromDate())
         if (startWeek === week) {
-            console.log(this.strava.getFromDate())
-            console.log(this.epr.getthis.strava.getFromDate())
+            let days = 7-this.strava.getFromDate().getDay()
+            return days
         }
         return 7;
     }

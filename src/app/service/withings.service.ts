@@ -290,8 +290,6 @@ export class WithingsService {
 
       if (token !== undefined && token !== null && token.body !== undefined) {
         if (this.isTokenExpired(token)) {
-
-          console.log('withings Token expired');
           this.accessToken = undefined;
           this.getRefreshToken();
           return undefined;
@@ -315,7 +313,9 @@ export class WithingsService {
     var withingsToken = this.localStore.getData('withingsToken')
     if (withingsToken !== null) {
       console.log('withings refreshing token');
+
       const temp: any = JSON.parse(withingsToken);
+      console.log(temp);
       const token = temp.body
       const url = 'https://wbsapi.withings.net/v2/oauth2';
       if (token !== undefined && token.refresh_token !== undefined) {
@@ -340,6 +340,7 @@ export class WithingsService {
         );
       } else {
         console.log('withings refresh token - missing');
+        console.log(token)
       }
     } else {
       console.log('withings token - missing');
