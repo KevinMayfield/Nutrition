@@ -18,6 +18,7 @@ export class StravaService {
   private accessToken = undefined;
   private refreshingToken = false;
   tokenChange: EventEmitter<any> = new EventEmitter();
+  endWeekChanged: EventEmitter<any> = new EventEmitter();
   private athlete?: Person = undefined;
   athleteChange: EventEmitter<any> = new EventEmitter();
   activityMap = new Map();
@@ -53,6 +54,7 @@ export class StravaService {
     this.to = date;
     this.from = new Date(this.to.toISOString());
     this.from.setDate(this.from.getDate() - this.duration);
+    this.endWeekChanged.emit(this.to)
   }
 
   getHeaders(): HttpHeaders {

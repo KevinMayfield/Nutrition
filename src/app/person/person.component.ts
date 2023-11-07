@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angular/core';
 import {hrZone, pwrZone} from "../models/person";
 import { ValueSetExpansionContains} from "fhir/r4";
 import {HttpClient} from "@angular/common/http";
@@ -32,6 +32,9 @@ export class PersonComponent implements OnInit {
 
   zoneHR: hrZone | undefined
   zonePWR: pwrZone | undefined
+
+  @Output()
+  pageName = new EventEmitter();
   constructor(
       private http: HttpClient,
       private epr: EPRService,
@@ -43,7 +46,7 @@ export class PersonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.pageName.emit('Physical Activity')
     this.route.queryParams.subscribe(params => {
       const code = params['code'];
       const state = params['state'];

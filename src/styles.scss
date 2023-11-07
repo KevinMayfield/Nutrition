@@ -65,6 +65,13 @@ mat-chip {
   max-width: 200px;
 }
 
+.app-toolbar {
+  height: 64px;
+  position: sticky;
+  z-index: 1000;
+  width: 100%  !important;
+}
+
 .msg-header-description {
  display: flex;
 }

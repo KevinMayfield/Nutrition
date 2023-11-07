@@ -306,7 +306,7 @@ export class WithingsService {
 
 
   public getRefreshToken() {
-    console.log('refreshing token NOT YET IMPLEMENTED');
+    console.log('refreshing token');
 
     if (this.refreshingToken) { return ; }
     this.refreshingToken = true;

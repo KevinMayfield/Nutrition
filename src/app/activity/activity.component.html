@@ -12,17 +12,6 @@
 
     </mat-sidenav>
     <mat-sidenav-content>
-        <mat-toolbar layout-align="space-between center">
-            <span>
-            Physical Activity
-            </span>
-            <mat-form-field  class="example-third-width">
-                <input matInput [matDatepicker]="picker" [(ngModel)]="endDate" (dateChange)="addEvent('change', $event)">
-
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-        </mat-toolbar>
 <mat-card xmlns="http://www.w3.org/1999/html">
     <mat-card-content>
     <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectionchange)="tabChanged($event)">

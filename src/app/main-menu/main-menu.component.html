@@ -31,12 +31,30 @@
         </div> -->
     </td-navigation-drawer>
     <td-layout-nav
-            toolbarTitle="Wellness"
+            [toolbarTitle]="pageName"
             navigationRoute="/"
     >
         <button mat-icon-button td-menu-button tdLayoutToggle>
             <mat-icon>menu</mat-icon>
         </button>
-        <router-outlet></router-outlet>
+        <div td-toolbar-content layout-align="space-between center" flex>
+            <div
+                    flex
+                    flex-order-xs="2"
+                    layout="row"
+                    layout-align="end center"
+            >
+                <mat-form-field subscriptSizing="dynamic">
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="endDate" (dateChange)="addEvent('change', $event)">
+                    <mat-label>Week Ending</mat-label>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <button mat-icon-button><mat-icon>help</mat-icon></button>
+            </div>
+
+        </div>
+
+        <router-outlet (activate)="event($event)"></router-outlet>
     </td-layout-nav>
 </td-layout>

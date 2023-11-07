@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Parameters, QuestionnaireResponse, ValueSetExpansionContains} from "fhir/r4";
 import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
@@ -151,6 +151,8 @@ export class ActivityComponent implements OnInit{
   //  displayedColumnsKJ = ['date', "power",'type','avgpwr','avghr', 'duration',"kcal",  "cadence"]
     opened: boolean = true;
     hasPowerData: boolean = false;
+
+    @Input()
     endDate: Date = new Date();
     selectedTabIndex: any;
     ftp: number | undefined;
@@ -195,7 +197,11 @@ export class ActivityComponent implements OnInit{
     }
 
     ngOnInit(): void {
-
+        this.strava.endWeekChanged.subscribe(()=>{
+            this.endDate = this.strava.getToDate()
+            this.getStrava()
+            this.getWithings()
+        })
         this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
             this.administrativeGenders = this.smart.getContainsExpansion(result)
             this.setGenders()
@@ -237,11 +243,13 @@ export class ActivityComponent implements OnInit{
         this.getStrava()
         if (this.withings.getAccessToken() !== undefined) {
             this.getWithings()
-
         }
+        this.withings.tokenChange.subscribe(() => {
+            this.getWithings()
+        })
         this.strava.tokenChange.subscribe(()=> {
             this.getStrava()
-            this.getWithings()
+
         })
 
 
