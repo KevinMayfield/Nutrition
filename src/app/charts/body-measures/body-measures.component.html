@@ -61,6 +61,40 @@
                 <br/>
         </mat-expansion-panel>
     </mat-accordion>
+    <h3>SPO2</h3>
+    <mat-accordion>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                SPO2
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ngx-charts-line-chart
+                [view]="[containerRef.offsetWidth, 250]"
+                [scheme]="colorSeries"
+
+                [showXAxisLabel]="false"
+                [showYAxisLabel]="true"
+                [xAxis]="true"
+                [curve]="curve"
+                [yAxis]="true"
+                [legend]="true"
+                [yScaleMin]="spo2Min"
+                [yScaleMax]="spo2Max"
+                [legendPosition]="legendPosition"
+                xAxisLabel="Date"
+                yAxisLabel="%"
+                [showRefLines]="true"
+                [timeline]="timeline"
+                [results]="spo2"
+        >
+        </ngx-charts-line-chart>
+        <!-- These breaks allow for legend display TODO -->
+        <br/>
+        <br/>
+        <br/>
+    </mat-expansion-panel>
+    </mat-accordion>
     <h3>Weight</h3>
     <mat-accordion>
         <mat-expansion-panel>

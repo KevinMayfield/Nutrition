@@ -14,12 +14,13 @@ export class BodyMeasuresComponent {
   measures :Observations[] = []
   weights: any[] | undefined
   muscle: any[] | undefined
+  spo2: any[] | undefined
 
   fats: any[] | undefined
   hydration: any[] | undefined
   bpSeries : any;
   @Input() set observations(measure: Observations[]) {
-
+    console.log('No. of measures = ' + measure.length)
     this.measures = measure
     this.refreshActivity()
   }
@@ -55,6 +56,8 @@ export class BodyMeasuresComponent {
   muscleReferenceLines: any[] = [];
   fatsReferenceLines: any[] = [];
   weightReferenceLines: any[] = [];
+  spo2Min = 9999;
+  spo2Max = 0;
 
   constructor(public epr: EPRService){
     //  this.view = [innerWidth / this.widthQuota, this.view[1]];
@@ -65,6 +68,7 @@ export class BodyMeasuresComponent {
     this.fats = []
     this.hydration = []
     this.bpSeries = []
+    this.spo2 = []
     var weights: any[] = [
       {
         name: 'Body Weight',
@@ -92,6 +96,21 @@ export class BodyMeasuresComponent {
       },
       {
         name: 'Diastole',
+        series: []
+      }
+    ]
+    var spo2 : any[]= [
+      {
+        name: 'Average',
+        series: []
+      },
+      {
+        name: 'Min',
+        series: []
+      }
+      ,
+      {
+        name: 'Max',
         series: []
       }
     ]
@@ -132,6 +151,28 @@ export class BodyMeasuresComponent {
         }
         hydration[0].series.push(weight)
       }
+      if (observations.spo2 !== undefined) {
+        if (observations.spo2.avg !== undefined) {
+          spo2[0].series.push({
+            name: observations.day,
+            value: observations.spo2.avg
+          })
+        }
+        if (observations.spo2.min !== undefined) {
+          if (observations.spo2.min < this.spo2Min) this.spo2Min = observations.spo2.min
+          spo2[1].series.push({
+            name: observations.day,
+            value: observations.spo2.min
+          })
+        }
+        if (observations.spo2.max !== undefined) {
+          if (observations.spo2.max > this.spo2Max) this.spo2Max = observations.spo2.max
+          spo2[2].series.push({
+            name: observations.day,
+            value: observations.spo2.max
+          })
+        }
+      }
       if (observations.diastolic !== undefined || observations.systolic !== undefined) {
         if (observations.diastolic !== undefined) {
           if (observations.diastolic < this.scaleMin) this.scaleMin = observations.diastolic
@@ -154,6 +195,7 @@ export class BodyMeasuresComponent {
     this.weights = weights
     this.fats = fats
     this.bpSeries = bp
+    this.spo2 = spo2
 
     var sum = 0
     let referenceLines = []

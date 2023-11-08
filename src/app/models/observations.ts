@@ -54,6 +54,7 @@ export interface Observations {
   calories?: number;
   sleep_duration?: number;
   bodytemp?: number;
+  glucose?: number;
 
   hr_average? : number;
   hr_min? : number;

@@ -20,11 +20,62 @@ export class GoogleFitService {
               private strava: StravaService,
               private localStore: LocalService) { }
 
-  public getSteps(){
+  public getSteps() {
     this.getAPISteps().subscribe(result => {
-      console.log(result)
+      let measure: Observations[] = []
+      if (result.bucket !== undefined) {
+        result.bucket.forEach((bucket: any) => {
+          if (bucket.dataset !== undefined) {
+            bucket.dataset.forEach((dataset: any) => {
+              if (dataset.point !== undefined) {
+                dataset.point.forEach((point: any) => {
+                  if (point.startTimeNanos !== undefined) {
+                    let obsDate = new Date(point.startTimeNanos / 1000000);
+                   measure.push({
+                      measurementSetting: MeasurementSetting.home,
+                      day: obsDate,
+                      steps: point.value[0].intVal
+                    })
+                  }
+                })
+              }
+            })
+          }
+        })
+        console.log(measure)
+        this.bodyMeasures.emit(measure)
+      }
     })
   }
+
+  public getHbA1c() {
+    this.getAPIHbA1c().subscribe( (result:any)  => {
+      let measure: Observations[] = []
+      if (result.bucket !== undefined) {
+        result.bucket.forEach((bucket: any) => {
+          if (bucket.dataset !== undefined) {
+            bucket.dataset.forEach((dataset: any) => {
+              if (dataset.point !== undefined) {
+                dataset.point.forEach((point: any) => {
+                  if (point.startTimeNanos !== undefined) {
+                    let obsDate = new Date(point.startTimeNanos / 1000000);
+
+                           measure.push({
+                                 measurementSetting: MeasurementSetting.home,
+                                 day: obsDate,
+                                 glucose: point.value[0].fpVal})
+
+                  }
+                })
+              }
+            })
+          }
+        })
+        console.log(measure)
+      }
+    })
+  }
+
 
   getSPO2() {
     /*
@@ -49,8 +100,8 @@ export class GoogleFitService {
                           day: obsDate,
                           spo2: {
                             avg: point.value[0].fpVal,
-                            min: point.value[1].fpVal,
-                            max: point.value[2].fpVal,
+                            max: point.value[1].fpVal,
+                            min: point.value[2].fpVal,
                           }
                         })
                     }
@@ -77,6 +128,21 @@ export class GoogleFitService {
         "startTimeMillis": this.strava.getFromDate().getTime(),
         "endTimeMillis": this.strava.getToDate().getTime()
       }
+    return this.http.post<any>(url , body, { headers} );
+  }
+  getAPIHbA1c() {
+    const headers = this.getAPIHeaders();
+    console.log(this.strava.getFromDate().getTime())
+    const url = 'https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate'
+    let body = {
+      "aggregateBy": [{
+        "dataTypeName": "com.google.blood_glucose",
+        "dataSourceId": "derived:com.google.blood_glucose:com.google.android.gms:merged"
+      }],
+      "bucketByTime": { "durationMillis": 86400000 },
+      "startTimeMillis": this.strava.getFromDate().getTime(),
+      "endTimeMillis": this.strava.getToDate().getTime()
+    }
     return this.http.post<any>(url , body, { headers} );
   }
   getAPISPO2() {
@@ -113,7 +179,8 @@ export class GoogleFitService {
   }
 
     clearLocalStore() {
-
+      console.log('removed googleFitToken -ClearlocalStore')
+      this.localStore.removeData('googleFitToken');
     }
   getAPIHeaders(): HttpHeaders {
 
@@ -157,7 +224,13 @@ export class GoogleFitService {
         + '&response_type=code'
         + '&client_id='+ environment.googleClientId
         + '&state=google'
-        + '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.read&access_type=offline';
+        + '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read'
+        +'+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read'
+        +'+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read' +
+        '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read' +
+        '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.read' +
+        '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read' +
+        '&access_type=offline';
 
   }
 

@@ -244,6 +244,8 @@ export class ActivityComponent implements OnInit{
             this.opened = false
             this.calculate()
         }
+
+        // Token handling for connections
         this.getStrava()
         if (this.withings.getAccessToken() !== undefined) {
             this.getWithings()
@@ -424,7 +426,18 @@ export class ActivityComponent implements OnInit{
             }
         )
         this.withings.bodyMeasures.subscribe(measures => {
-            this.bodyMeasures = measures
+            console.log('withings body measures rx')
+            let temp: Observations[] = []
+            this.bodyMeasures.forEach((entry: Observations) => temp.push(entry))
+            measures.forEach((entry: Observations) => temp.push(entry))
+            this.bodyMeasures = temp
+        })
+        this.googleFit.bodyMeasures.subscribe(measures => {
+            console.log('googleFit body measures rx')
+            let temp: Observations[] = []
+            this.bodyMeasures.forEach((entry: Observations) => temp.push(entry))
+            measures.forEach((entry: Observations) => temp.push(entry))
+            this.bodyMeasures = temp
         })
         this.withings.sleepMeasures.subscribe(measure => {
             var today = this.strava.getToDate()
@@ -667,6 +680,7 @@ export class ActivityComponent implements OnInit{
         if (this.googleFit.getAccessToken() !== undefined) {
             this.googleFit.getSteps()
             this.googleFit.getSPO2()
+            this.googleFit.getHbA1c()
         }
     }
     getStrava(){
