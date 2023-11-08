@@ -1,0 +1,48 @@
+[
+    {
+        "dataSourceId": "derived:com.google.oxygen_saturation.summary:com.google.android.gms:aggregated",
+        "point": [
+            {
+                "startTimeNanos": "1699346455885934080",
+                "endTimeNanos": "1699423222453590272",
+                "dataTypeName": "com.google.oxygen_saturation.summary",
+                "originDataSourceId": "raw:com.google.oxygen_saturation:com.google.android.gms:appleinc.:watch:d05a8d89:from_device",
+                "value": [
+                    {
+                        "fpVal": 97.61063811823614,
+                        "mapVal": []
+                    },
+                    {
+                        "fpVal": 100,
+                        "mapVal": []
+                    },
+                    {
+                        "fpVal": 94,
+                        "mapVal": []
+                    },
+                    {
+                        "fpVal": 0,
+                        "mapVal": []
+                    },
+                    {
+                        "fpVal": 0,
+                        "mapVal": []
+                    },
+                    {
+                        "fpVal": 0,
+                        "mapVal": []
+                    },
+                    {
+                        "mapVal": []
+                    },
+                    {
+                        "mapVal": []
+                    },
+                    {
+                        "mapVal": []
+                    }
+                ]
+            }
+        ]
+    }
+]

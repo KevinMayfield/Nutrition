@@ -666,6 +666,7 @@ export class ActivityComponent implements OnInit{
         console.log('get GoogleFit Triggered')
         if (this.googleFit.getAccessToken() !== undefined) {
             this.googleFit.getSteps()
+            this.googleFit.getSPO2()
         }
     }
     getStrava(){

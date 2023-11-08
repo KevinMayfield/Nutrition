@@ -22,6 +22,34 @@ export class GoogleFitService {
       console.log(result)
     })
   }
+
+  getSPO2() {
+    /*
+    this.getAPISPO2Raw().subscribe(result => {
+      console.log(result)
+    })
+     */
+    this.getAPISPO2().subscribe(result => {
+      console.log(result)
+      if (result.bucket !== undefined) {
+        result.bucket.forEach((bucket: any) => {
+          if (bucket.dataset !== undefined) {
+            bucket.dataset.forEach((dataset: any) => {
+              if (dataset.point !== undefined) {
+                  dataset.point.forEach((point: any) => {
+                    if (point.startTimeNanos !== undefined) {
+                        let obsDate = new Date(point.startTimeNanos / 1000000);
+                        console.log(obsDate + ' ' + point.value[0].fpVal)
+                      console.log(point)
+                    }
+                  })
+              }
+            })
+          }
+        })
+      }
+    })
+  }
   getAPISteps() {
     const headers = this.getAPIHeaders();
     console.log(this.strava.getFromDate().getTime())
@@ -36,6 +64,38 @@ export class GoogleFitService {
         "endTimeMillis": this.strava.getToDate().getTime()
       }
     return this.http.post<any>(url , body, { headers} );
+  }
+  getAPISPO2() {
+    const headers = this.getAPIHeaders();
+    console.log(this.strava.getFromDate().getTime())
+    const url = 'https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate'
+    let body = {
+      "aggregateBy": [{
+        "dataTypeName": "com.google.oxygen_saturation",
+        "dataSourceId": "derived:com.google.oxygen_saturation:com.google.android.gms:merged"
+      }],
+      "bucketByTime": { "durationMillis": 86400000 },
+      "startTimeMillis": this.strava.getFromDate().getTime(),
+      "endTimeMillis": this.strava.getToDate().getTime()
+    }
+    return this.http.post<any>(url , body, { headers} );
+  }
+  getAPISPO2Raw() {
+    const headers = this.getAPIHeaders();
+    console.log(this.strava.getFromDate().getTime())
+    let datasource = {
+      "dataSource": [
+        {
+          "dataStreamId": "raw:com.google.nutrition:com.example.nutritionSource1:"
+        },
+        {
+          "dataStreamId": "raw:com.google.nutrition:com.example.nutritionSource2:"
+        }
+      ]
+    }
+    const url = 'https://www.googleapis.com/fitness/v1/users/me/dataSources?dataTypeName=com.google.oxygen_saturation'
+
+    return this.http.get<any>(url ,  { headers} );
   }
 
     clearLocalStore() {
@@ -209,6 +269,7 @@ export class GoogleFitService {
       console.log('googleFitToken token - missing');
     }
   }
+
 
 
 }
