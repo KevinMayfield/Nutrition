@@ -4,6 +4,7 @@ import {PolylineMap} from "./polyline-map";
 import {Stream, Zones} from "./stream";
 
 
+
 export interface SummaryActivity {
   trimp?: number;
   zones: Zones[];

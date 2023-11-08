@@ -4,6 +4,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {LocalService} from "./local.service";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {StravaService} from "./strava.service";
+import {Observations} from "../models/observations";
+import {MeasurementSetting} from "../models/enums/MeasurementSetting";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,7 @@ export class GoogleFitService {
   private redirect: string | undefined;
   private accessToken = undefined;
   tokenChange: EventEmitter<any> = new EventEmitter();
+  bodyMeasures: EventEmitter<Observations[]> = new EventEmitter();
   private refreshingToken = false;
   constructor(private http: HttpClient,
               private strava: StravaService,
@@ -30,7 +33,8 @@ export class GoogleFitService {
     })
      */
     this.getAPISPO2().subscribe(result => {
-      console.log(result)
+
+      let measure: Observations[] = []
       if (result.bucket !== undefined) {
         result.bucket.forEach((bucket: any) => {
           if (bucket.dataset !== undefined) {
@@ -39,14 +43,24 @@ export class GoogleFitService {
                   dataset.point.forEach((point: any) => {
                     if (point.startTimeNanos !== undefined) {
                         let obsDate = new Date(point.startTimeNanos / 1000000);
-                        console.log(obsDate + ' ' + point.value[0].fpVal)
-                      console.log(point)
+
+                        measure.push({
+                          measurementSetting: MeasurementSetting.home,
+                          day: obsDate,
+                          spo2: {
+                            avg: point.value[0].fpVal,
+                            min: point.value[1].fpVal,
+                            max: point.value[2].fpVal,
+                          }
+                        })
                     }
                   })
               }
             })
           }
         })
+        console.log(measure)
+        this.bodyMeasures.emit(measure)
       }
     })
   }

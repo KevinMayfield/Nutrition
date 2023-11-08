@@ -1,5 +1,10 @@
 import {MeasurementSetting} from "./enums/MeasurementSetting";
 
+class range {
+  avg? : number;
+  max? : number;
+  min? : number;
+}
 export interface Observations {
   id?: string;
   day: Date;
@@ -43,7 +48,7 @@ export interface Observations {
   recoverypoints?: number;
   sdnn?: number;
   vo2max?: number;
-  spo2?: number;
+  spo2?: range;
   pi?: number;
   steps?: number;
   calories?: number;
