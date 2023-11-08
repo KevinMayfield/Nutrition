@@ -1,6 +1,5 @@
-import {MetaAthlete} from "./meta-athlete";
+
 import {ActivityType} from "./activity-type";
-import {PolylineMap} from "./polyline-map";
 import {SummaryActivity} from "./summary-activity";
 
 export class ActivitySession {

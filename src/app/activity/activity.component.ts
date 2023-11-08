@@ -19,6 +19,8 @@ import {WithingsService} from "../service/withings.service";
 import {Observations} from "../models/observations";
 import {MeasurementSetting} from "../models/enums/MeasurementSetting";
 import {curveCatmullRom} from "d3-shape";
+import {AuthService} from "../service/auth.service";
+import {GoogleFitService} from "../service/google-fit.service";
 
 class ActivityWeek {
     week?: number;
@@ -191,6 +193,8 @@ export class ActivityComponent implements OnInit{
         private smart: SmartService,
         private strava: StravaService,
         private withings: WithingsService,
+        private googleFit: GoogleFitService,
+        private auth: AuthService,
         protected sanitizer: DomSanitizer,
         private _liveAnnouncer: LiveAnnouncer) {
         this.viewEnergyPie = [innerWidth / this.widthQuota, this.viewEnergyPie[1]];
@@ -247,6 +251,13 @@ export class ActivityComponent implements OnInit{
         this.withings.tokenChange.subscribe(() => {
             console.log('New Withings token - getData()')
             this.getWithings()
+        })
+        if (this.googleFit.getAccessToken() !== undefined) {
+            this.getGoogleFit()
+        }
+        this.googleFit.tokenChange.subscribe(() => {
+            console.log('New GoogleFit token - getData()')
+            this.getGoogleFit()
         })
         this.strava.tokenChange.subscribe(()=> {
             console.log('New Strava token - getData()')
@@ -651,19 +662,27 @@ export class ActivityComponent implements OnInit{
             this.withings.getMeasures()
         }
     }
+    private getGoogleFit() {
+        console.log('get GoogleFit Triggered')
+        if (this.googleFit.getAccessToken() !== undefined) {
+            this.googleFit.getSteps()
+        }
+    }
     getStrava(){
-        console.log('get Strava Triggered')
-        // token changed so clear results
-        let activityArray = []
-        this.activities = []
-        this.powerActivities = [];
-        for(var i= 0; i <= this.strava.duration; i++) activityArray.push({ duration:0,kcal: 0, sessions: []})
-        this.activityArray = activityArray
-        this.strava.getAthlete().subscribe(athlete => {
-            if (athlete.weight !== undefined) this.weight = athlete.weight
-            this.epr.setPerson(athlete)
-            this.strava.getActivities()
-        })
+        if (this.auth.isAuthenticated()) {
+            console.log('get Strava Triggered')
+            // token changed so clear results
+            let activityArray = []
+            this.activities = []
+            this.powerActivities = [];
+            for (var i = 0; i <= this.strava.duration; i++) activityArray.push({duration: 0, kcal: 0, sessions: []})
+            this.activityArray = activityArray
+            this.strava.getAthlete().subscribe(athlete => {
+                if (athlete.weight !== undefined) this.weight = athlete.weight
+                this.epr.setPerson(athlete)
+                this.strava.getActivities()
+            })
+        }
     }
     setSelectAnswers() {
         if (this.smart.patient !== undefined) {
@@ -1281,6 +1300,25 @@ export class ActivityComponent implements OnInit{
         return total
     }
 
+    getAvg(weekName: string, item: string) {
+        let week = weekName.split(' ')[0]
+        var total = 0
+        this.activities.forEach(activity =>{
+            if (activity.start_date !== undefined) {
+                let thisWeek = this.getWeekNumber(new Date(activity.start_date))
+                if (+week === thisWeek) {
+                    if (item === 'trimp' && activity.trimp !== undefined) {
+                        total += activity.trimp
+                    }
+                    if (item === 'tss') {
+                        total += this.stressTraining(activity)
+                    }
+                }
+            }
+        })
+        return Math.round(total / this.getDays(weekName))
+    }
+
     getDays(series: string) {
         let week = +series.split(' ')[0]
         let thisWeek = this.getWeekNumber(new Date())
@@ -1295,4 +1333,7 @@ export class ActivityComponent implements OnInit{
         }
         return 7;
     }
+
+
+
 }

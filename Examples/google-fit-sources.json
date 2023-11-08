@@ -1,0 +1,1406 @@
+{
+  "dataSource": [
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "duration",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.active_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.fit"
+      },
+      "device": {
+        "model": "SM-T725",
+        "version": "",
+        "type": "phone",
+        "uid": "919a4d4c",
+        "manufacturer": "samsung"
+      },
+      "dataStreamId": "derived:com.google.active_minutes:com.google.android.fit:samsung:SM-T725:919a4d4c:top_level",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "duration",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.active_minutes"
+      },
+      "dataStreamName": "merge_active_minutes",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.active_minutes:com.google.android.gms:merge_active_minutes",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "duration",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.active_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.fitkit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "bd6a8424",
+        "manufacturer": "apple"
+      },
+      "dataStreamId": "derived:com.google.active_minutes:com.google.fitkit:apple:iphone:bd6a8424:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "duration",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.active_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "532855f1",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.active_minutes:com.google.ios.fit:appleinc.:iphone:532855f1:top_level",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "duration",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.active_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "e3c908f4",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.active_minutes:com.google.ios.fit:appleinc.:iphone:e3c908f4:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "duration",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.active_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.active_minutes:com.google.ios.fit:appleinc.:watch:2d56b8c6:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "duration",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.active_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.active_minutes:com.google.ios.fit:appleinc.:watch:2d56b8c6:top_level",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.fit"
+      },
+      "device": {
+        "model": "SM-T725",
+        "version": "",
+        "type": "phone",
+        "uid": "919a4d4c",
+        "manufacturer": "samsung"
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.android.fit:samsung:SM-T725:919a4d4c:top_level",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataStreamName": "merge_activity_segments",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.android.gms:merge_activity_segments",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "activity_from_steps",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "device": {
+        "model": "SM-T725",
+        "version": "",
+        "type": "phone",
+        "uid": "919a4d4c",
+        "manufacturer": "samsung"
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.android.gms:samsung:SM-T725:919a4d4c:activity_from_steps",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "from_activity_samples<-derived:com.google.activity.samples:com.google.android.gms:samsung:SM-T725:919a4d4c:detailed",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "device": {
+        "model": "SM-T725",
+        "version": "",
+        "type": "phone",
+        "uid": "919a4d4c",
+        "manufacturer": "samsung"
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.android.gms:samsung:SM-T725:919a4d4c:from_activity_samples<-derived:com.google.activity.samples:com.google.android.gms:samsung:SM-T725:919a4d4c:detailed",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataStreamName": "session_activity_segment",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.android.gms:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.fitkit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "2d56b8c6",
+        "manufacturer": "apple"
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.fitkit:apple:iphone:2d56b8c6:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.fitkit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "bd6a8424",
+        "manufacturer": "apple"
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.fitkit:apple:iphone:bd6a8424:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "532855f1",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.ios.fit:appleinc.:iphone:532855f1:top_level",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "e3c908f4",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.ios.fit:appleinc.:iphone:e3c908f4:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.ios.fit:appleinc.:watch:2d56b8c6:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.google.ios.fit:appleinc.:watch:2d56b8c6:top_level",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataStreamName": "session_activity_segment",
+      "application": {
+        "packageName": "com.withings.wiscale2"
+      },
+      "dataStreamId": "derived:com.google.activity.segment:com.withings.wiscale2:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataStreamName": "session_activity_segment",
+      "application": {
+        "packageName": "nl.appyhapps.healthsync"
+      },
+      "dataStreamId": "derived:com.google.activity.segment:nl.appyhapps.healthsync:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.bmr"
+      },
+      "dataStreamName": "merged",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.calories.bmr:com.google.android.gms:merged",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.fit"
+      },
+      "device": {
+        "model": "SM-T725",
+        "version": "",
+        "type": "phone",
+        "uid": "919a4d4c",
+        "manufacturer": "samsung"
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.google.android.fit:samsung:SM-T725:919a4d4c:top_level",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataStreamName": "merge_calories_expended",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.google.android.gms:merge_calories_expended",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_local_data",
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.fitkit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "bd6a8424",
+        "manufacturer": "apple"
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.google.fitkit:apple:iphone:bd6a8424:session_local_data",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.fitkit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "bd6a8424",
+        "manufacturer": "apple"
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.google.fitkit:apple:iphone:bd6a8424:top_level",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "532855f1",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.google.ios.fit:appleinc.:iphone:532855f1:top_level",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "e3c908f4",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.google.ios.fit:appleinc.:iphone:e3c908f4:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "e3c908f4",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.google.ios.fit:appleinc.:iphone:e3c908f4:top_level",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.google.ios.fit:appleinc.:watch:2d56b8c6:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.google.ios.fit:appleinc.:watch:2d56b8c6:top_level",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataStreamName": "Walking-calories",
+      "application": {
+        "packageName": "com.withings.wiscale2"
+      },
+      "dataStreamId": "derived:com.google.calories.expended:com.withings.wiscale2:Walking-calories",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "intensity",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.heart_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.fit"
+      },
+      "device": {
+        "model": "SM-T725",
+        "version": "",
+        "type": "phone",
+        "uid": "919a4d4c",
+        "manufacturer": "samsung"
+      },
+      "dataStreamId": "derived:com.google.heart_minutes:com.google.android.fit:samsung:SM-T725:919a4d4c:top_level",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "intensity",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.heart_minutes"
+      },
+      "dataStreamName": "from_heart_rate<-merge_heart_rate_bpm",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.heart_minutes:com.google.android.gms:from_heart_rate<-merge_heart_rate_bpm",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "intensity",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.heart_minutes"
+      },
+      "dataStreamName": "merge_heart_minutes",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.heart_minutes:com.google.android.gms:merge_heart_minutes",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "intensity",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.heart_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.fitkit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "bd6a8424",
+        "manufacturer": "apple"
+      },
+      "dataStreamId": "derived:com.google.heart_minutes:com.google.fitkit:apple:iphone:bd6a8424:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "intensity",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.heart_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "532855f1",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.heart_minutes:com.google.ios.fit:appleinc.:iphone:532855f1:top_level",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "intensity",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.heart_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "e3c908f4",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.heart_minutes:com.google.ios.fit:appleinc.:iphone:e3c908f4:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "intensity",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.heart_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.heart_minutes:com.google.ios.fit:appleinc.:watch:2d56b8c6:session_activity_segment",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "intensity",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.heart_minutes"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.heart_minutes:com.google.ios.fit:appleinc.:watch:2d56b8c6:top_level",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "oxygen_saturation",
+            "format": "floatPoint"
+          },
+          {
+            "name": "supplemental_oxygen_flow_rate",
+            "format": "floatPoint"
+          },
+          {
+            "optional": true,
+            "name": "oxygen_therapy_administration_mode",
+            "format": "integer"
+          },
+          {
+            "optional": true,
+            "name": "oxygen_saturation_system",
+            "format": "integer"
+          },
+          {
+            "optional": true,
+            "name": "oxygen_saturation_measurement_method",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.oxygen_saturation"
+      },
+      "dataStreamName": "merged",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.oxygen_saturation:com.google.android.gms:merged",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.fit"
+      },
+      "device": {
+        "model": "SM-T725",
+        "version": "",
+        "type": "phone",
+        "uid": "919a4d4c",
+        "manufacturer": "samsung"
+      },
+      "dataStreamId": "derived:com.google.step_count.delta:com.google.android.fit:samsung:SM-T725:919a4d4c:top_level",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataStreamName": "estimated_steps",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataStreamName": "merge_step_deltas",
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "dataStreamId": "derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "derive_step_deltas<-raw:com.google.step_count.cumulative:samsung:SM-T725:919a4d4c:step_counter  Non-wakeup",
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.gms"
+      },
+      "device": {
+        "model": "SM-T725",
+        "version": "",
+        "type": "phone",
+        "uid": "919a4d4c",
+        "manufacturer": "samsung"
+      },
+      "dataStreamId": "derived:com.google.step_count.delta:com.google.android.gms:samsung:SM-T725:919a4d4c:derive_step_deltas<-raw:com.google.step_count.cumulative:samsung:SM-T725:919a4d4c:step_counter  Non-wakeup",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "iphone",
+        "type": "phone",
+        "uid": "532855f1",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.step_count.delta:com.google.ios.fit:appleinc.:iphone:532855f1:top_level",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "top_level",
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.ios.fit",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "derived:com.google.step_count.delta:com.google.ios.fit:appleinc.:watch:2d56b8c6:top_level",
+      "type": "derived"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataStreamName": "Walking-steps",
+      "application": {
+        "packageName": "com.withings.wiscale2"
+      },
+      "dataStreamId": "derived:com.google.step_count.delta:com.withings.wiscale2:Walking-steps",
+      "type": "derived"
+    },
+    {
+      "dataStreamName": "session_activity_segment",
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.gms",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "raw:com.google.activity.segment:com.google.android.gms:appleinc.:watch:2d56b8c6:session_activity_segment",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataStreamName": "sleep-activity segments",
+      "application": {
+        "packageName": "com.withings.wiscale2"
+      },
+      "dataStreamId": "raw:com.google.activity.segment:com.withings.wiscale2:sleep-activity segments",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataStreamName": "Other",
+      "application": {
+        "packageName": "nl.appyhapps.healthsync"
+      },
+      "dataStreamId": "raw:com.google.activity.segment:nl.appyhapps.healthsync:Other",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "activity",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.activity.segment"
+      },
+      "dataStreamName": "walking",
+      "application": {
+        "packageName": "nl.appyhapps.healthsync"
+      },
+      "dataStreamId": "raw:com.google.activity.segment:nl.appyhapps.healthsync:walking",
+      "type": "raw"
+    },
+    {
+      "dataStreamName": "from_device",
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.gms",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "raw:com.google.calories.expended:com.google.android.gms:appleinc.:watch:2d56b8c6:from_device",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataStreamName": "Other calories ",
+      "application": {
+        "packageName": "nl.appyhapps.healthsync"
+      },
+      "dataStreamId": "raw:com.google.calories.expended:nl.appyhapps.healthsync:Other calories ",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "calories",
+            "format": "floatPoint"
+          }
+        ],
+        "name": "com.google.calories.expended"
+      },
+      "dataStreamName": "walking calories ",
+      "application": {
+        "packageName": "nl.appyhapps.healthsync"
+      },
+      "dataStreamId": "raw:com.google.calories.expended:nl.appyhapps.healthsync:walking calories ",
+      "type": "raw"
+    },
+    {
+      "dataStreamName": "from_device",
+      "dataType": {
+        "field": [
+          {
+            "name": "oxygen_saturation",
+            "format": "floatPoint"
+          },
+          {
+            "name": "supplemental_oxygen_flow_rate",
+            "format": "floatPoint"
+          },
+          {
+            "optional": true,
+            "name": "oxygen_therapy_administration_mode",
+            "format": "integer"
+          },
+          {
+            "optional": true,
+            "name": "oxygen_saturation_system",
+            "format": "integer"
+          },
+          {
+            "optional": true,
+            "name": "oxygen_saturation_measurement_method",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.oxygen_saturation"
+      },
+      "dataQualityStandard": [],
+      "application": {
+        "packageName": "com.google.android.gms",
+        "version": "",
+        "detailsUrl": ""
+      },
+      "device": {
+        "model": "watch",
+        "type": "watch",
+        "uid": "2d56b8c6",
+        "manufacturer": "appleinc."
+      },
+      "dataStreamId": "raw:com.google.oxygen_saturation:com.google.android.gms:appleinc.:watch:2d56b8c6:from_device",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.cumulative"
+      },
+      "dataStreamName": "step_counter  Non-wakeup",
+      "device": {
+        "model": "SM-T725",
+        "version": "",
+        "type": "phone",
+        "uid": "919a4d4c",
+        "manufacturer": "samsung"
+      },
+      "dataStreamId": "raw:com.google.step_count.cumulative:samsung:SM-T725:919a4d4c:step_counter  Non-wakeup",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataStreamName": "com.google.step_count.delta-Withings",
+      "application": {
+        "packageName": "com.withings.wiscale2"
+      },
+      "dataStreamId": "raw:com.google.step_count.delta:com.withings.wiscale2:com.google.step_count.delta-Withings",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataStreamName": "HealthSync - step count",
+      "application": {
+        "packageName": "nl.appyhapps.healthsync"
+      },
+      "dataStreamId": "raw:com.google.step_count.delta:nl.appyhapps.healthsync:HealthSync - step count",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataStreamName": "Other steps ",
+      "application": {
+        "packageName": "nl.appyhapps.healthsync"
+      },
+      "dataStreamId": "raw:com.google.step_count.delta:nl.appyhapps.healthsync:Other steps ",
+      "type": "raw"
+    },
+    {
+      "dataQualityStandard": [],
+      "dataType": {
+        "field": [
+          {
+            "name": "steps",
+            "format": "integer"
+          }
+        ],
+        "name": "com.google.step_count.delta"
+      },
+      "dataStreamName": "walking steps ",
+      "application": {
+        "packageName": "nl.appyhapps.healthsync"
+      },
+      "dataStreamId": "raw:com.google.step_count.delta:nl.appyhapps.healthsync:walking steps ",
+      "type": "raw"
+    }
+  ]
+}

@@ -126,7 +126,6 @@ These values are stored locally in your web browser, the application does not st
     }
 
     getAthlete(): void {
-
         this.strava.getAthlete().subscribe(
             result => {
                 this.athlete = result;

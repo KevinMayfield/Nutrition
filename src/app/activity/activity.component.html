@@ -134,7 +134,7 @@
                             </mat-panel-title>
                             <mat-panel-description>
                                 <span *ngIf="pie.hr !== undefined">
-                                Average Duration {{round(totalPie(pie.hr)/getDays(pie.name))}} mins per day
+                                Average Duration {{round(totalPie(pie.hr)/getDays(pie.name))}} mins per day. Average TRIMP {{getAvg(pie.name,'trimp')}} score
                                 </span>
                             </mat-panel-description>
                         </mat-expansion-panel-header>
@@ -254,7 +254,7 @@
                             </mat-panel-title>
                             <mat-panel-description>
                                 <span *ngIf="pie.pwr !== undefined">
-                                Average Duration {{round(totalPie(pie.pwr)/getDays(pie.name))}} mins per day
+                                Average Duration {{round(totalPie(pie.pwr)/getDays(pie.name))}} mins per day. Average TSS {{getAvg(pie.name,'tss')}} score
                                 </span>
                             </mat-panel-description>
                         </mat-expansion-panel-header>

@@ -68,6 +68,14 @@
                                     <button *ngIf="withingsConnected()" (click)="disconnectWithings()">Disconnect</button>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><img class="img-responsive" width="120" height="25" src="assets/google-fit.png" alt="image"></td>
+                                <td>Google Fit</td>
+                                <td>
+                                    <button (click)="connectGoogleFit()" *ngIf="!googleFitConnected()">Connect</button>
+                                    <button *ngIf="googleFitConnected()" (click)="disconnecGoogleFit()">Disconnect</button>
+                                </td>
+                            </tr>
                         </table>
                          <span *ngIf="zoneHR !== undefined">
                              <h2>Heart Rate Zones</h2>

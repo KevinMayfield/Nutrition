@@ -213,6 +213,7 @@ export class StravaService {
 
     const token: any = JSON.parse(this.localStore.getData('stravaAccessToken'));
     const headers = new HttpHeaders(
+
     );
 
     const url = 'https://www.strava.com/oauth/token' +

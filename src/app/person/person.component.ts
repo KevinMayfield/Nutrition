@@ -7,6 +7,7 @@ import {SmartService} from "../service/smart.service";
 import {StravaService} from "../service/strava.service";
 import {WithingsService} from "../service/withings.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {GoogleFitService} from "../service/google-fit.service";
 
 
 @Component({
@@ -42,7 +43,8 @@ export class PersonComponent implements OnInit {
       private strava: StravaService,
       private router: Router,
       private route: ActivatedRoute,
-      private withings: WithingsService) {
+      private withings: WithingsService,
+      private googleFit : GoogleFitService) {
   }
 
   ngOnInit(): void {
@@ -50,10 +52,16 @@ export class PersonComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const code = params['code'];
       const state = params['state'];
+      const scope : string = params['scope'];
       if (code !== undefined) {
         if (state !== undefined && state === 'withings') {
           // console.log('Withings detected');
           this.doWithingsSetup(code, state);
+        }
+        if (scope !== undefined && (scope.includes('https://www.googleapis.com'))) {
+          console.log(code)
+          console.log(scope)
+          this.doGoogleSetup(code, scope);
         }
       }
     });
@@ -197,6 +205,17 @@ export class PersonComponent implements OnInit {
     const url = window.location.href.split('?');
     this.withings.getOAuth2AccessToken(authorisationCode, url[0]);
   }
+  private doGoogleSetup(authorisationCode: any, scope: string) {
+    //  console.log(authorisationCode);
+    this.googleFit.tokenChange.subscribe(
+        (value) => {
+          this.router.navigateByUrl('/person');
+          console.log(value)
+        }
+    );
+    const url = window.location.href.split('?');
+    this.googleFit.getOAuth2AccessToken(authorisationCode, url[0]);
+  }
 
   withingsConnected() {
     if (this.withings.getAccessToken() !== undefined) return true
@@ -206,4 +225,20 @@ export class PersonComponent implements OnInit {
   disconnectWithings() {
     this.withings.clearLocalStore()
   }
+
+  disconnecGoogleFit() {
+    this.googleFit.clearLocalStore()
+  }
+
+  googleFitConnected() {
+    if (this.googleFit.getAccessToken() !== undefined) return true
+    return false
+  }
+
+  connectGoogleFit() {
+    console.log(window.location.origin);
+    this.googleFit.authorise(window.location.origin + this.getPathName(window.location.pathname) );
+  }
+
+
 }
