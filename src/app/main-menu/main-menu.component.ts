@@ -40,7 +40,7 @@ export class MainMenuComponent implements OnInit{
 
     event(event: any) {
         if (event instanceof ActivityComponent) {
-            this.pageName = 'Wellness - Physical Activity'
+            this.pageName = 'Wellness - Summary'
 
         } else if (event instanceof PersonComponent) {
             this.pageName = 'Wellness - User Settings'

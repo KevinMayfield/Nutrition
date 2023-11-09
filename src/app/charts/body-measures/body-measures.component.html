@@ -13,7 +13,7 @@
             [results]="bpSeries"
     >
     </ngx-charts-box-chart> -->
-    <mat-accordion>
+    <mat-accordion *ngIf="bpSeries != undefined && bpSeries[0].series != undefined && bpSeries[0].series.length > 1">
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -61,8 +61,8 @@
                 <br/>
         </mat-expansion-panel>
     </mat-accordion>
-    <mat-accordion>
-        <mat-expansion-panel *ngIf="hba1c != undefined">
+    <mat-accordion *ngIf="hba1c != undefined && hba1c[0].series != undefined && hba1c[0].series.length > 1">
+        <mat-expansion-panel >
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Blood Glucose - &nbsp;<b>{{round2DP(getLastSingle(hba1c[0]))}} mmol</b>
@@ -90,8 +90,8 @@
             <br/>
         </mat-expansion-panel>
     </mat-accordion>
-    <mat-accordion>
-    <mat-expansion-panel *ngIf="spo2 != undefined">
+    <mat-accordion *ngIf="spo2 != undefined && spo2[0].series != undefined && spo2[0].series.length > 1">
+    <mat-expansion-panel >
         <mat-expansion-panel-header>
             <mat-panel-title>
                 SPO2 - Min &nbsp;<b>{{getLastSingle(spo2[1])}} </b> &nbsp;Max &nbsp;<b>{{getLastSingle(spo2[2])}} %</b>
@@ -126,7 +126,7 @@
         <br/>
     </mat-expansion-panel>
     </mat-accordion>
-    <mat-accordion>
+    <mat-accordion *ngIf="weights != undefined && weights[0].series != undefined && weights[0].series.length > 1">
         <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title >
