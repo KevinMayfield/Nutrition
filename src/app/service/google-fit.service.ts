@@ -115,7 +115,6 @@ export class GoogleFitService {
   }
   getAPISteps() {
     const headers = this.getAPIHeaders();
-    console.log(this.strava.getFromDate().getTime())
     const url = 'https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate'
       let body = {
         "aggregateBy": [{
@@ -130,7 +129,6 @@ export class GoogleFitService {
   }
   getAPIHbA1c() {
     const headers = this.getAPIHeaders();
-    console.log(this.strava.getFromDate().getTime())
     const url = 'https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate'
     let body = {
       "aggregateBy": [{
@@ -145,7 +143,6 @@ export class GoogleFitService {
   }
   getAPISPO2() {
     const headers = this.getAPIHeaders();
-    console.log(this.strava.getFromDate().getTime())
     const url = 'https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate'
     let body = {
       "aggregateBy": [{
