@@ -15,7 +15,7 @@ export class BodyMeasuresComponent {
   weights: any[] | undefined
   muscle: any[] | undefined
   spo2: any[] | undefined
-
+  hba1c: any[] | undefined
   fats: any[] | undefined
   hydration: any[] | undefined
   bpSeries : any;
@@ -69,6 +69,12 @@ export class BodyMeasuresComponent {
     this.hydration = []
     this.bpSeries = []
     this.spo2 = []
+    this.hba1c = []
+    var hb1ac: any[] = [
+      {
+        name: 'Blood Glucose',
+        series: []
+      }]
     var weights: any[] = [
       {
         name: 'Body Weight',
@@ -151,6 +157,13 @@ export class BodyMeasuresComponent {
         }
         hydration[0].series.push(weight)
       }
+      if (observations.glucose !== undefined) {
+        let ent = {
+          name: observations.day,
+          value: observations.glucose.val
+        }
+        hb1ac[0].series.push(ent)
+      }
       if (observations.spo2 !== undefined) {
         if (observations.spo2.avg !== undefined) {
           spo2[0].series.push({
@@ -196,6 +209,7 @@ export class BodyMeasuresComponent {
     this.fats = fats
     this.bpSeries = bp
     this.spo2 = spo2
+    this.hba1c = hb1ac
 
     var sum = 0
     let referenceLines = []

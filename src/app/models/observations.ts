@@ -5,6 +5,9 @@ class range {
   max? : number;
   min? : number;
 }
+class glucose {
+  val? : number;
+}
 export interface Observations {
   id?: string;
   day: Date;
@@ -54,8 +57,7 @@ export interface Observations {
   calories?: number;
   sleep_duration?: number;
   bodytemp?: number;
-  glucose?: number;
-
+  glucose?: glucose;
   hr_average? : number;
   hr_min? : number;
   hr_max? : number;

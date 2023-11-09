@@ -62,6 +62,35 @@
         </mat-expansion-panel>
     </mat-accordion>
     <mat-accordion>
+        <mat-expansion-panel *ngIf="hba1c != undefined">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Blood Glucose - &nbsp;<b>{{round2DP(getLastSingle(hba1c[0]))}} mmol</b>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ngx-charts-line-chart
+                    [view]="[containerRef.offsetWidth, 250]"
+                    [scheme]="colorSeries"
+                    [showXAxisLabel]="false"
+                    [showYAxisLabel]="true"
+                    [xAxis]="true"
+                    [curve]="curve"
+                    [yAxis]="true"
+                    [legend]="true"
+                    [legendPosition]="legendPosition"
+                    xAxisLabel="Date"
+                    yAxisLabel="mmol"
+                    [showRefLines]="false"
+                    [timeline]="timeline"
+                    [results]="hba1c"
+            >
+            </ngx-charts-line-chart>
+            <br/>
+            <br/>
+            <br/>
+        </mat-expansion-panel>
+    </mat-accordion>
+    <mat-accordion>
     <mat-expansion-panel *ngIf="spo2 != undefined">
         <mat-expansion-panel-header>
             <mat-panel-title>

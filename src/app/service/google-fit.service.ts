@@ -42,7 +42,6 @@ export class GoogleFitService {
             })
           }
         })
-        console.log(measure)
         this.bodyMeasures.emit(measure)
       }
     })
@@ -59,11 +58,12 @@ export class GoogleFitService {
                 dataset.point.forEach((point: any) => {
                   if (point.startTimeNanos !== undefined) {
                     let obsDate = new Date(point.startTimeNanos / 1000000);
-
                            measure.push({
                                  measurementSetting: MeasurementSetting.home,
                                  day: obsDate,
-                                 glucose: point.value[0].fpVal})
+                                 glucose: {
+                                   val: point.value[0].fpVal
+                                 }})
 
                   }
                 })
@@ -71,7 +71,7 @@ export class GoogleFitService {
             })
           }
         })
-        console.log(measure)
+        this.bodyMeasures.emit(measure)
       }
     })
   }
@@ -84,7 +84,6 @@ export class GoogleFitService {
     })
      */
     this.getAPISPO2().subscribe(result => {
-      console.log(result)
       let measure: Observations[] = []
       if (result.bucket !== undefined) {
         result.bucket.forEach((bucket: any) => {
@@ -110,7 +109,6 @@ export class GoogleFitService {
             })
           }
         })
-        console.log(measure)
         this.bodyMeasures.emit(measure)
       }
     })
