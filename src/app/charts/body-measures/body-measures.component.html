@@ -30,7 +30,7 @@
                          <span *ngIf="(getLastSingle(bpSeries[1])- bpReferenceLines[1].value > 5) || (getLast(bpSeries) - bpReferenceLines[0].value > 5)">
                             <button mat-flat-button color="accent">Overtraining?</button>
                          </span>
-                         Average Blood Pressure {{bpReferenceLines[0].value}}/{{bpReferenceLines[1].value}}
+                         Average Blood Pressure {{bpReferenceLines[0].value}}/{{bpReferenceLines[1].value}} mmHg
                      </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
@@ -67,6 +67,9 @@
             <mat-panel-title>
                 SPO2 - Min &nbsp;<b>{{getLastSingle(spo2[1])}} </b> &nbsp;Max &nbsp;<b>{{getLastSingle(spo2[2])}} %</b>
             </mat-panel-title>
+           <mat-panel-description>
+                Last Daily Average &nbsp;<b>{{round1DP(getLast(spo2))}} %</b>
+            </mat-panel-description>
         </mat-expansion-panel-header>
         <ngx-charts-line-chart
                 [view]="[containerRef.offsetWidth, 250]"
