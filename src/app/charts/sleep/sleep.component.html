@@ -4,7 +4,7 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Sleep Average Heart Rate - {{round(getLast(seriesHR))}} bpm. HRV {{round(getLast(seriesHRV))}}
+                    Sleep Heart Rate - &nbsp;<b>{{round(getLast(seriesHR))}} bpm</b>. HRV &nbsp;<b>{{round(getLast(seriesHRV))}}</b>
                 </mat-panel-title>
                 <mat-panel-description>
                      <span *ngIf="referenceLines.length > 1">
@@ -51,7 +51,7 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Sleep Score - {{round(getLast(sleepScore))}} %
+                    Sleep Score - &nbsp;<b>{{round(getLast(sleepScore))}} %</b>
                 </mat-panel-title>
                 <mat-panel-description>
                 </mat-panel-description>

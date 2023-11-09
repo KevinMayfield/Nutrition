@@ -162,6 +162,7 @@ export class WithingsService {
                       });
                     }
                   }
+
                   let measureDay: Observations = {
                     day: startdate,
                     measurementSetting: MeasurementSetting.home,

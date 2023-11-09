@@ -1,5 +1,5 @@
 <div #containerRef>
-    <h3>Blood Pressure</h3>
+    <h3>Vitals</h3>
  <!--   <ngx-charts-box-chart
             [view]="[panelRef.offsetWidth, 200]"
             [scheme]="colorSeries"
@@ -17,7 +17,7 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Blood Pressure - {{round(getLast(bpSeries))}}/{{round(getLastSingle(bpSeries[1]))}} mmHg
+                    Blood Pressure - &nbsp;<b>{{round(getLast(bpSeries))}}/{{round(getLastSingle(bpSeries[1]))}} mmHg</b>
                 </mat-panel-title>
                 <mat-panel-description>
                      <span *ngIf="(getLast(bpSeries) > 135 || getLastSingle(bpSeries[1]) > 85)">
@@ -61,12 +61,11 @@
                 <br/>
         </mat-expansion-panel>
     </mat-accordion>
-    <h3>SPO2</h3>
     <mat-accordion>
-    <mat-expansion-panel>
+    <mat-expansion-panel *ngIf="spo2 != undefined">
         <mat-expansion-panel-header>
             <mat-panel-title>
-                SPO2
+                SPO2 - Min &nbsp;<b>{{getLastSingle(spo2[1])}} </b> &nbsp;Max &nbsp;<b>{{getLastSingle(spo2[2])}} %</b>
             </mat-panel-title>
         </mat-expansion-panel-header>
         <ngx-charts-line-chart
@@ -95,12 +94,11 @@
         <br/>
     </mat-expansion-panel>
     </mat-accordion>
-    <h3>Weight</h3>
     <mat-accordion>
         <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title >
-                Weight - {{round1DP(getLast(weights))}} Kg
+                Weight - &nbsp;<b>{{round1DP(getLast(weights))}} Kg</b>
             </mat-panel-title>
             <mat-panel-description>
                 <span *ngIf="weightReferenceLines.length > 0">
@@ -139,7 +137,7 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Fat Mass - {{round1DP(getLast(fats))}} Kg ({{round1DP(getLast(fats) * 100 / getLast(weights))}} %)
+                    Fat Mass - &nbsp;<b>{{round1DP(getLast(fats))}} Kg ({{round1DP(getLast(fats) * 100 / getLast(weights))}} %)</b>
                 </mat-panel-title>
                 <mat-panel-description>
                       <span *ngIf="fatsReferenceLines.length > 0">
@@ -172,7 +170,7 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Muscle Mass - {{round1DP(getLast(muscle))}} Kg ({{round1DP(getLast(muscle) * 100 / getLast(weights))}} %)
+                    Muscle Mass - &nbsp;<b>{{round1DP(getLast(muscle))}} Kg ({{round1DP(getLast(muscle) * 100 / getLast(weights))}} %)</b>
                 </mat-panel-title>
                 <mat-panel-description>
                       <span *ngIf="muscleReferenceLines.length > 0">
@@ -208,7 +206,7 @@
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Body Water - {{round1DP(getLast(hydration))}} Kg ({{round1DP(getLast(hydration) * 100 / getLast(weights))}} %)
+                    Body Water - &nbsp;<b>{{round1DP(getLast(hydration))}} Kg ({{round1DP(getLast(hydration) * 100 / getLast(weights))}} %)</b>
                 </mat-panel-title>
                 <mat-panel-description>
                       <span *ngIf="hydrationReferenceLines.length > 0">

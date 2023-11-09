@@ -85,7 +85,6 @@ export class SleepComponent {
 
       for (let measure of this.measure) {
 
-
           let entSleep = {
               name: measure.day,
               value: 0

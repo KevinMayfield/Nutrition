@@ -84,7 +84,7 @@ export class GoogleFitService {
     })
      */
     this.getAPISPO2().subscribe(result => {
-
+      console.log(result)
       let measure: Observations[] = []
       if (result.bucket !== undefined) {
         result.bucket.forEach((bucket: any) => {

@@ -446,12 +446,15 @@ export class ActivityComponent implements OnInit{
                 var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
                 let bank = this.sleepMeasures[this.strava.duration - diffDays]
                 if (bank !== undefined) {
-                    this.sleepMeasures[this.strava.duration - diffDays].hrv = measure.hrv
-                    this.sleepMeasures[this.strava.duration - diffDays].sleepScore = measure.sleepScore
-                    this.sleepMeasures[this.strava.duration - diffDays].hr_average = measure.hr_average
-                    var tempAct: any[] = []
-                    for (let temp of this.sleepMeasures) tempAct.push(temp)
-                    this.sleepMeasures = tempAct
+                    // TODO Possible issue here with only going for best individual sleep results. It will ignore short naps.
+                    if (bank.sleepScore === undefined || (measure.sleepScore !== undefined && bank.sleepScore < measure.sleepScore)) {
+                        bank.hrv = measure.hrv
+                        bank.sleepScore = measure.sleepScore
+                        bank.hr_average = measure.hr_average
+                        var tempAct: any[] = []
+                        for (let temp of this.sleepMeasures) tempAct.push(temp)
+                        this.sleepMeasures = tempAct
+                    }
                 } else {
                     //console.log(today + ' ' + activityDate + ' ' + diffDays)
                 }
