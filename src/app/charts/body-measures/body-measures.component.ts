@@ -17,6 +17,7 @@ export class BodyMeasuresComponent {
   spo2: any[] | undefined
   hba1c: any[] | undefined
   fats: any[] | undefined
+  bone: any[] | undefined
   hydration: any[] | undefined
   bpSeries : any;
   @Input() set observations(measure: Observations[]) {
@@ -38,6 +39,8 @@ export class BodyMeasuresComponent {
   muscleMax= 0;
   fatMin= 99999;
   fatMax= 0;
+  boneMin= 99999;
+  boneMax= 0;
   hydrationMin= 99999;
   hydrationMax= 0;
 
@@ -45,6 +48,7 @@ export class BodyMeasuresComponent {
   avgFat = 0
   avgMuscle = 0
   avgHydration = 0
+  avgBone = 0
   //curve = curveBasis
   curve = curveCatmullRom
   schemeType: ScaleType = ScaleType.Linear;
@@ -55,6 +59,7 @@ export class BodyMeasuresComponent {
   hydrationReferenceLines: any[] = [];
   muscleReferenceLines: any[] = [];
   fatsReferenceLines: any[] = [];
+  boneReferenceLines: any[] = [];
   weightReferenceLines: any[] = [];
   spo2Min = 9999;
   spo2Max = 0;
@@ -66,6 +71,7 @@ export class BodyMeasuresComponent {
     this.weights = []
     this.muscle = []
     this.fats = []
+    this.bone = []
     this.hydration = []
     this.bpSeries = []
     this.spo2 = []
@@ -93,6 +99,11 @@ export class BodyMeasuresComponent {
     var hydration: any[] = [
       {
         name: 'Body Water',
+        series: []
+      }]
+    var bone: any[] = [
+      {
+        name: 'Bone Mass',
         series: []
       }]
     var bp : any[]= [
@@ -147,6 +158,15 @@ export class BodyMeasuresComponent {
           value: observations.fat_mass
         }
         fats[0].series.push(weight)
+      }
+      if (observations.bone_mass !== undefined) {
+        if (observations.bone_mass < this.boneMin) this.boneMin = observations.bone_mass
+        if (observations.bone_mass > this.boneMax) this.boneMax = observations.bone_mass
+        let weight = {
+          name: observations.day,
+          value: observations.bone_mass
+        }
+        bone[0].series.push(weight)
       }
       if (observations.hydration !== undefined) {
         if (observations.hydration < this.hydrationMin) this.hydrationMin = observations.hydration
@@ -207,6 +227,7 @@ export class BodyMeasuresComponent {
     this.hydration = hydration
     this.weights = weights
     this.fats = fats
+    this.bone = bone
     this.bpSeries = bp
     this.spo2 = spo2
     this.hba1c = hb1ac
@@ -262,6 +283,15 @@ export class BodyMeasuresComponent {
     this.fatsReferenceLines = [{
       name: 'Average',
       value: this.avgFat
+    }]
+    sum = 0
+    bone[0].series.forEach((entry: any) => {
+      sum += entry.value
+    })
+    this.avgBone = sum / weights[0].series.length
+    this.boneReferenceLines = [{
+      name: 'Average',
+      value: this.avgBone
     }]
     sum = 0
     hydration[0].series.forEach((entry: any) => {

@@ -275,5 +275,38 @@
             </ngx-charts-line-chart>
             </div>
         </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Bone Mass - &nbsp;<b>{{round2DP(getLast(bone))}} Kg ({{round2DP(getLast(bone) * 100 / getLast(bone))}} %)</b>
+                </mat-panel-title>
+                <mat-panel-description>
+                      <span *ngIf="boneReferenceLines.length > 0">
+                         Average Bone Mass {{round2DP(boneReferenceLines[0].value)}} Kg
+                </span>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div #panelRef>
+                <ngx-charts-line-chart
+                        [view]="[panelRef.offsetWidth, 200]"
+                        [scheme]="colorSeries"
+                        [curve]="curve"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [xAxis]="true"
+                        [yAxis]="true"
+                        [yScaleMin]="boneMin"
+                        [yScaleMax]="boneMax"
+                        [legend]="false"
+                        xAxisLabel="Date"
+                        yAxisLabel="Bone Mass"
+                        [timeline]="timeline"
+                        [results]="bone"
+                        [referenceLines]="boneReferenceLines"
+                        [showRefLines]="true"
+                >
+                </ngx-charts-line-chart>
+            </div>
+        </mat-expansion-panel>
     </mat-accordion>
 </div>
