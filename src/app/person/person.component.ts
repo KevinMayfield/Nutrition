@@ -198,7 +198,7 @@ export class PersonComponent implements OnInit {
     //  console.log(authorisationCode);
     this.withings.tokenChange.subscribe(
         (value) => {
-          this.router.navigateByUrl('/person');
+          this.router.navigateByUrl('/summary');
           console.log(value)
         }
     );
@@ -209,7 +209,7 @@ export class PersonComponent implements OnInit {
     //  console.log(authorisationCode);
     this.googleFit.tokenChange.subscribe(
         (value) => {
-          this.router.navigateByUrl('/person');
+          this.router.navigateByUrl('/summary');
           console.log(value)
         }
     );
