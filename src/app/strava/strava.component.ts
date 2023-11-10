@@ -111,7 +111,7 @@ These values are stored locally in your web browser, the application does not st
         this.strava.tokenChange.subscribe(
             () => {
                 console.log('Token emit')
-                this.router.navigateByUrl('/activity');
+                this.router.navigateByUrl('/summary');
             }
         );
         // this will emit a change when the token is retrieved
