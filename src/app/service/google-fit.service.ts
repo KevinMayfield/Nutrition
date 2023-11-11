@@ -42,7 +42,6 @@ export class GoogleFitService {
                 if (source.dataStreamId !== undefined
                 //    && source.dataStreamId.startsWith('raw:')
                 ) {
-                  console.log(source)
                   this.getAPIDataset(source.dataStreamId,'oxygen_saturation%2Fvalue%2FfpVal').subscribe(data => {
                     if (data.point !== undefined) {
                       var measure: Observations[] = []
@@ -278,10 +277,11 @@ export class GoogleFitService {
   getAccessToken() {
 
     let tolkien = this.localStore.getData('googleFitToken')
+
     if (tolkien !== undefined && tolkien !== '') {
 
       const token: any = JSON.parse(tolkien);
-
+      console.log(token)
       const helper = new JwtHelperService();
 
       if (token !== undefined && token !== null ) {
@@ -358,6 +358,7 @@ export class GoogleFitService {
     timeObject = new Date(timeObject.getTime() + milliseconds);
     token.expires_at = Math.round(timeObject.getTime() / 1000)
     console.log('new GoogleFit accessToken')
+    console.log(token)
     this.localStore.saveData('googleFitToken', JSON.stringify(token));
     this.accessToken = token.access_token;
     this.tokenChange.emit(token);
