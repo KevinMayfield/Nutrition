@@ -20,6 +20,77 @@ export class GoogleFitService {
               private strava: StravaService,
               private localStore: LocalService) { }
 
+  public getDataSources() {
+
+    /*
+
+    This gets a list of datasources https://developers.google.com/fit/rest/v1/reference/users/dataSources/get
+
+    and then gets datassets
+
+    https://developers.google.com/fit/rest/v1/reference/users/dataSources/datasets/get
+     */
+
+    this.getAPIDataSources().subscribe(result => {
+      if (result.dataSource !== undefined) {
+        result.dataSource.forEach((source : any) => {
+          if (source.dataType !== undefined) {
+            if (source.dataType.name !== undefined) {
+              let systemUri = source.dataType.name
+              if (systemUri === 'com.google.oxygen_saturation') {
+
+                if (source.dataStreamId !== undefined
+                //    && source.dataStreamId.startsWith('raw:')
+                ) {
+                  console.log(source)
+                  this.getAPIDataset(source.dataStreamId,'oxygen_saturation%2Fvalue%2FfpVal').subscribe(data => {
+                    if (data.point !== undefined) {
+                      var measure: Observations[] = []
+                      data.point.forEach((point: any) => {
+                        if (point.startTimeNanos !== undefined) {
+                          let obsDate = new Date(point.startTimeNanos / 1000000);
+                          measure.push({
+                            measurementSetting: MeasurementSetting.home,
+                            day: obsDate,
+                            spo2: {
+                              avg: point.value[0].fpVal
+                            }
+                          })
+                        }
+                      })
+                      this.bodyMeasures.emit(measure)
+                    }
+                  })
+                }
+              }
+              if (systemUri === 'com.google.blood_glucose') {
+                if (source.dataStreamId !== undefined && source.dataStreamId.startsWith('raw:') ) {
+                  console.log(source)
+                  this.getAPIDataset(source.dataStreamId,'point%2Fvalue%2FfloatPoint').subscribe(data => {
+                    if (data.point !== undefined) {
+                      var measure : Observations[] = []
+                      data.point.forEach((point: any) => {
+                        if (point.startTimeNanos !== undefined) {
+                          let obsDate = new Date(point.startTimeNanos / 1000000);
+                          measure.push({
+                            measurementSetting: MeasurementSetting.home,
+                            day: obsDate,
+                            glucose: {
+                              val: point.value[0].fpVal
+                            }})
+                        }
+                      })
+                      this.bodyMeasures.emit(measure)
+                    }
+                  })
+                }
+              }
+            }
+          }
+        })
+      }
+    })
+  }
   public getSteps() {
     this.getAPISteps().subscribe(result => {
       let measure: Observations[] = []
@@ -113,6 +184,17 @@ export class GoogleFitService {
       }
     })
   }
+
+  getAPIDataset(dataSourceId : string, fields : string) {
+    const headers = this.getAPIHeaders();
+    const startTimeNano = this.strava.getFromDate().getTime() * 1000000
+    const endTimeNano = this.strava.getToDate().getTime() * 1000000
+    const url = 'https://www.googleapis.com/fitness/v1/users/me/dataSources/'+dataSourceId+'/datasets/'
+        +startTimeNano + '-' + endTimeNano
+       // +'?fields=point%2Fvalue%2FfpVal'
+       // +'?fields=' + fields
+    return this.http.get<any>(url ,  { headers} );
+  }
   getAPISteps() {
     const headers = this.getAPIHeaders();
     const url = 'https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate'
@@ -173,6 +255,13 @@ export class GoogleFitService {
     return this.http.get<any>(url ,  { headers} );
   }
 
+  private getAPIDataSources() {
+    const headers = this.getAPIHeaders();
+    const url = 'https://www.googleapis.com/fitness/v1/users/me/dataSources'
+
+    return this.http.get<any>(url ,  { headers} );
+  }
+
     clearLocalStore() {
       console.log('removed googleFitToken -ClearlocalStore')
       this.localStore.removeData('googleFitToken');
@@ -187,6 +276,7 @@ export class GoogleFitService {
     return headers;
   }
   getAccessToken() {
+
     let tolkien = this.localStore.getData('googleFitToken')
     if (tolkien !== undefined && tolkien !== '') {
 

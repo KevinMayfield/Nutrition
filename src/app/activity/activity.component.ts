@@ -681,6 +681,7 @@ export class ActivityComponent implements OnInit{
     private getGoogleFit() {
         console.log('get GoogleFit Triggered')
         if (this.googleFit.getAccessToken() !== undefined) {
+            this.googleFit.getDataSources()
             this.googleFit.getSteps()
             this.googleFit.getSPO2()
             this.googleFit.getHbA1c()
