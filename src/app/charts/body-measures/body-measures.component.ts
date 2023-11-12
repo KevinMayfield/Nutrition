@@ -349,4 +349,14 @@ export class BodyMeasuresComponent {
   round(value : number) {
     return Math.round(value )
   }
+
+  getPointColour(ent: any) {
+    return 'color: '+ ent.color+ ';'
+  }
+
+  getTime(entry: any) {
+
+      var result = entry.name.toLocaleString()
+      return result
+  }
 }

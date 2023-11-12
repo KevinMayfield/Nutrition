@@ -54,6 +54,22 @@
                         [timeline]="timeline"
                         [results]="bpSeries"
                 >
+                    <ng-template #tooltipTemplate let-model="model">
+             <span *ngIf="model !== undefined">
+                    {{getTime(model)}}
+                </span>
+                        <ul>
+                            <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
+                        </ul>
+                    </ng-template>
+                    <ng-template #seriesTooltipTemplate let-model="model">
+                    <span *ngIf="model !== undefined && model.length >0">
+                    {{getTime(model[0])}}
+                </span>
+                        <ul>
+                            <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
+                        </ul>
+                    </ng-template>
                 </ngx-charts-line-chart>
                 <!-- These breaks allow for legend display TODO -->
                 <br/>
@@ -84,6 +100,22 @@
                     [timeline]="timeline"
                     [results]="hba1c"
             >
+                <ng-template #tooltipTemplate let-model="model">
+             <span *ngIf="model !== undefined">
+                    {{getTime(model)}}
+                </span>
+                    <ul>
+                        <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
+                    </ul>
+                </ng-template>
+                <ng-template #seriesTooltipTemplate let-model="model">
+                    <span *ngIf="model !== undefined && model.length >0">
+                    {{getTime(model[0])}}
+                </span>
+                    <ul>
+                        <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
+                    </ul>
+                </ng-template>
             </ngx-charts-line-chart>
             <br/>
             <br/>
@@ -119,6 +151,25 @@
                 [timeline]="timeline"
                 [results]="spo2"
         >
+            <ng-template #tooltipTemplate let-model="model">
+             <span *ngIf="model !== undefined">
+                    {{getTime(model)}}
+                </span>
+                <ul>
+                    <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
+                </ul>
+            <!--<pre>{{model|json}}</pre> -->
+        </ng-template>
+            <ng-template #seriesTooltipTemplate let-model="model">
+
+                <!-- <pre>{{model|json}}</pre> -->
+                <span *ngIf="model !== undefined && model.length >0">
+                    {{getTime(model[0])}}
+                </span>
+                <ul>
+                    <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
+                </ul>
+            </ng-template>
         </ngx-charts-line-chart>
         <!-- These breaks allow for legend display TODO -->
         <br/>
@@ -163,6 +214,22 @@
                     [referenceLines]="weightReferenceLines"
                     [showRefLines]="true"
             >
+                <ng-template #tooltipTemplate let-model="model">
+             <span *ngIf="model !== undefined">
+                    {{getTime(model)}}
+                </span>
+                    <ul>
+                        <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
+                    </ul>
+                </ng-template>
+                <ng-template #seriesTooltipTemplate let-model="model">
+                    <span *ngIf="model !== undefined && model.length >0">
+                    {{getTime(model[0])}}
+                </span>
+                    <ul>
+                        <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
+                    </ul>
+                </ng-template>
             </ngx-charts-line-chart>
             </div>
         </mat-expansion-panel>
