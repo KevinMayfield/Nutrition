@@ -202,6 +202,7 @@ export class ActivityComponent implements OnInit{
 
     ngOnInit(): void {
         this.strava.endWeekChanged.subscribe(()=>{
+            this.bodyMeasures = []
             this.endDate = this.strava.getToDate()
             this.getStrava()
             this.getWithings()

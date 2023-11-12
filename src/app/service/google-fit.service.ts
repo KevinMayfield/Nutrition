@@ -64,7 +64,7 @@ export class GoogleFitService {
               }
               if (systemUri === 'com.google.blood_glucose') {
                 if (source.dataStreamId !== undefined && source.dataStreamId.startsWith('raw:') ) {
-                  console.log(source)
+
                   this.getAPIDataset(source.dataStreamId,'point%2Fvalue%2FfloatPoint').subscribe(data => {
                     if (data.point !== undefined) {
                       var measure : Observations[] = []
@@ -281,7 +281,6 @@ export class GoogleFitService {
     if (tolkien !== undefined && tolkien !== '') {
 
       const token: any = JSON.parse(tolkien);
-      console.log(token)
       const helper = new JwtHelperService();
 
       if (token !== undefined && token !== null ) {
@@ -357,6 +356,16 @@ export class GoogleFitService {
     const milliseconds = token.expires_in * 1000; // 10 seconds = 10000 milliseconds
     timeObject = new Date(timeObject.getTime() + milliseconds);
     token.expires_at = Math.round(timeObject.getTime() / 1000)
+    if (token.refresh_token === undefined) {
+      let tempToken = this.localStore.getData('googleFitToken');
+      if (tempToken !== undefined) {
+        let jsonToken = JSON.parse(tempToken)
+        if (jsonToken.refresh_token !== undefined) {
+          console.log('Stored previous refrehs token')
+          token.refresh_token = jsonToken.refresh_token
+        }
+      }
+    }
     console.log('new GoogleFit accessToken')
     console.log(token)
     this.localStore.saveData('googleFitToken', JSON.stringify(token));
