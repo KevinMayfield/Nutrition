@@ -118,7 +118,7 @@ export class PersonComponent implements OnInit {
   getStrava(){
     // token changed so clear results
     this.strava.getAthlete().subscribe(athlete => {
-      if (athlete.weight !== undefined) this.weight = athlete.weight
+     // if (athlete.weight !== undefined) this.weight = athlete.weight
       this.epr.setPerson(athlete)
     })
   }

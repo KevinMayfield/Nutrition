@@ -427,14 +427,14 @@ export class ActivityComponent implements OnInit{
             }
         )
         this.withings.bodyMeasures.subscribe(measures => {
-            console.log('withings body measures rx')
+            // DEBUG console.log('withings body measures rx')
             let temp: Observations[] = []
             this.bodyMeasures.forEach((entry: Observations) => temp.push(entry))
             measures.forEach((entry: Observations) => temp.push(entry))
             this.bodyMeasures = temp
         })
         this.googleFit.bodyMeasures.subscribe(measures => {
-            console.log('googleFit body measures rx')
+            // DEBUG console.log('googleFit body measures rx')
             let temp: Observations[] = []
             this.bodyMeasures.forEach((entry: Observations) => temp.push(entry))
             measures.forEach((entry: Observations) => temp.push(entry))

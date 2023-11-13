@@ -4,6 +4,7 @@ import {SummaryActivity} from "../models/summary-activity";
 import {Zones} from "../models/stream";
 import {Sex} from "../models/sex";
 import {LocalService} from "./local.service";
+import {StravaService} from "./strava.service";
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,8 @@ export class EPRService {
 
   zoneChange: EventEmitter<hrZone> = new EventEmitter();
 
-  constructor(private localStore: LocalService) {
+  constructor(private localStore: LocalService,
+              private strava: StravaService) {
    var person = localStore.getData('activityPerson')
    if (person !== null && person !== undefined && person !== '') this.person = JSON.parse(person)
   }
@@ -103,8 +105,12 @@ export class EPRService {
   }
 
   setHeight(height: number) {
-    this.person.height = height
-    this.setPerson(this.person)
+
+    if (this.person.height === undefined || this.person.height !== height) {
+      console.log('Set Height: '+height)
+      this.person.height = height
+      this.setPerson(this.person)
+    }
   }
   setWaist(waist: number) {
     this.person.waist = waist
@@ -115,8 +121,14 @@ export class EPRService {
     this.setPerson(this.person)
   }
   setWeight(weight: number) {
-    this.person.weight = weight
-    this.setPerson(this.person)
+    if (this.person.weight === undefined || this.person.weight !== weight) {
+      console.log('Set Weight: ' + weight)
+      this.person.weight = weight
+      this.setPerson(this.person)
+      this.strava.updateWeight(weight).subscribe(result => {
+        console.log(result)
+      })
+    }
   }
   perKgKCal(number: number): number | undefined {
     if (this.person.weight === undefined) return undefined
@@ -428,6 +440,15 @@ getHRZone() {
     } else {
       return '#7aa3e5'
     }
+  }
+  getOK() {
+    return {'background':'lightgreen'};
+  }
+  getWarning() {
+    return {'background':'lightsalmon'};
+  }
+  getInfo() {
+    return {'background':'lightblue'};
   }
 
 

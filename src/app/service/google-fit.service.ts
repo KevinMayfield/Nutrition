@@ -6,6 +6,7 @@ import {JwtHelperService} from "@auth0/angular-jwt";
 import {StravaService} from "./strava.service";
 import {Observations} from "../models/observations";
 import {MeasurementSetting} from "../models/enums/MeasurementSetting";
+import {EPRService} from "./epr.service";
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class GoogleFitService {
   private refreshingToken = false;
   constructor(private http: HttpClient,
               private strava: StravaService,
+              private epr: EPRService,
               private localStore: LocalService) { }
 
   public getDataSources() {
@@ -37,6 +39,49 @@ export class GoogleFitService {
           if (source.dataType !== undefined) {
             if (source.dataType.name !== undefined) {
               let systemUri = source.dataType.name
+              if (systemUri === 'com.google.height') {
+                this.getAPIDataset(source.dataStreamId).subscribe(data => {
+                  if (data.point !== undefined) {
+                    var measure: Observations[] = []
+                    data.point.forEach((point: any) => {
+                      if (point.startTimeNanos !== undefined) {
+                        let obsDate = new Date(point.startTimeNanos / 1000000);
+                        measure.push({
+                          measurementSetting: MeasurementSetting.home,
+                          day: obsDate,
+                          height: point.value[0].fpVal
+                        })
+                        this.epr.setHeight(Math.round(point.value[0].fpVal * 100))
+                      }
+                    })
+                    this.bodyMeasures.emit(measure)
+                  }
+                })
+              } else
+              if (systemUri === 'com.google.weight' && source.dataStreamId === 'derived:com.google.weight:com.google.android.gms:merge_weight') {
+                this.getAPIDataset(source.dataStreamId).subscribe(data => {
+                  if (data.point !== undefined) {
+                    var measure: Observations[] = []
+                    data.point.forEach((point: any) => {
+                      if (point.startTimeNanos !== undefined) {
+                        let obsDate = new Date(point.startTimeNanos / 1000000);
+                        measure.push({
+                          measurementSetting: MeasurementSetting.home,
+                          day: obsDate,
+                          weight: point.value[0].fpVal
+                        })
+                      }
+                    })
+                    if (measure.length > 0) {
+                      var sum = 0
+                      measure.forEach(obs=>{
+                        if (obs.weight !== undefined) sum += obs.weight
+                      })
+                      this.epr.setWeight(Math.round(10 *sum/measure.length)/10)
+                    }
+                  }
+                })
+              } else
               if (systemUri === 'com.google.oxygen_saturation') {
 
                 if (source.dataStreamId !== undefined
@@ -61,7 +106,7 @@ export class GoogleFitService {
                     }
                   })
                 }
-              }
+              } else
               if (systemUri === 'com.google.blood_glucose') {
                 if (source.dataStreamId !== undefined && source.dataStreamId.startsWith('raw:') ) {
 
@@ -83,6 +128,8 @@ export class GoogleFitService {
                     }
                   })
                 }
+              } else {
+              // DEBUG  console.log(systemUri)
               }
             }
           }
@@ -184,7 +231,7 @@ export class GoogleFitService {
     })
   }
 
-  getAPIDataset(dataSourceId : string, fields : string) {
+  getAPIDataset(dataSourceId : string, fields? : string) {
     const headers = this.getAPIHeaders();
     const startTimeNano = this.strava.getFromDate().getTime() * 1000000
     const endTimeNano = this.strava.getToDate().getTime() * 1000000

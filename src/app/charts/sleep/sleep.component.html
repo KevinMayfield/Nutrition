@@ -9,16 +9,16 @@
                 <mat-panel-description>
                      <span *ngIf="referenceLines.length > 1">
                          <span *ngIf="(round(getLast(seriesHRV)) - referenceLines[1].value) < epr.hrvWarnLow">
-                            <button mat-flat-button [ngStyle]="{'background':'lightsalmon'}">Low HRV</button>
+                            <button mat-flat-button [ngStyle]="getWarning()">Low HRV</button>
                          </span>
                           <span *ngIf="(round(getLast(seriesHRV)) - referenceLines[1].value) > epr.hrvRested">
-                            <button mat-flat-button color="primary">Rested (HRV)</button>
+                            <button mat-flat-button [ngStyle]="getOK()">Rested (HRV)</button>
                          </span>
                          <span *ngIf="(round(getLast(seriesHR)) - referenceLines[0].value) > epr.hrWarnHigh">
-                            <button mat-flat-button color="accent">High HR</button>
+                            <button mat-flat-button [ngStyle]="getWarning()">High HR</button>
                          </span>
                           <span *ngIf="(round(getLast(seriesHR)) - referenceLines[0].value) < epr.hrRested">
-                            <button mat-flat-button color="primary">Rested (HR)</button>
+                            <button mat-flat-button [ngStyle]="getOK()">Rested (HR)</button>
                          </span>
                          Average Heart Rate {{referenceLines[0].value}} Average HRV {{referenceLines[1].value}}
                      </span>

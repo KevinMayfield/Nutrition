@@ -69,6 +69,12 @@ export class StravaService {
   public getAthlete(): Observable<Person> {
     return this.http.get<Person>(this.url + 'athlete', {headers: this.getHeaders()});
   }
+  public updateWeight(weight: number): Observable<any> {
+    const body = {
+      weight: weight
+    }
+    return this.http.put<Person>(this.url + 'athlete', body, {headers: this.getHeaders()});
+  }
 
   public setAthlete(athlete: Person): void {
     this.athlete = athlete;
@@ -172,7 +178,7 @@ export class StravaService {
 
   public authorise(routeUrl: string): void {
     window.location.href = 'http://www.strava.com/oauth/authorize?client_id=' + environment.stravaClientId +
-        '&response_type=code&redirect_uri=' + routeUrl + '&approval_prompt=force&scope=read,activity:read_all,profile:read_all';
+        '&response_type=code&redirect_uri=' + routeUrl + '&approval_prompt=force&scope=read,activity:read_all,profile:read_all,profile:write';
   }
 
   setAccessToken(token: { access_token: undefined; }): void {

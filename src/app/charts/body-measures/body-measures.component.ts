@@ -1,9 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {Observations} from "../../models/observations";
-import {BoxChartMultiSeries, BoxChartSeries, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
-import {curveBasis, curveCatmullRom} from 'd3-shape';
+import {Color, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
+import { curveCatmullRom} from 'd3-shape';
 import {EPRService} from "../../service/epr.service";
-import {StravaService} from "../../service/strava.service";
 
 @Component({
   selector: 'app-body-measures',
@@ -19,9 +18,10 @@ export class BodyMeasuresComponent {
   fats: any[] | undefined
   bone: any[] | undefined
   hydration: any[] | undefined
+  steps: any[] = [];
   bpSeries : any;
   @Input() set observations(measure: Observations[]) {
-    console.log('No. of measures = ' + measure.length)
+   // DEBUG  console.log('No. of measures = ' + measure.length)
     this.measures = measure
     this.refreshActivity()
   }
@@ -33,6 +33,11 @@ export class BodyMeasuresComponent {
     domain: [ '#7aa3e5','#5AA454','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
     , group: ScaleType.Ordinal, name: "", selectable: false
   };
+  colorNeutral: Color = {
+    domain: [
+      '#7aa3e5'
+    ], group: ScaleType.Ordinal, name: "", selectable: false
+  }
   weightMin= 99999;
   weightMax= 0;
   muscleMin= 99999;
@@ -76,6 +81,8 @@ export class BodyMeasuresComponent {
     this.bpSeries = []
     this.spo2 = []
     this.hba1c = []
+    this.steps = []
+    var steps: any=[]
     var hb1ac: any[] = [
       {
         name: 'Blood Glucose',
@@ -159,6 +166,7 @@ export class BodyMeasuresComponent {
         }
         fats[0].series.push(weight)
       }
+
       if (observations.bone_mass !== undefined) {
         if (observations.bone_mass < this.boneMin) this.boneMin = observations.bone_mass
         if (observations.bone_mass > this.boneMax) this.boneMax = observations.bone_mass
@@ -222,6 +230,13 @@ export class BodyMeasuresComponent {
           })
         }
       }
+      if (observations.steps !== undefined) {
+        let ent = {
+          name: observations.day,
+          value: observations.steps
+        }
+        steps.push(ent)
+      }
     })
     this.muscle = muscle
     this.hydration = hydration
@@ -231,6 +246,7 @@ export class BodyMeasuresComponent {
     this.bpSeries = bp
     this.spo2 = spo2
     this.hba1c = hb1ac
+    this.steps = steps
 
     var sum = 0
     let referenceLines = []
@@ -358,5 +374,15 @@ export class BodyMeasuresComponent {
 
       var result = entry.name.toLocaleString()
       return result
+  }
+
+  getOK() {
+    return this.epr.getOK()
+  }
+  getWarning() {
+    return this.epr.getWarning()
+  }
+  getInfo() {
+    return this.epr.getInfo()
   }
 }

@@ -190,4 +190,15 @@ export class SleepComponent {
     round(value : number) {
         return Math.round(value )
     }
+
+    getOK() {
+        return this.epr.getOK()
+    }
+    getWarning() {
+        return this.epr.getWarning()
+    }
+    getInfo() {
+        return this.epr.getInfo()
+    }
+
 }
