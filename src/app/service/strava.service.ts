@@ -6,6 +6,7 @@ import {Person} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
 import {ActivityType} from "../models/activity-type";
 import {LocalService} from "./local.service";
+import {EPRService} from "./epr.service";
 
 
 
@@ -18,19 +19,16 @@ export class StravaService {
   private accessToken = undefined;
   private refreshingToken = false;
   tokenChange: EventEmitter<any> = new EventEmitter();
-  endWeekChanged: EventEmitter<any> = new EventEmitter();
+
   private athlete?: Person = undefined;
   athleteChange: EventEmitter<any> = new EventEmitter();
   activityMap = new Map();
-  private from: Date | undefined;
-  private to: Date | undefined;
-  public duration = 14; // keep low while developing to avoid hitting rate limits
 
   loaded: EventEmitter<SummaryActivity> = new EventEmitter();
   activity: EventEmitter<SummaryActivity> = new EventEmitter();
-  constructor(private http: HttpClient, private localStore: LocalService) {
+  constructor(private http: HttpClient, private localStore: LocalService, private epr : EPRService) {
 
-   this.setToDate(new Date());
+
 
    this.activity.subscribe(activity => {
         this.getActivity(activity.id).subscribe(result => {
@@ -50,12 +48,7 @@ export class StravaService {
     })
   }
 
-  setToDate(date : Date) {
-    this.to = date;
-    this.from = new Date(this.to.toISOString());
-    this.from.setDate(this.from.getDate() - this.duration);
-    this.endWeekChanged.emit(this.to)
-  }
+
 
   getHeaders(): HttpHeaders {
 
@@ -97,20 +90,6 @@ export class StravaService {
  Load Activity
 
   */
-  getFromDate(): Date {
-    return <Date>this.from;
-  }
-
-  getToDate(): Date {
-    // @ts-ignore
-    return new Date(this.to.toISOString());
-  }
-
-  getNextToDay(): Date {
-    var temp = new Date(this.getToDate().toISOString());
-    temp.setDate(temp.getDate() + 1);
-    return temp;
-  }
 
   getActivities(page?: number | undefined): void {
     if (page === undefined) {
@@ -154,8 +133,8 @@ export class StravaService {
   public getStravaActivities(page?: string | number | undefined): Observable<any> {
     let uri = this.url + 'athlete/activities';
 
-    uri = uri + '?before=' + Math.floor(this.getToDate().getTime() / 1000)
-        + '&after=' + Math.floor(this.getFromDate().getTime() / 1000)
+    uri = uri + '?before=' + Math.floor(this.epr.getToDate().getTime() / 1000)
+        + '&after=' + Math.floor(this.epr.getFromDate().getTime() / 1000)
         + '&per_page=30';
 
     if (page !== undefined) {

@@ -43,14 +43,15 @@
                     <mat-grid-list cols="2" rowHeight="2:1">
                       <mat-grid-tile>
                           <span class="bigger">{{exerciseFrequency?.display}}</span>
-                           <ngx-charts-advanced-pie-chart
+                           <app-pie-chart-plus
                                    [view]="viewEnergyPie"
                                    [scheme]="colorScheme"
-                                   label="Daily Calorie Needs (kcal)"
+                                   [columns]="3"
+                                   label="Daily Calorie Needs)"
+                                   unit="kcal"
                                    [results]="energy"
-                                   (window:resize)="onResize($event)"
                            >
-                                     </ngx-charts-advanced-pie-chart>
+                           </app-pie-chart-plus>
                       </mat-grid-tile>
                         <mat-grid-tile layout-align="centre ">
                             <span class="bigger">{{exerciseIntense?.display}}</span>
@@ -85,15 +86,14 @@
                                Average {{round(totalPie(pie.series)/getDays(pie.name))}} kcal per day
                             </mat-panel-description>
                         </mat-expansion-panel-header>
-                             <ngx-charts-advanced-pie-chart
+                             <app-pie-chart-plus
                                      [view]="[containerRef.offsetWidth, 200]"
+                                     [columns]="5"
                                      [scheme]="colorStacked"
-                                     label="Exercise energy (kcal) - Heart Rate Zone (Average for Activity)"
-                                     [results]="pie.series"
-                                     [gradient]="gradient"
-                                     [animations]="false"
-                             >
-                                </ngx-charts-advanced-pie-chart>
+                                     label="Exercise energy - Heart Rate Zone (Average for Activity)"
+                                     unit="kcal"
+                                     [results]="pie.series">
+                                </app-pie-chart-plus>
                     </mat-expansion-panel>
                 </mat-accordion>
             </span>
@@ -139,15 +139,15 @@
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                            <span *ngIf="pie.hr !== undefined">
-                                     <ngx-charts-advanced-pie-chart
+                                     <app-pie-chart-plus
                                              [view]="[containerRef.offsetWidth, 200]"
+                                             [columns]="5"
                                              [scheme]="colorStacked"
-                                             label="Exercise duration (min) - Heart Rate Zone"
+                                             label="Exercise duration - Heart Rate Zone"
+                                             unit="min"
                                              [results]="pie.hr"
-                                             [gradient]="gradient"
-                                             [animations]="false"
                                      >
-                                    </ngx-charts-advanced-pie-chart>
+                                    </app-pie-chart-plus>
                                 </span>
                     </mat-expansion-panel>
                 </mat-accordion>
@@ -261,15 +261,15 @@
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                            <span *ngIf="pie.pwr !== undefined">
-                                   <ngx-charts-advanced-pie-chart
+                                   <app-pie-chart-plus
                                            [view]="[containerRef.offsetWidth, 200]"
+                                           [columns]="7"
                                            [scheme]="colorFTP"
                                            label="Exercise duration (min) - Power Zone"
+                                           unit="min"
                                            [results]="pie.pwr"
-                                           [gradient]="gradient"
-                                           [animations]="false"
                                    >
-                            </ngx-charts-advanced-pie-chart>
+                            </app-pie-chart-plus>
                                 </span>
                     </mat-expansion-panel>
                 </mat-accordion>

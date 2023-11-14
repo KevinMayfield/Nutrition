@@ -8,6 +8,7 @@ import {NutritionComponent} from "../nutrition/nutrition.component";
 import {BMIComponent} from "../bmi/bmi.component";
 import {MatDatepickerInputEvent} from "@angular/material/datepicker";
 import {StravaService} from "../service/strava.service";
+import {EPRService} from "../service/epr.service";
 
 @Component({
   selector: 'app-main-menu',
@@ -18,7 +19,7 @@ export class MainMenuComponent implements OnInit{
     pageName = 'Wellness'
     endDate: Date = new Date();
   constructor(private route: ActivatedRoute,
-                private strava: StravaService,
+                private epr: EPRService,
               private smart: SmartService) { }
   ngOnInit(): void {
       this.getEndDate()
@@ -63,7 +64,7 @@ export class MainMenuComponent implements OnInit{
             console.log(this.endDate)
             this.endDate.setDate(this.endDate.getDate() +1);
         }*/
-        this.strava.setToDate(this.endDate)
+        this.epr.setToDate(this.endDate)
     }
     getEndDate() {
         this.endDate = new Date();
@@ -71,6 +72,6 @@ export class MainMenuComponent implements OnInit{
         while (this.endDate.getDay() !=6) {
             this.endDate.setDate(this.endDate.getDate() +1);
         }*/
-        this.strava.setToDate(this.endDate)
+        this.epr.setToDate(this.endDate)
     }
 }

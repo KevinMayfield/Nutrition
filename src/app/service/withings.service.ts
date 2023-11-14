@@ -2,12 +2,11 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
-import {JwtHelperService} from '@auth0/angular-jwt';
 import {DatePipe} from '@angular/common';
-import {StravaService} from "./strava.service";
 import {Observations} from "../models/observations";
 import {MeasurementSetting} from "../models/enums/MeasurementSetting";
 import {LocalService} from "./local.service";
+import {EPRService} from "./epr.service";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +21,7 @@ export class WithingsService {
   private redirect: string | undefined;
   constructor(private http: HttpClient,
               private localStore: LocalService,
-              private strava: StravaService,
+            private epr: EPRService,
               private datePipe: DatePipe) { }
 
 
@@ -146,7 +145,7 @@ export class WithingsService {
           } else {
             for (const sleep of sleepData.body.series) {
               this.getAPISleepGet(sleep.startdate, sleep.enddate).subscribe(sleepDetail => {
-                const enddate = new Date(sleep.enddate * 1000);
+
                 const startdate = new Date(sleep.startdate * 1000);
                 let count = 0;
                 let hrvSum = 0;
@@ -218,8 +217,8 @@ export class WithingsService {
     const bodge = 'action=getmeas'
         + '&meastypes=1,5,8,9,10,11,12,54,71,73,77,76,88,91,123,135,136,137,138,139'
         + '&category=1'
-        + '&startdate=' + Math.floor(this.strava.getFromDate().getTime() / 1000)
-        + '&enddate=' + Math.floor(this.strava.getNextToDay().getTime() / 1000);
+        + '&startdate=' + Math.floor(this.epr.getFromDate().getTime() / 1000)
+        + '&enddate=' + Math.floor(this.epr.getNextToDay().getTime() / 1000);
     // + '&lastupdate='+Math.floor(lastUpdate.getTime()/1000);
 
     return this.http.post<any>(this.url + '/measure', bodge, { headers} );
@@ -231,8 +230,8 @@ export class WithingsService {
 
     const bodge = 'action=getintradayactivity'
         + '&datafields=steps,spo2_auto'
-        + '&startdate=' + Math.floor(this.strava.getFromDate().getTime() / 1000)
-        + '&enddate=' + Math.floor(this.strava.getNextToDay().getTime() / 1000);
+        + '&startdate=' + Math.floor(this.epr.getFromDate().getTime() / 1000)
+        + '&enddate=' + Math.floor(this.epr.getNextToDay().getTime() / 1000);
 
     return this.http.post<any>(this.url + '/measure', bodge, { headers} );
 
@@ -246,8 +245,8 @@ export class WithingsService {
     // https://developer.withings.com/api-reference/#tag/sleep/operation/sleepv2-getsummary
 
     const bodge = 'action=getsummary'
-        + '&startdateymd=' + this.datePipe.transform(this.strava.getFromDate(), 'yyyy-MM-dd')
-        + '&enddateymd=' + this.datePipe.transform(this.strava.getNextToDay(), 'yyyy-MM-dd')
+        + '&startdateymd=' + this.datePipe.transform(this.epr.getFromDate(), 'yyyy-MM-dd')
+        + '&enddateymd=' + this.datePipe.transform(this.epr.getNextToDay(), 'yyyy-MM-dd')
         + '&data_fields=breathing_disturbances_intensity,deepsleepduration,lightsleepduration'
         + ',wakeupcount,durationtosleep,sleep_score,remsleepduration'
         + ',snoring,rr_average,hr_average,hr_min,apnea_hypopnea_index';
@@ -287,7 +286,6 @@ export class WithingsService {
 
       const token: any = JSON.parse(tolkien);
 
-      const helper = new JwtHelperService();
 
       if (token !== undefined && token !== null && token.body !== undefined) {
         if (this.isTokenExpired(token)) {
@@ -466,9 +464,6 @@ export class WithingsService {
     this.tokenChange.emit(token);
   }
 
-  private delay(ms: number): Promise<any> {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-  }
 
 
 

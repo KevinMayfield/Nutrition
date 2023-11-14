@@ -185,20 +185,20 @@ export class SummaryGraphComponent implements OnChanges {
      */
   }
   dayOfWeek(number: number) {
-    var now = this.strava.getToDate();
-    var from = this.strava.getToDate();
-    from.setDate(now.getDate() - this.strava.duration + number );
+    var now = this.epr.getToDate();
+    var from = this.epr.getToDate();
+    from.setDate(now.getDate() - this.epr.duration + number );
     var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     return days[ from.getDay() ];
   }
   date(number: number) {
-    var now = this.strava.getToDate();
-    var from = this.strava.getToDate();
-    from.setDate(now.getDate() - this.strava.duration + number );
+    var now = this.epr.getToDate();
+    var from = this.epr.getToDate();
+    from.setDate(now.getDate() - this.epr.duration + number );
     return from.toISOString().split('T')[0];
   }
   duration(time: number ) {
-    return this.epr.duration(time)
+    return this.epr.durationString(time)
   }
   pizza(kcal: number | undefined) {
     return this.epr.pizza(kcal)

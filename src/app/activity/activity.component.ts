@@ -201,9 +201,9 @@ export class ActivityComponent implements OnInit{
     }
 
     ngOnInit(): void {
-        this.strava.endWeekChanged.subscribe(()=>{
+        this.epr.endWeekChanged.subscribe(()=>{
             this.bodyMeasures = []
-            this.endDate = this.strava.getToDate()
+            this.endDate = this.epr.getToDate()
             this.getStrava()
             this.getWithings()
         })
@@ -271,12 +271,12 @@ export class ActivityComponent implements OnInit{
 
         this.strava.loaded.subscribe(activity => {
 
-            var today = this.epr.getDateAbs(this.strava.getToDate())
+            var today = this.epr.getDateAbs(this.epr.getToDate())
             var activityDate = new Date(activity.start_date)
             var diffDays = (today) - this.epr.getDateAbs(activityDate);
-            let bank = this.activityArray[this.strava.duration - diffDays]
+            let bank = this.activityArray[this.epr.duration - diffDays]
             if (bank == undefined) {
-                console.log(this.strava.getToDate() + ' ' + diffDays + activity.start_date)
+                console.log(this.epr.getToDate() + ' ' + diffDays + activity.start_date)
             } else {
                 if (activity.kcal !== undefined) {
                     activity.zones = this.epr.getZonesAndCalculateScores(activity)
@@ -312,7 +312,7 @@ export class ActivityComponent implements OnInit{
                      */
                     if (activity.type !== undefined) session.type = activity.type
                     act.sessions.push(session)
-                    this.activityArray[this.strava.duration - diffDays] = act
+                    this.activityArray[this.epr.duration - diffDays] = act
                     this.exerciseLevel = 0
                     this.exerciseDurationTotal = 0
                     for (let activity of this.activityArray) {
@@ -441,11 +441,11 @@ export class ActivityComponent implements OnInit{
             this.bodyMeasures = temp
         })
         this.withings.sleepMeasures.subscribe(measure => {
-            var today = this.strava.getToDate()
+            var today = this.epr.getToDate()
             var activityDate = measure.day
             if (activityDate !== undefined) {
                 var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
-                let bank = this.sleepMeasures[this.strava.duration - diffDays]
+                let bank = this.sleepMeasures[this.epr.duration - diffDays]
                 if (bank !== undefined) {
                     // TODO Possible issue here with only going for best individual sleep results. It will ignore short naps.
                     if (bank.sleepScore === undefined || (measure.sleepScore !== undefined && bank.sleepScore < measure.sleepScore)) {
@@ -672,7 +672,7 @@ export class ActivityComponent implements OnInit{
         if (this.withings.getAccessToken() !== undefined) {
 
             let measures =[]
-            for (var i = 0; i < this.strava.duration; i++) measures.push({day: this.date(i),
+            for (var i = 0; i < this.epr.duration; i++) measures.push({day: this.date(i),
                 measurementSetting: MeasurementSetting.home})
             this.sleepMeasures = measures
             this.withings.getSleep()
@@ -695,7 +695,7 @@ export class ActivityComponent implements OnInit{
             let activityArray = []
             this.activities = []
             this.powerActivities = [];
-            for (var i = 0; i <= this.strava.duration; i++) activityArray.push({duration: 0, kcal: 0, sessions: []})
+            for (var i = 0; i <= this.epr.duration; i++) activityArray.push({duration: 0, kcal: 0, sessions: []})
             this.activityArray = activityArray
             this.strava.getAthlete().subscribe(athlete => {
                 if (athlete.weight !== undefined) this.weight = athlete.weight
@@ -717,7 +717,7 @@ export class ActivityComponent implements OnInit{
         }
 
         if (this.exerciseLevel > 0) {
-            let level = Math.round(this.exerciseLevel * 7 / (this.strava.duration+1))
+            let level = Math.round(this.exerciseLevel * 7 / (this.epr.duration+1))
             let duration = this.exerciseDurationTotal / this.exerciseLevel / 60
 
             for(let pal of this.exerciseFrequencies) {
@@ -805,9 +805,9 @@ export class ActivityComponent implements OnInit{
 
 
     dayOfWeek(number: number) {
-        var now = this.strava.getToDate();
-        var from = this.strava.getToDate();
-        from.setDate(now.getDate() - this.strava.duration + number );
+        var now = this.epr.getToDate();
+        var from = this.epr.getToDate();
+        from.setDate(now.getDate() - this.epr.duration + number );
         var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
         return days[ from.getDay() ];
     }
@@ -873,7 +873,7 @@ export class ActivityComponent implements OnInit{
         while (this.endDate.getDay() !=6) {
             this.endDate.setDate(this.endDate.getDate() +1);
         }
-        this.strava.setToDate(this.endDate)
+        this.epr.setToDate(this.endDate)
         this.getStrava()
         this.getWithings()
     }
@@ -883,7 +883,7 @@ export class ActivityComponent implements OnInit{
         console.log(this.selectedTabIndex)
     }
     duration(time: number ) {
-        return this.epr.duration(time)
+        return this.epr.durationString(time)
     }
 
     onClick() {
@@ -931,9 +931,9 @@ export class ActivityComponent implements OnInit{
         }
     }
     date(number: number) {
-        var now = this.strava.getToDate();
-        var from = this.strava.getToDate();
-        from.setDate(now.getDate() - this.strava.duration + number );
+        var now = this.epr.getToDate();
+        var from = this.epr.getToDate();
+        from.setDate(now.getDate() - this.epr.duration + number );
         return from;
     }
     /* PIE Chart data */
@@ -1102,7 +1102,7 @@ export class ActivityComponent implements OnInit{
         return this.epr.getWeekNumber(d);
     }
     getSundayFromWeekNum(weekNum : number) {
-        var sunday = new Date(this.strava.getToDate().getFullYear(), 0, (1 + (weekNum - 1) * 7));
+        var sunday = new Date(this.epr.getToDate().getFullYear(), 0, (1 + (weekNum - 1) * 7));
         while (sunday.getDay() !== 0) {
             sunday.setDate(sunday.getDate() + 1);
         }
@@ -1346,9 +1346,9 @@ export class ActivityComponent implements OnInit{
             let dayOfWeek = (new Date()).getDay()
             return dayOfWeek + 1
         }
-        let startWeek = this.getWeekNumber(this.strava.getFromDate())
+        let startWeek = this.getWeekNumber(this.epr.getFromDate())
         if (startWeek === week) {
-            let days = 7-this.strava.getFromDate().getDay()
+            let days = 7-this.epr.getFromDate().getDay()
             return days
         }
         return 7;

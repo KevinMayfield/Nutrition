@@ -11,6 +11,12 @@ import {StravaService} from "./strava.service";
 })
 export class EPRService {
 
+  private from: Date | undefined;
+  private to: Date | undefined;
+  private baseDuration = 14; // keep low while developing to avoid hitting rate limits
+  public duration = this.baseDuration
+  endWeekChanged: EventEmitter<any> = new EventEmitter();
+
   person: Person = {
 
   };
@@ -33,10 +39,32 @@ export class EPRService {
 
   zoneChange: EventEmitter<hrZone> = new EventEmitter();
 
-  constructor(private localStore: LocalService,
-              private strava: StravaService) {
+  constructor(private localStore: LocalService) {
+    this.setToDate(new Date());
    var person = localStore.getData('activityPerson')
    if (person !== null && person !== undefined && person !== '') this.person = JSON.parse(person)
+  }
+
+  setToDate(date : Date) {
+    this.to = date;
+    this.from = new Date(this.to.toISOString());
+    this.from.setDate(this.from.getDate() - this.baseDuration);
+
+    this.endWeekChanged.emit(this.to)
+  }
+  getFromDate(): Date {
+    return <Date>this.from;
+  }
+
+  getToDate(): Date {
+    // @ts-ignore
+    return new Date(this.to.toISOString());
+  }
+
+  getNextToDay(): Date {
+    var temp = new Date(this.getToDate().toISOString());
+    temp.setDate(temp.getDate() + 1);
+    return temp;
   }
 
   setPerson(athlete: Person) {
@@ -125,9 +153,6 @@ export class EPRService {
       console.log('Set Weight: ' + weight)
       this.person.weight = weight
       this.setPerson(this.person)
-      this.strava.updateWeight(weight).subscribe(result => {
-        console.log(result)
-      })
     }
   }
   perKgKCal(number: number): number | undefined {
@@ -181,7 +206,7 @@ export class EPRService {
     }
     return colours[0]
   }
-  duration(value: number) {
+  durationString(value: number) {
     let min = Math.round(value%60)
     let hr = Math.floor(value /60)
     if (hr> 0) return hr + ' hr '+ min + ' min';

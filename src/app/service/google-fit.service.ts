@@ -2,11 +2,10 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {LocalService} from "./local.service";
-import {JwtHelperService} from "@auth0/angular-jwt";
-import {StravaService} from "./strava.service";
 import {Observations} from "../models/observations";
 import {MeasurementSetting} from "../models/enums/MeasurementSetting";
 import {EPRService} from "./epr.service";
+import {StravaService} from "./strava.service";
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +17,8 @@ export class GoogleFitService {
   bodyMeasures: EventEmitter<Observations[]> = new EventEmitter();
   private refreshingToken = false;
   constructor(private http: HttpClient,
-              private strava: StravaService,
               private epr: EPRService,
+              private strava: StravaService,
               private localStore: LocalService) { }
 
   public getDataSources() {
@@ -77,7 +76,13 @@ export class GoogleFitService {
                       measure.forEach(obs=>{
                         if (obs.weight !== undefined) sum += obs.weight
                       })
-                      this.epr.setWeight(Math.round(10 *sum/measure.length)/10)
+                      const weight = Math.round(10 *sum/measure.length)/10
+                      if (this.epr.person.weight === undefined || this.epr.person.weight !== weight) {
+                        this.epr.setWeight(weight)
+                        this.strava.updateWeight(weight).subscribe(result => {
+                          console.log(result)
+                        })
+                      }
                     }
                   }
                 })
@@ -87,7 +92,7 @@ export class GoogleFitService {
                 if (source.dataStreamId !== undefined
                 //    && source.dataStreamId.startsWith('raw:')
                 ) {
-                  this.getAPIDataset(source.dataStreamId,'oxygen_saturation%2Fvalue%2FfpVal').subscribe(data => {
+                  this.getAPIDataset(source.dataStreamId).subscribe(data => {
                     if (data.point !== undefined) {
                       var measure: Observations[] = []
                       data.point.forEach((point: any) => {
@@ -110,7 +115,7 @@ export class GoogleFitService {
               if (systemUri === 'com.google.blood_glucose') {
                 if (source.dataStreamId !== undefined && source.dataStreamId.startsWith('raw:') ) {
 
-                  this.getAPIDataset(source.dataStreamId,'point%2Fvalue%2FfloatPoint').subscribe(data => {
+                  this.getAPIDataset(source.dataStreamId).subscribe(data => {
                     if (data.point !== undefined) {
                       var measure : Observations[] = []
                       data.point.forEach((point: any) => {
@@ -231,10 +236,10 @@ export class GoogleFitService {
     })
   }
 
-  getAPIDataset(dataSourceId : string, fields? : string) {
+  getAPIDataset(dataSourceId : string) {
     const headers = this.getAPIHeaders();
-    const startTimeNano = this.strava.getFromDate().getTime() * 1000000
-    const endTimeNano = this.strava.getToDate().getTime() * 1000000
+    const startTimeNano = this.epr.getFromDate().getTime() * 1000000
+    const endTimeNano = this.epr.getToDate().getTime() * 1000000
     const url = 'https://www.googleapis.com/fitness/v1/users/me/dataSources/'+dataSourceId+'/datasets/'
         +startTimeNano + '-' + endTimeNano
        // +'?fields=point%2Fvalue%2FfpVal'
@@ -250,8 +255,8 @@ export class GoogleFitService {
           "dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
         }],
         "bucketByTime": { "durationMillis": 86400000 },
-        "startTimeMillis": this.strava.getFromDate().getTime(),
-        "endTimeMillis": this.strava.getToDate().getTime()
+        "startTimeMillis": this.epr.getFromDate().getTime(),
+        "endTimeMillis": this.epr.getToDate().getTime()
       }
     return this.http.post<any>(url , body, { headers} );
   }
@@ -264,8 +269,8 @@ export class GoogleFitService {
         "dataSourceId": "derived:com.google.blood_glucose:com.google.android.gms:merged"
       }],
       "bucketByTime": { "durationMillis": 86400000 },
-      "startTimeMillis": this.strava.getFromDate().getTime(),
-      "endTimeMillis": this.strava.getToDate().getTime()
+      "startTimeMillis": this.epr.getFromDate().getTime(),
+      "endTimeMillis": this.epr.getToDate().getTime()
     }
     return this.http.post<any>(url , body, { headers} );
   }
@@ -278,24 +283,14 @@ export class GoogleFitService {
         "dataSourceId": "derived:com.google.oxygen_saturation:com.google.android.gms:merged"
       }],
       "bucketByTime": { "durationMillis": 86400000 },
-      "startTimeMillis": this.strava.getFromDate().getTime(),
-      "endTimeMillis": this.strava.getToDate().getTime()
+      "startTimeMillis": this.epr.getFromDate().getTime(),
+      "endTimeMillis": this.epr.getToDate().getTime()
     }
     return this.http.post<any>(url , body, { headers} );
   }
   getAPISPO2Raw() {
     const headers = this.getAPIHeaders();
-    console.log(this.strava.getFromDate().getTime())
-    let datasource = {
-      "dataSource": [
-        {
-          "dataStreamId": "raw:com.google.nutrition:com.example.nutritionSource1:"
-        },
-        {
-          "dataStreamId": "raw:com.google.nutrition:com.example.nutritionSource2:"
-        }
-      ]
-    }
+    console.log(this.epr.getFromDate().getTime())
     const url = 'https://www.googleapis.com/fitness/v1/users/me/dataSources?dataTypeName=com.google.oxygen_saturation'
 
     return this.http.get<any>(url ,  { headers} );
@@ -328,7 +323,6 @@ export class GoogleFitService {
     if (tolkien !== undefined && tolkien !== '') {
 
       const token: any = JSON.parse(tolkien);
-      const helper = new JwtHelperService();
 
       if (token !== undefined && token !== null ) {
         if (this.isTokenExpired(token)) {

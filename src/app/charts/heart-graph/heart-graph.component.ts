@@ -79,6 +79,6 @@ export class HeartGraphComponent implements OnInit{
     this.view = [event.target.innerWidth / this.widthQuota, this.view[1]];
   }
   duration(time: number ) {
-    return this.epr.duration(time)
+    return this.epr.durationString(time)
   }
 }

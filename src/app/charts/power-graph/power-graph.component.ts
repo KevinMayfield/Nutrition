@@ -84,6 +84,6 @@ export class PowerGraphComponent implements OnInit{
     }
 
     duration(time: number ) {
-        return this.epr.duration(time)
+        return this.epr.durationString(time)
     }
 }
