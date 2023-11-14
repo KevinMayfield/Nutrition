@@ -45,7 +45,7 @@
                     layout-align="end center"
             >
                 <mat-form-field subscriptSizing="dynamic">
-                    <input matInput [matDatepicker]="picker" [(ngModel)]="endDate" (dateChange)="addEvent('change', $event)">
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="endDate" (dateChange)="addEvent()">
                     <mat-label>Week Ending</mat-label>
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>

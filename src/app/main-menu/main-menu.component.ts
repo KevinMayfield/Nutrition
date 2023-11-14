@@ -1,13 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
 import {ActivityComponent} from "../activity/activity.component";
 import {PersonComponent} from "../person/person.component";
 import {NutritionComponent} from "../nutrition/nutrition.component";
 import {BMIComponent} from "../bmi/bmi.component";
-import {MatDatepickerInputEvent} from "@angular/material/datepicker";
-import {StravaService} from "../service/strava.service";
 import {EPRService} from "../service/epr.service";
 
 @Component({
@@ -22,7 +19,7 @@ export class MainMenuComponent implements OnInit{
                 private epr: EPRService,
               private smart: SmartService) { }
   ngOnInit(): void {
-      this.getEndDate()
+
     this.route.queryParams
         .subscribe(params => {
 
@@ -58,20 +55,7 @@ export class MainMenuComponent implements OnInit{
     }
 
 
-    addEvent(change: string, event: MatDatepickerInputEvent<Date>) {
-      /*
-        while (this.endDate.getDay() !=6) {
-            console.log(this.endDate)
-            this.endDate.setDate(this.endDate.getDate() +1);
-        }*/
-        this.epr.setToDate(this.endDate)
-    }
-    getEndDate() {
-        this.endDate = new Date();
-        /*
-        while (this.endDate.getDay() !=6) {
-            this.endDate.setDate(this.endDate.getDate() +1);
-        }*/
+    addEvent() {
         this.epr.setToDate(this.endDate)
     }
 }

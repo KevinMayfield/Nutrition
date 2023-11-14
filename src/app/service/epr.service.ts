@@ -40,20 +40,23 @@ export class EPRService {
   zoneChange: EventEmitter<hrZone> = new EventEmitter();
 
   constructor(private localStore: LocalService) {
-    this.setToDate(new Date());
+    let tempDate = new Date()
+
+    this.setToDate(tempDate);
    var person = localStore.getData('activityPerson')
    if (person !== null && person !== undefined && person !== '') this.person = JSON.parse(person)
   }
 
   setToDate(date : Date) {
     this.to = date;
+    this.to.setHours(1,0, 0)
     this.from = new Date(this.to.toISOString());
     this.from.setDate(this.from.getDate() - this.baseDuration);
     while (this.from.getDay() !== 0) {
       this.from.setDate(this.from.getDate() - 1);
     }
     var diffDays = this.getDateAbs(this.to) - this.getDateAbs(this.from);
-    console.log(diffDays)
+    console.log(this.to.toISOString() + ' ' + diffDays)
     this.duration = diffDays
     this.endWeekChanged.emit(this.to)
   }
