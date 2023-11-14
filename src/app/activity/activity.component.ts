@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component,  Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Parameters, QuestionnaireResponse, ValueSetExpansionContains} from "fhir/r4";
 import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
@@ -804,13 +804,7 @@ export class ActivityComponent implements OnInit{
     }
 
 
-    dayOfWeek(number: number) {
-        var now = this.epr.getToDate();
-        var from = this.epr.getToDate();
-        from.setDate(now.getDate() - this.epr.duration + number );
-        var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-        return days[ from.getDay() ];
-    }
+
 
     getBackgroundHR(heartrate: number | undefined) {
         return this.epr.getBackgroundHR(heartrate)
@@ -1020,8 +1014,8 @@ export class ActivityComponent implements OnInit{
             this.refreshHRActivity()
 
             for (let wk of this.activitiesWeek) {
-                // @ts-ignore
-                let isoDate = this.getSundayFromWeekNum(wk.week)
+
+                let isoDate = this.epr.getSundayFromWeekNum(wk.week)
                 let iso= isoDate.toLocaleDateString()
 
                 // @ts-ignore
@@ -1101,13 +1095,7 @@ export class ActivityComponent implements OnInit{
     getWeekNumber(d : Date) {
         return this.epr.getWeekNumber(d);
     }
-    getSundayFromWeekNum(weekNum : number) {
-        var sunday = new Date(this.epr.getToDate().getFullYear(), 0, (1 + (weekNum - 1) * 7));
-        while (sunday.getDay() !== 0) {
-            sunday.setDate(sunday.getDate() + 1);
-        }
-        return sunday;
-    }
+
     getZone(activity: SummaryActivity) {
         let zone = this.epr.getHRZone()
         if (zone == undefined) return 0;

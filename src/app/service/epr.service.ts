@@ -49,7 +49,12 @@ export class EPRService {
     this.to = date;
     this.from = new Date(this.to.toISOString());
     this.from.setDate(this.from.getDate() - this.baseDuration);
-
+    while (this.from.getDay() !== 0) {
+      this.from.setDate(this.from.getDate() - 1);
+    }
+    var diffDays = this.getDateAbs(this.to) - this.getDateAbs(this.from);
+    console.log(diffDays)
+    this.duration = diffDays
     this.endWeekChanged.emit(this.to)
   }
   getFromDate(): Date {
@@ -65,6 +70,24 @@ export class EPRService {
     var temp = new Date(this.getToDate().toISOString());
     temp.setDate(temp.getDate() + 1);
     return temp;
+  }
+  dayOfWeek(number: number) {
+    var now = this.getToDate();
+    var from = this.getToDate();
+    from.setDate(now.getDate() - this.duration + number );
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    return days[ from.getDay() ];
+  }
+
+  getSundayFromWeekNum(weekNum: number | undefined) {
+    if (weekNum !== undefined) {
+      var sunday = new Date(this.getToDate().getFullYear(), 0, (1 + (weekNum - 1) * 7));
+      while (sunday.getDay() !== 0) {
+        sunday.setDate(sunday.getDate() + 1);
+      }
+      return sunday;
+    }
+    return this.getToDate()
   }
 
   setPerson(athlete: Person) {
