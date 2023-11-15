@@ -1,8 +1,16 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {Observations} from "../../models/observations";
-import {Color, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
+import {Color, LegendPosition, LineSeriesComponent, ScaleType} from "@swimlane/ngx-charts";
 import { curveCatmullRom} from 'd3-shape';
 import {EPRService} from "../../service/epr.service";
+import {MatSort, Sort} from "@angular/material/sort";
+import {LiveAnnouncer} from "@angular/cdk/a11y";
+import {MatTableDataSource} from "@angular/material/table";
+import {LineChartSeries, LineSeries} from "../../models/graphs";
+import {SummaryActivity} from "../../models/summary-activity";
+
+
+
 
 @Component({
   selector: 'app-body-measures',
@@ -11,19 +19,25 @@ import {EPRService} from "../../service/epr.service";
 })
 export class BodyMeasuresComponent {
   measures :Observations[] = []
-  weights: any[] | undefined
-  muscle: any[] | undefined
-  spo2: any[] | undefined
-  hba1c: any[] | undefined
-  fats: any[] | undefined
-  bone: any[] | undefined
-  hydration: any[] | undefined
-  steps: any[] = [];
+  activity: SummaryActivity[] = []
+
+
+  weights: LineChartSeries[] | undefined
+  muscle: LineChartSeries[] | undefined
+  spo2: LineChartSeries[] | undefined
+  hba1c: LineChartSeries[] | undefined
+  fats: LineChartSeries[] | undefined
+  bone: LineChartSeries[] | undefined
+  hydration: LineChartSeries[] | undefined
+  steps: LineSeries[] = [];
   bpSeries : any;
   @Input() set observations(measure: Observations[]) {
    // DEBUG  console.log('No. of measures = ' + measure.length)
     this.measures = measure
     this.refreshActivity()
+  }
+  @Input() set activities(activity: SummaryActivity[]) {
+    this.activity = activity
   }
 
   showXAxisLabel = false;
@@ -69,7 +83,13 @@ export class BodyMeasuresComponent {
   spo2Min = 9999;
   spo2Max = 0;
 
-  constructor(public epr: EPRService){
+  // Blood glucose table
+  dataSourceHbA1c: any;
+  displayedColumnsHbA1c = ['date', 'time', 'value', 'context']
+  @ViewChild('HbA1cSort') HbA1cSort: MatSort | null | undefined;
+
+  constructor(public epr: EPRService,
+              private _liveAnnouncer: LiveAnnouncer){
     //  this.view = [innerWidth / this.widthQuota, this.view[1]];
   }
   private refreshActivity() {
@@ -82,28 +102,28 @@ export class BodyMeasuresComponent {
     this.spo2 = []
     this.hba1c = []
     this.steps = []
-    var steps: any=[]
-    var hb1ac: any[] = [
+    var steps: LineSeries[]=[]
+    var hb1ac: LineChartSeries[] = [
       {
         name: 'Blood Glucose',
         series: []
       }]
-    var weights: any[] = [
+    var weights: LineChartSeries[] = [
       {
         name: 'Body Weight',
         series: []
       }]
-    var muscle: any[] = [
+    var muscle: LineChartSeries[] = [
       {
         name: 'Muscle Mass',
         series: []
       }]
-    var fats: any[] = [
+    var fats: LineChartSeries[] = [
       {
         name: 'Fat Mass',
         series: []
       }]
-    var hydration: any[] = [
+    var hydration: LineChartSeries[] = [
       {
         name: 'Body Water',
         series: []
@@ -113,7 +133,7 @@ export class BodyMeasuresComponent {
         name: 'Bone Mass',
         series: []
       }]
-    var bp : any[]= [
+    var bp : LineChartSeries[]= [
       {
         name: 'Systole',
         series: []
@@ -123,7 +143,7 @@ export class BodyMeasuresComponent {
         series: []
       }
     ]
-    var spo2 : any[]= [
+    var spo2 : LineChartSeries[]= [
       {
         name: 'Average',
         series: []
@@ -247,6 +267,19 @@ export class BodyMeasuresComponent {
     this.spo2 = spo2
     this.hba1c = hb1ac
     this.steps = steps
+
+    this.dataSourceHbA1c = new MatTableDataSource<any>(this.hba1c[0].series.sort((a, b) => {
+      if (a.name < b.name) {
+        return 1;
+      }
+
+      if (a.name > b.name) {
+        return -1;
+      }
+      return 0;
+    }));
+
+
 
     var sum = 0
     let referenceLines = []
@@ -384,5 +417,35 @@ export class BodyMeasuresComponent {
   }
   getInfo() {
     return this.epr.getInfo()
+  }
+
+  announceSortChange(sortState: Sort) {
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
+    }
+  }
+
+  getContext(measurement : LineSeries) {
+      var result: string | undefined = undefined
+      if (measurement.name instanceof Date) {
+        var contextDate: Date = measurement.name
+        this.activity.forEach(activity => {
+          var activityDate = new Date(activity.start_date)
+          var activityEndDate = new Date(activityDate)
+          activityEndDate.setMinutes(activityDate.getMinutes() + (activity.elapsed_time/60))
+          //console.log(activity.elapsed_time/60)
+          var diff = (activityDate.valueOf() - contextDate.valueOf()) / (1000 *60)
+          if (diff > 0 && diff < 60) {
+            result = 'Pre Exercise'
+          }
+          diff = (activityEndDate.valueOf() - contextDate.valueOf()) / (1000 *60)
+          if (diff < 0 && diff > -60) {
+            result = 'Post Exercise'
+          }
+        })
+      }
+      return result
   }
 }

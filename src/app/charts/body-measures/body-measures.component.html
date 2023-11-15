@@ -29,19 +29,6 @@
     </mat-accordion>
     </span>
     <h3>Vitals</h3>
- <!--   <ngx-charts-box-chart
-            [view]="[panelRef.offsetWidth, 200]"
-            [scheme]="colorSeries"
-            [showXAxisLabel]="showXAxisLabel"
-            [showYAxisLabel]="showYAxisLabel"
-            [xAxis]="true"
-            [yAxis]="true"
-            [legend]="false"
-            xAxisLabel="Date"
-            yAxisLabel="Body Weight"
-            [results]="bpSeries"
-    >
-    </ngx-charts-box-chart> -->
     <mat-accordion *ngIf="bpSeries != undefined && bpSeries[0].series != undefined && bpSeries[0].series.length > 1">
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -149,6 +136,56 @@
             <br/>
             <br/>
             <br/>
+            <mat-expansion-panel [expanded]="false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Blood Glucose Measurements
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+            </mat-expansion-panel>
+            <table mat-table [dataSource]="dataSourceHbA1c" class="mat-elevation-z8"
+                   matSort #HbA1cSort="matSort" (matSortChange)="announceSortChange($event)"
+                   matSortActive="date" matSortDirection="desc" matSortDisableClear>
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 20%;"> Date </th>
+                    <td mat-cell *matCellDef="let measurement">
+                        <div layout="column" layout-align="space-around start">
+                            {{measurement.name | date: 'dd-MMM-yyyy'}}
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="time">
+                    <th mat-header-cell *matHeaderCellDef style="width: 20%;"> Time </th>
+                    <td mat-cell *matCellDef="let measurement">
+                        <div layout="column" layout-align="space-around start">
+                            {{measurement.name | date: 'HH:mm'}}
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="value">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef > Value </th>
+                    <td mat-cell *matCellDef="let measurement">
+                        <div layout="column" layout-align="space-around start">
+                            {{round1DP(measurement.value)}}
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="context">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef > Context </th>
+                    <td mat-cell *matCellDef="let measurement">
+                        <div layout="column" layout-align="space-around start">
+                            <span *ngIf="getContext(measurement) !== undefined">
+                                 <button mat-flat-button [ngStyle]="getInfo()">{{getContext(measurement)}}</button>
+                            </span>
+                        </div>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsHbA1c; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsHbA1c;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="7">No data matching the filter </td>
+                </tr>
+            </table>
         </mat-expansion-panel>
     </mat-accordion>
     <mat-accordion *ngIf="spo2 != undefined && spo2[0].series != undefined && spo2[0].series.length > 1">

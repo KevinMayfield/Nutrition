@@ -106,7 +106,7 @@
                 <app-sleep [measures]="sleepMeasures"></app-sleep>
             </span>
             <span *ngIf="bodyMeasures.length>1">
-                <app-body-measures [observations]="bodyMeasures"></app-body-measures>
+                <app-body-measures [observations]="bodyMeasures" [activities]="activities"></app-body-measures>
             </span>
         </mat-tab>
         <!--
@@ -157,7 +157,7 @@
                        matSort #hrSort="matSort" (matSortChange)="announceSortChange($event)"
                        matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
-                    <ng-container matColumnDef="date">
+                    <ng-container matColumnDef="dateo">
                         <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 20%;"> Date </th>
                         <td mat-cell *matCellDef="let activity">
                             <div layout="column" layout-align="space-around start">
@@ -166,17 +166,29 @@
                             </div>
                         </td>
                     </ng-container>
-                    <ng-container matColumnDef="heart">
-                        <th mat-header-cell *matHeaderCellDef style="width: 80%;"> </th>
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell  mat-sort-header *matHeaderCellDef style="width: 80%;"> Date </th>
                         <td mat-cell *matCellDef="let activity">
-                            <span layout="row">
-                                <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank">
-                                <span *ngIf="activity.type !== undefined" class="material-symbols-outlined">{{getType(activity.type)}}</span>
-                                </a>
-                                &nbsp;&nbsp;
-                                <h3>{{activity.name}}</h3>
-                            </span>
-                            <br/>
+                            <mat-expansion-panel [expanded]="false">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <a *ngIf="activity.type !== undefined" mat-icon-button color="primary" href="https://www.strava.com/activities/{{activity.id}}" target="_blank">
+                                            <span class="material-symbols-outlined">{{getType(activity.type)}}</span>
+                                        </a>
+                                        <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
+                                        &nbsp;
+                                        <span *ngIf="activity.trimp !== undefined">
+                                            <mat-chip style="background: {{getBackgroundTrimp(activity.trimp)}}; width: 50px" layout-align="center">
+                                            {{round(activity.trimp)}}</mat-chip>
+                                        </span>
+                                        &nbsp;
+                                        {{duration(activity.moving_time/60)}}
+                                    </mat-panel-title>
+                                    <mat-panel-description>
+                                        <b>{{activity.name}}</b>
+                                    </mat-panel-description>
+                                </mat-expansion-panel-header>
+
                             <app-heart-graph [activity]="activity"></app-heart-graph>
 
                             <br/>
@@ -221,6 +233,7 @@
                                 </tr>
                             </table>
                             <br/>
+                            </mat-expansion-panel>
                         </td>
                     </ng-container>
 
@@ -235,7 +248,7 @@
                     </tr>
                 </table>
              </div>
-                <mat-paginator #paginatorHR [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
+                <mat-paginator #paginatorHR [pageSizeOptions]="[10,20]" showFirstLastButtons></mat-paginator>
         </mat-tab>
         <mat-tab *ngIf="hasPowerData" label="Power">
             <td-message
@@ -280,7 +293,7 @@
                    matSort #pwrSort="matSort" (matSortChange)="announceSortChange($event)"
                    matSortActive="date" matSortDirection="desc" matSortDisableClear>
 
-                <ng-container matColumnDef="date">
+                <ng-container matColumnDef="dateo">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef> Date </th>
                     <td mat-cell *matCellDef="let activity">
 
@@ -290,17 +303,30 @@
                         </div>
                     </td>
                 </ng-container>
-                <ng-container matColumnDef="power">
-                    <th mat-header-cell *matHeaderCellDef > </th>
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef > Date </th>
                     <td mat-cell *matCellDef="let activity">
-                        <span layout="row">
-                                <a href="https://www.strava.com/activities/{{activity.id}}" target="_blank">
-                                <span *ngIf="activity.type !== undefined" class="material-symbols-outlined">{{getType(activity.type)}}</span>
-                                </a>
-                                &nbsp;&nbsp;
-                                <h3>{{activity.name}}</h3>
-                            </span>
-                        <br/>
+                        <mat-expansion-panel [expanded]="false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <a *ngIf="activity.type !== undefined" mat-icon-button color="primary" href="https://www.strava.com/activities/{{activity.id}}" target="_blank">
+                                        <span class="material-symbols-outlined">{{getType(activity.type)}}</span>
+                                    </a>
+                                    <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
+                                    &nbsp;
+                                    <mat-chip style="background: {{getBackgroundTSS(activity)}}; width: 50px" matTooltip="< 150 recovery under a day.
+                                     < 300 recovered by 2nd day.
+                                     < 450 recovered after the 2nd day.
+                                     > 450 recovery may be longer.">
+                                        {{stressTraining(activity)}}</mat-chip>
+                                    &nbsp;
+                                    {{duration(activity.moving_time/60)}}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    <b>{{activity.name}}</b>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
                         <app-power-graph [activity]="activity"></app-power-graph>
                         <br/>
                         <table>
@@ -397,7 +423,9 @@
                             </tr>
                         </table>
                         <br/>
+                        </mat-expansion-panel>
                     </td>
+
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumnsKJ; sticky: true"></tr>
@@ -408,7 +436,7 @@
                 </tr>
             </table>
             </div>
-            <mat-paginator #paginatorKJ [pageSizeOptions]="[6,12,18]" showFirstLastButtons></mat-paginator>
+            <mat-paginator #paginatorKJ [pageSizeOptions]="[10,20]" showFirstLastButtons></mat-paginator>
         </mat-tab>
 
     </mat-tab-group>

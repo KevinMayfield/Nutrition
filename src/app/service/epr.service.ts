@@ -49,8 +49,9 @@ export class EPRService {
 
   setToDate(date : Date) {
     this.to = date;
-    this.to.setHours(1,0, 0)
+    this.to.setHours(23,59, 59)
     this.from = new Date(this.to.toISOString());
+    this.from.setHours(0,0, 1)
     this.from.setDate(this.from.getDate() - this.baseDuration);
     while (this.from.getDay() !== 0) {
       this.from.setDate(this.from.getDate() - 1);
