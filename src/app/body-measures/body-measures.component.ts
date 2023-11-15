@@ -1,13 +1,13 @@
 import {Component, Input, ViewChild} from '@angular/core';
-import {Observations} from "../../models/observations";
+import {Observations} from "../models/observations";
 import {Color, LegendPosition, LineSeriesComponent, ScaleType} from "@swimlane/ngx-charts";
 import { curveCatmullRom} from 'd3-shape';
-import {EPRService} from "../../service/epr.service";
+import {EPRService} from "../service/epr.service";
 import {MatSort, Sort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatTableDataSource} from "@angular/material/table";
-import {LineChartSeries, LineSeries} from "../../models/graphs";
-import {SummaryActivity} from "../../models/summary-activity";
+import {LineChartSeries, LineSeries} from "../models/graphs";
+import {SummaryActivity} from "../models/summary-activity";
 
 
 

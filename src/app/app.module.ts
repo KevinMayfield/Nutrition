@@ -44,7 +44,7 @@ import {ReversePipe} from "./service/reverse-pipe";
 import { PersonComponent } from './person/person.component';
 import {DatePipe} from "@angular/common";
 import { SleepComponent } from './charts/sleep/sleep.component';
-import { BodyMeasuresComponent } from './charts/body-measures/body-measures.component';
+import { BodyMeasuresComponent } from './body-measures/body-measures.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import { PieChartPlusComponent } from './charts/pie-chart-plus/pie-chart-plus.component';
 
