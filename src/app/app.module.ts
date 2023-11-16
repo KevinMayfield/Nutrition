@@ -47,6 +47,7 @@ import { SleepComponent } from './charts/sleep/sleep.component';
 import { BodyMeasuresComponent } from './body-measures/body-measures.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import { PieChartPlusComponent } from './charts/pie-chart-plus/pie-chart-plus.component';
+import { NgxEchartsModule} from "ngx-echarts";
 
 @NgModule({
     declarations: [
@@ -104,7 +105,10 @@ import { PieChartPlusComponent } from './charts/pie-chart-plus/pie-chart-plus.co
         LineChartModule,
         MatExpansionModule,
         TreeMapModule,
-        BoxChartModule
+        BoxChartModule,
+        NgxEchartsModule.forRoot({
+            echarts: () => import('echarts')
+        })
     ],
     providers: [
         DatePipe,

@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Observations} from "../models/observations";
 import {Color, LegendPosition, LineSeriesComponent, ScaleType} from "@swimlane/ngx-charts";
 import { curveCatmullRom} from 'd3-shape';
@@ -8,6 +8,7 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatTableDataSource} from "@angular/material/table";
 import {LineChartSeries, LineSeries} from "../models/graphs";
 import {SummaryActivity} from "../models/summary-activity";
+import {EChartsOption} from "echarts";
 
 
 
@@ -17,7 +18,11 @@ import {SummaryActivity} from "../models/summary-activity";
   templateUrl: './body-measures.component.html',
   styleUrls: ['./body-measures.component.scss']
 })
-export class BodyMeasuresComponent {
+export class BodyMeasuresComponent implements OnInit{
+
+  // @ts-ignore
+  options: EChartsOption | null;
+
   measures :Observations[] = []
   activity: SummaryActivity[] = []
 
@@ -92,6 +97,51 @@ export class BodyMeasuresComponent {
               private _liveAnnouncer: LiveAnnouncer){
     //  this.view = [innerWidth / this.widthQuota, this.view[1]];
   }
+
+  ngOnInit(): void {
+    const xAxisData = [];
+    const data1 = [];
+    const data2 = [];
+
+    for (let i = 0; i < 100; i++) {
+      xAxisData.push('category' + i);
+      data1.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5);
+      data2.push((Math.cos(i / 5) * (i / 5 - 10) + i / 6) * 5);
+    }
+
+    this.options = {
+      legend: {
+        data: ['bar', 'bar2'],
+        align: 'left',
+      },
+      tooltip: {},
+      xAxis: {
+        data: xAxisData,
+        silent: false,
+        splitLine: {
+          show: false,
+        },
+      },
+      yAxis: {},
+      series: [
+        {
+          name: 'bar',
+          type: 'bar',
+          data: data1,
+          animationDelay: idx => idx * 10,
+        },
+        {
+          name: 'bar2',
+          type: 'bar',
+          data: data2,
+          animationDelay: idx => idx * 10 + 100,
+        },
+      ],
+      animationEasing: 'elasticOut',
+      animationDelayUpdate: idx => idx * 5,
+    };
+  }
+
   private refreshActivity() {
     this.weights = []
     this.muscle = []
