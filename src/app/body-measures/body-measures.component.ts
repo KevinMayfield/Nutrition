@@ -404,9 +404,7 @@ export class BodyMeasuresComponent {
   }
 
   getTime(entry: any) {
-
-      var result = entry.name.toLocaleString()
-      return result
+    return entry.name.toLocaleString()
   }
 
   getOK() {

@@ -190,6 +190,15 @@ export class SleepComponent {
     round(value : number) {
         return Math.round(value )
     }
+    round1DP(value : number) {
+        return Math.round(value * 10) / 10
+    }
+    getTime(entry: any) {
+        return entry.name.toLocaleString().split(',')[0]
+    }
+    getPointColour(ent: any) {
+        return 'color: '+ ent.color+ ';'
+    }
 
     getOK() {
         return this.epr.getOK()

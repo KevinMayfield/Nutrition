@@ -42,6 +42,22 @@
                     [showRefLines]="true"
                     [results]="series"
             >
+                <ng-template #tooltipTemplate let-model="model">
+             <span *ngIf="model !== undefined">
+                    {{getTime(model)}}
+                </span>
+                    <ul>
+                        <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
+                    </ul>
+                </ng-template>
+                <ng-template #seriesTooltipTemplate let-model="model">
+                    <span *ngIf="model !== undefined && model.length >0">
+                    {{getTime(model[0])}}
+                </span>
+                    <ul>
+                        <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
+                    </ul>
+                </ng-template>
             </ngx-charts-line-chart>
             <!-- These breaks allow for legend display TODO -->
             <br/>
