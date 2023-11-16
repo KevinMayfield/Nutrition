@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Inject, Input, OnInit, ViewChild} from '@angular/core';
+import { Component,Input, ViewChild} from '@angular/core';
 import {Observations} from "../models/observations";
 import {Color, LegendPosition, LineSeriesComponent, ScaleType} from "@swimlane/ngx-charts";
 import { curveCatmullRom} from 'd3-shape';
@@ -8,12 +8,7 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatTableDataSource} from "@angular/material/table";
 import {LineChartSeries, LineSeries} from "../models/graphs";
 import {SummaryActivity} from "../models/summary-activity";
-import * as echarts from 'echarts';
-import {DOCUMENT} from "@angular/common";
-import {convertObjectsToCSV} from "@covalent/core/common";
 
-
-type EChartsOption = echarts.EChartsOption;
 
 @Component({
   selector: 'app-body-measures',
@@ -31,6 +26,8 @@ export class BodyMeasuresComponent {
   muscle: LineChartSeries[] | undefined
   spo2: LineChartSeries[] | undefined
   spo2Data: any[] = [];
+  spo2ScatterData: any[] = [];
+  spo2XData: any[] = [];
   hba1c: LineChartSeries[] | undefined
   fats: LineChartSeries[] | undefined
   bone: LineChartSeries[] | undefined
@@ -95,8 +92,7 @@ export class BodyMeasuresComponent {
   @ViewChild('HbA1cSort') HbA1cSort: MatSort | null | undefined;
 
   constructor(public epr: EPRService,
-              private _liveAnnouncer: LiveAnnouncer,
-              @Inject(DOCUMENT) document: Document){
+              private _liveAnnouncer: LiveAnnouncer){
 
   }
 
@@ -111,6 +107,8 @@ export class BodyMeasuresComponent {
     this.bpSeries = []
     this.spo2 = []
     const spo2Data: any[] = [];
+    const spo2XData: any[] = [];
+    const spo2ScatterData: any[] = []
 
     this.steps = []
     var steps: LineSeries[]=[]
@@ -229,12 +227,16 @@ export class BodyMeasuresComponent {
             name: observations.day,
             value: observations.spo2.avg
           })
-          const idata: any[] = []
+
           const now = observations.day
-          idata.push( [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/') + 'T' +
-              [now.getHours(), now.getMinutes()].join(':'))
+          spo2XData.push( now.toISOString())
+
+          spo2Data.push(observations.spo2.avg)
+
+          const idata: any[] = []
+          idata.push( now.toISOString())
           idata.push(observations.spo2.avg)
-          spo2Data.push(idata)
+          spo2ScatterData.push(idata)
         }
         if (observations.spo2.min !== undefined) {
           if (observations.spo2.min < this.spo2Min) this.spo2Min = observations.spo2.min
@@ -297,6 +299,8 @@ export class BodyMeasuresComponent {
     }));
 
     this.spo2Data = spo2Data
+    this.spo2XData = spo2XData
+    this.spo2ScatterData = spo2ScatterData
 
     var sum = 0
     let referenceLines = []

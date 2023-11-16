@@ -1,13 +1,14 @@
 import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import * as echarts from "echarts";
 import {EChartsOption, EChartsType} from "echarts";
+import {ActivityDay} from "../../models/activity-day";
 
 @Component({
-  selector: 'app-scatter-graph',
-  templateUrl: './scatter-graph.component.html',
-  styleUrls: ['./scatter-graph.component.scss']
+  selector: 'app-line-graph',
+  templateUrl: './line-graph.component.html',
+  styleUrls: ['./line-graph.component.scss']
 })
-export class ScatterGraphComponent implements AfterViewInit, OnInit {
+export class LineGraphComponent implements AfterViewInit, OnInit {
 
   @Input()
   set setData(data: any[]) {
@@ -18,6 +19,10 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
       // @ts-ignore
       | undefined
 
+  @Input()
+  xData: any[]
+      // @ts-ignore
+      | undefined
 
   @Input()
   yMin: number | undefined
@@ -25,24 +30,22 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
   @Input()
   yMax: number | undefined
 
-
   // @ts-ignore
   @ViewChild('myDiv', {static: false}) myDiv: ElementRef;
 
   myChart : EChartsType | undefined
   ngAfterViewInit() {
-
     var chartDom = this.myDiv.nativeElement;
-
-    this.myChart = echarts.init(chartDom);
-    this.setOptions()
-
+    var myChart = echarts.init(chartDom);
+   this.setOptions()
 
   }
+
   setOptions(){
     var option: EChartsOption = {
       xAxis: {
-        type: 'time'
+        type: 'time',
+        data: this.xData
       },
       yAxis: {
         min: this.yMin,
@@ -50,9 +53,8 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
       },
       series: [
         {
-          symbolSize: 20,
           data: this.data,
-          type: 'scatter'
+          type: 'line'
         }
       ]
     }
