@@ -48,6 +48,7 @@ import { BodyMeasuresComponent } from './body-measures/body-measures.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import { PieChartPlusComponent } from './charts/pie-chart-plus/pie-chart-plus.component';
 import { NgxEchartsModule} from "ngx-echarts";
+import { ScatterGraphComponent } from './echart/scatter-graph/scatter-graph.component';
 
 @NgModule({
     declarations: [
@@ -66,7 +67,8 @@ import { NgxEchartsModule} from "ngx-echarts";
         PersonComponent,
         SleepComponent,
         BodyMeasuresComponent,
-        PieChartPlusComponent
+        PieChartPlusComponent,
+        ScatterGraphComponent
     ],
     imports: [
         BrowserModule,

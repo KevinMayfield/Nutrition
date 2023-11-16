@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, Input, OnInit, ViewChild} from '@angular/core';
 import {Observations} from "../models/observations";
 import {Color, LegendPosition, LineSeriesComponent, ScaleType} from "@swimlane/ngx-charts";
 import { curveCatmullRom} from 'd3-shape';
@@ -8,20 +8,20 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatTableDataSource} from "@angular/material/table";
 import {LineChartSeries, LineSeries} from "../models/graphs";
 import {SummaryActivity} from "../models/summary-activity";
-import {EChartsOption} from "echarts";
+import * as echarts from 'echarts';
+import {DOCUMENT} from "@angular/common";
+import {convertObjectsToCSV} from "@covalent/core/common";
 
 
-
+type EChartsOption = echarts.EChartsOption;
 
 @Component({
   selector: 'app-body-measures',
   templateUrl: './body-measures.component.html',
   styleUrls: ['./body-measures.component.scss']
 })
-export class BodyMeasuresComponent implements OnInit{
+export class BodyMeasuresComponent {
 
-  // @ts-ignore
-  options: EChartsOption | null;
 
   measures :Observations[] = []
   activity: SummaryActivity[] = []
@@ -30,6 +30,7 @@ export class BodyMeasuresComponent implements OnInit{
   weights: LineChartSeries[] | undefined
   muscle: LineChartSeries[] | undefined
   spo2: LineChartSeries[] | undefined
+  spo2Data: any[] = [];
   hba1c: LineChartSeries[] | undefined
   fats: LineChartSeries[] | undefined
   bone: LineChartSeries[] | undefined
@@ -94,53 +95,12 @@ export class BodyMeasuresComponent implements OnInit{
   @ViewChild('HbA1cSort') HbA1cSort: MatSort | null | undefined;
 
   constructor(public epr: EPRService,
-              private _liveAnnouncer: LiveAnnouncer){
-    //  this.view = [innerWidth / this.widthQuota, this.view[1]];
+              private _liveAnnouncer: LiveAnnouncer,
+              @Inject(DOCUMENT) document: Document){
+
   }
 
-  ngOnInit(): void {
-    const xAxisData = [];
-    const data1 = [];
-    const data2 = [];
 
-    for (let i = 0; i < 100; i++) {
-      xAxisData.push('category' + i);
-      data1.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5);
-      data2.push((Math.cos(i / 5) * (i / 5 - 10) + i / 6) * 5);
-    }
-
-    this.options = {
-      legend: {
-        data: ['bar', 'bar2'],
-        align: 'left',
-      },
-      tooltip: {},
-      xAxis: {
-        data: xAxisData,
-        silent: false,
-        splitLine: {
-          show: false,
-        },
-      },
-      yAxis: {},
-      series: [
-        {
-          name: 'bar',
-          type: 'bar',
-          data: data1,
-          animationDelay: idx => idx * 10,
-        },
-        {
-          name: 'bar2',
-          type: 'bar',
-          data: data2,
-          animationDelay: idx => idx * 10 + 100,
-        },
-      ],
-      animationEasing: 'elasticOut',
-      animationDelayUpdate: idx => idx * 5,
-    };
-  }
 
   private refreshActivity() {
     this.weights = []
@@ -150,7 +110,8 @@ export class BodyMeasuresComponent implements OnInit{
     this.hydration = []
     this.bpSeries = []
     this.spo2 = []
-    this.hba1c = []
+    const spo2Data: any[] = [];
+
     this.steps = []
     var steps: LineSeries[]=[]
     var hb1ac: LineChartSeries[] = [
@@ -268,6 +229,12 @@ export class BodyMeasuresComponent implements OnInit{
             name: observations.day,
             value: observations.spo2.avg
           })
+          const idata: any[] = []
+          const now = observations.day
+          idata.push( [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/') + 'T' +
+              [now.getHours(), now.getMinutes()].join(':'))
+          idata.push(observations.spo2.avg)
+          spo2Data.push(idata)
         }
         if (observations.spo2.min !== undefined) {
           if (observations.spo2.min < this.spo2Min) this.spo2Min = observations.spo2.min
@@ -329,7 +296,7 @@ export class BodyMeasuresComponent implements OnInit{
       return 0;
     }));
 
-
+    this.spo2Data = spo2Data
 
     var sum = 0
     let referenceLines = []

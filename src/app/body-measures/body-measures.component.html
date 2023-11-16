@@ -1,4 +1,4 @@
-<div #containerRef>
+<div #containerRef id="containerRef">
     <span *ngIf="steps != undefined && steps.length > 1">
     <h3>Steps</h3>
     <mat-accordion >
@@ -199,7 +199,7 @@
                 Last Daily Average &nbsp;<b>{{round1DP(getLast(spo2))}} %</b>
             </mat-panel-description>
         </mat-expansion-panel-header>
-        <div echarts [options]="options" class="demo-chart"></div>
+        <app-scatter-graph [data]="spo2Data"></app-scatter-graph>
         <ngx-charts-line-chart
                 [view]="[containerRef.offsetWidth, 250]"
                 [scheme]="colorSeries"
