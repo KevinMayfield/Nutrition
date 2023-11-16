@@ -88,9 +88,8 @@ export class GoogleFitService {
                 })
               } else
               if (systemUri === 'com.google.oxygen_saturation') {
-
                 if (source.dataStreamId !== undefined
-                //    && source.dataStreamId.startsWith('raw:')
+                   && source.dataStreamId.startsWith('raw:')
                 ) {
                   this.getAPIDataset(source.dataStreamId).subscribe(data => {
                     if (data.point !== undefined) {
@@ -107,6 +106,7 @@ export class GoogleFitService {
                           })
                         }
                       })
+
                       this.bodyMeasures.emit(measure)
                     }
                   })
@@ -114,7 +114,6 @@ export class GoogleFitService {
               } else
               if (systemUri === 'com.google.blood_glucose') {
                 if (source.dataStreamId !== undefined && source.dataStreamId.startsWith('raw:') ) {
-
                   this.getAPIDataset(source.dataStreamId).subscribe(data => {
                     if (data.point !== undefined) {
                       var measure : Observations[] = []
@@ -220,7 +219,7 @@ export class GoogleFitService {
                           measurementSetting: MeasurementSetting.home,
                           day: obsDate,
                           spo2: {
-                            avg: point.value[0].fpVal,
+                           // avg: point.value[0].fpVal,
                             max: point.value[1].fpVal,
                             min: point.value[2].fpVal,
                           }

@@ -54,13 +54,7 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
         min: this.yMin,
         max: this.yMax
       },
-      series: [
-        {
-          symbolSize: 5,
-          data: this.data,
-          type: 'scatter'
-        }
-      ]
+      series: this.data
     }
     if (this.myChart !== undefined) this.myChart.setOption(option);
   }

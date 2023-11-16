@@ -1,6 +1,6 @@
 import { Component,Input, ViewChild} from '@angular/core';
 import {Observations} from "../models/observations";
-import {Color, LegendPosition, LineSeriesComponent, ScaleType} from "@swimlane/ngx-charts";
+import {Color, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
 import { curveCatmullRom} from 'd3-shape';
 import {EPRService} from "../service/epr.service";
 import {MatSort, Sort} from "@angular/material/sort";
@@ -26,8 +26,6 @@ export class BodyMeasuresComponent {
   muscle: LineChartSeries[] | undefined
   spo2: LineChartSeries[] | undefined
   spo2Data: any[] = [];
-  spo2ScatterData: any[] = [];
-  spo2XData: any[] = [];
   hba1c: LineChartSeries[] | undefined
   fats: LineChartSeries[] | undefined
   bone: LineChartSeries[] | undefined
@@ -106,9 +104,25 @@ export class BodyMeasuresComponent {
     this.hydration = []
     this.bpSeries = []
     this.spo2 = []
-    const spo2Data: any[] = [];
-    const spo2XData: any[] = [];
-    const spo2ScatterData: any[] = []
+    const spo2Data: any[] = [
+        {
+          symbolSize: 5,
+          data: [],
+          type: 'scatter',
+          name: 'spo2'
+        },
+      {
+        data: [],
+        type: 'line',
+        name: 'low'
+      },
+      {
+        data: [],
+        type: 'line',
+        name: 'high'
+      }
+    ];
+
 
     this.steps = []
     var steps: LineSeries[]=[]
@@ -227,16 +241,10 @@ export class BodyMeasuresComponent {
             name: observations.day,
             value: observations.spo2.avg
           })
-
-          const now = observations.day
-          spo2XData.push( now.toISOString())
-
-          spo2Data.push(observations.spo2.avg)
-
           const idata: any[] = []
-          idata.push( now.toISOString())
+          idata.push( observations.day.toISOString())
           idata.push(observations.spo2.avg)
-          spo2ScatterData.push(idata)
+          spo2Data[0].data.push(idata)
         }
         if (observations.spo2.min !== undefined) {
           if (observations.spo2.min < this.spo2Min) this.spo2Min = observations.spo2.min
@@ -244,6 +252,10 @@ export class BodyMeasuresComponent {
             name: observations.day,
             value: observations.spo2.min
           })
+          const idata: any[] = []
+          idata.push( observations.day.toISOString())
+          idata.push(observations.spo2.min)
+          spo2Data[1].data.push(idata)
         }
         if (observations.spo2.max !== undefined) {
           if (observations.spo2.max > this.spo2Max) this.spo2Max = observations.spo2.max
@@ -251,6 +263,10 @@ export class BodyMeasuresComponent {
             name: observations.day,
             value: observations.spo2.max
           })
+          const idata: any[] = []
+          idata.push( observations.day.toISOString())
+          idata.push(observations.spo2.max)
+          spo2Data[2].data.push(idata)
         }
       }
       if (observations.diastolic !== undefined || observations.systolic !== undefined) {
@@ -283,6 +299,7 @@ export class BodyMeasuresComponent {
     this.fats = fats
     this.bone = bone
     this.bpSeries = bp
+
     this.spo2 = spo2
     this.hba1c = hb1ac
     this.steps = steps
@@ -299,9 +316,6 @@ export class BodyMeasuresComponent {
     }));
 
     this.spo2Data = spo2Data
-    this.spo2XData = spo2XData
-    this.spo2ScatterData = spo2ScatterData
-
     var sum = 0
     let referenceLines = []
 

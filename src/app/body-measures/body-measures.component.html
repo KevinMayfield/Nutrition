@@ -199,7 +199,7 @@
                 Last Daily Average &nbsp;<b>{{round1DP(getLast(spo2))}} %</b>
             </mat-panel-description>
         </mat-expansion-panel-header>
-        <app-scatter-graph [setData]="spo2ScatterData" [yMax]="spo2Max" [yMin]="spo2Min"></app-scatter-graph>
+        <app-scatter-graph [setData]="spo2Data" [yMax]="spo2Max" [yMin]="spo2Min"></app-scatter-graph>
         <ngx-charts-line-chart
                 [view]="[containerRef.offsetWidth, 250]"
                 [scheme]="colorSeries"
