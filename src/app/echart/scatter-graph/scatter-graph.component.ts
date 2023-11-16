@@ -41,6 +41,12 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
   }
   setOptions(){
     var option: EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
+        }
+      },
       xAxis: {
         type: 'time'
       },
@@ -50,7 +56,7 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
       },
       series: [
         {
-          symbolSize: 20,
+          symbolSize: 5,
           data: this.data,
           type: 'scatter'
         }
