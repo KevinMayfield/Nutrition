@@ -31,34 +31,43 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
 
   myChart : EChartsType | undefined
   ngAfterViewInit() {
-
-    var chartDom = this.myDiv.nativeElement;
-
-    this.myChart = echarts.init(chartDom);
-    this.setOptions()
-
-
-  }
-  setOptions(){
-    var option: EChartsOption = {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'cross'
-        }
-      },
-      xAxis: {
-        type: 'time'
-      },
-      yAxis: {
-        min: this.yMin,
-        max: this.yMax
-      },
-      series: this.data
+    if (this.myDiv !== undefined) {
+      var chartDom = this.myDiv.nativeElement;
+      if (chartDom !== undefined) {
+        this.myChart = echarts.init(chartDom);
+        this.setOptions()
+      }
     }
-    if (this.myChart !== undefined) this.myChart.setOption(option);
+  }
+  setOptions() {
+    if (this.myChart !== undefined) {
+      var option: EChartsOption = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross'
+          }
+        },
+        xAxis: {
+          type: 'time'
+        },
+        yAxis: {
+          min: this.yMin,
+          max: this.yMax
+        },
+        series: this.data
+      }
+      this.myChart.setOption(option);
+    }
   }
 
   ngOnInit(): void {
+    if (this.myDiv !== undefined) {
+      var chartDom = this.myDiv.nativeElement;
+      if (chartDom !== undefined) {
+        this.myChart = echarts.init(chartDom);
+        this.setOptions()
+      }
+    }
   }
 }

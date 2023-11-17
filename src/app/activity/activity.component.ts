@@ -44,7 +44,18 @@ class DaySummary {
     encapsulation: ViewEncapsulation.None,
 })
 export class ActivityComponent implements OnInit{
-
+    pwrPanelOpenState: boolean[] = [
+        false,
+        false,
+        false,
+        false
+    ]
+    heartPanelOpenState: boolean[] = [
+        false,
+        false,
+        false,
+        false
+    ]
     colorScheme: Color = {
         domain: ['#7aa3e5','#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
         group: ScaleType.Ordinal,

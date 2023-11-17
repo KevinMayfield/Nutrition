@@ -1,22 +1,16 @@
 <div layout="row" #containerRef>
-        <ngx-charts-pie-chart
-                [view]="[round(containerRef.offsetWidth / columns), 200]"
-                [scheme]="scheme"
-                [results]="results"
-                [doughnut]="true"
-                (window:resize)="onResize($event)"
-                [animations]="false"
-        >
-        </ngx-charts-pie-chart>
+    <div class="mGraph-wrapper">
+        <div #PIEDiv class="mGraph"></div>
+    </div>
         <div layout="column">
                 <span>
                         <h3>{{label}}</h3></span>
-                        <h2>{{total(results)}} {{unit}}</h2>
+                        <h2>{{total(data)}} {{unit}}</h2>
                 <span>
                          <table class="mat-table">
                               <thead>
                                 <tr>
-                                  <td class="mat-cell" *ngFor="let i of results">
+                                  <td class="mat-cell" *ngFor="let i of data">
                                        <span style="font-size: x-large;">{{round(i.value)}} {{unit}}</span>
 
                                   </td>
@@ -24,7 +18,7 @@
                               </thead>
                               <tbody>
                                 <tr>
-                                  <td class="mat-cell" *ngFor="let i of results; let f = index">
+                                  <td class="mat-cell" *ngFor="let i of data; let f = index">
                                       <span layout="column">
                                            <span> <mat-chip style="background:{{scheme.domain[f]}};"></mat-chip> &nbsp;{{i.name}}</span>
                                           <span> {{average(i.value)}} % </span>

@@ -16,6 +16,7 @@
     <mat-card-content>
     <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectionchange)="tabChanged($event)">
         <mat-tab label="Summary">
+            <span *ngIf="selectedTabIndex === undefined || selectedTabIndex === 0">
             <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Time-based Measures"
@@ -108,6 +109,7 @@
             <span *ngIf="bodyMeasures.length>1">
                 <app-body-measures [observations]="bodyMeasures" [activities]="activities"></app-body-measures>
             </span>
+            </span>
         </mat-tab>
         <!--
 
@@ -115,6 +117,7 @@
 
         -->
         <mat-tab label="Heart Rate">
+                    <span *ngIf="selectedTabIndex !== undefined && selectedTabIndex === 1">
             <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Activity-based Measures"
@@ -127,7 +130,8 @@
 
                     <h3>Heart Rate</h3>
                 <mat-accordion>
-                    <mat-expansion-panel *ngFor="let pie of stacked">
+                    <mat-expansion-panel *ngFor="let pie of stacked; let i = index" (opened)="heartPanelOpenState[i] = true"
+                                         (closed)="heartPanelOpenState[i] = false">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 Week {{pie.name}}
@@ -138,7 +142,7 @@
                                 </span>
                             </mat-panel-description>
                         </mat-expansion-panel-header>
-                           <span *ngIf="pie.hr !== undefined">
+                           <span *ngIf="pie.hr !== undefined && heartPanelOpenState[i]">
                                      <app-pie-chart-plus
                                              [view]="[containerRef.offsetWidth, 200]"
                                              [columns]="5"
@@ -249,8 +253,10 @@
                 </table>
              </div>
                 <mat-paginator #paginatorHR [pageSizeOptions]="[10,20]" showFirstLastButtons></mat-paginator>
+                    </span>
         </mat-tab>
         <mat-tab *ngIf="hasPowerData" label="Power">
+            <span *ngIf="selectedTabIndex !== undefined && selectedTabIndex === 2">
             <td-message
                     label="Information"
                     sublabel="For detailed breakdown of power data see power-meter.cc"
@@ -262,7 +268,8 @@
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
                 <h3>Power</h3>
                 <mat-accordion>
-                    <mat-expansion-panel *ngFor="let pie of stacked">
+                    <mat-expansion-panel *ngFor="let pie of stacked; let i = index" (opened)="pwrPanelOpenState[i] = true"
+                                         (closed)="pwrPanelOpenState[i] = false">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 Week {{pie.name}}
@@ -273,8 +280,8 @@
                                 </span>
                             </mat-panel-description>
                         </mat-expansion-panel-header>
-                           <span *ngIf="pie.pwr !== undefined">
-                                   <app-pie-chart-plus
+                           <span *ngIf="pie.pwr !== undefined && pwrPanelOpenState[i]">
+                               <app-pie-chart-plus
                                            [view]="[containerRef.offsetWidth, 200]"
                                            [columns]="7"
                                            [scheme]="colorFTP"
@@ -282,8 +289,8 @@
                                            unit="min"
                                            [results]="pie.pwr"
                                    >
-                            </app-pie-chart-plus>
-                                </span>
+                                </app-pie-chart-plus>
+                           </span>
                     </mat-expansion-panel>
                 </mat-accordion>
             </span>
@@ -437,6 +444,7 @@
             </table>
             </div>
             <mat-paginator #paginatorKJ [pageSizeOptions]="[10,20]" showFirstLastButtons></mat-paginator>
+            </span>
         </mat-tab>
 
     </mat-tab-group>
