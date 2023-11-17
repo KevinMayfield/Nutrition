@@ -77,7 +77,6 @@
             -->
             <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
-                <mat-accordion>
                     <mat-expansion-panel *ngFor="let pie of stacked">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -96,7 +95,7 @@
                                      [results]="pie.series">
                                 </app-pie-chart-plus>
                     </mat-expansion-panel>
-                </mat-accordion>
+
             </span>
             <!--
 
