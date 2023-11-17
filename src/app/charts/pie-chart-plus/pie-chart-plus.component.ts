@@ -42,65 +42,73 @@ export class PieChartPlusComponent implements AfterViewInit, OnInit, AfterConten
     return `${(c.label)} (grams)`;
   }
   ngAfterViewInit(): void {
-        if (this.myDiv !== undefined) {
-            var chartDom = this.myDiv.nativeElement;
-            if (chartDom !== undefined) {
-                this.myChart = echarts.init(chartDom);
-                this.setOptions()
-            }
-        }
+        this.setChart()
   }
     ngOnInit(): void {
+       this.setChart()
+    }
+
+    setChart(){
         if (this.myDiv !== undefined) {
             var chartDom = this.myDiv.nativeElement;
             if (chartDom !== undefined) {
-                console.log('onit')
+                const myEl = chartDom;
+                const observer = new ResizeObserver((entry) => {
+
+                    if (entry !== undefined && entry.length>0) {
+                        console.log(this.label + ' ' + entry[0].contentRect.height + ' ' + entry[0].contentRect.width + ' ' + (this.myDiv.nativeElement.offsetParent == null))
+                    }
+                });
+
+                observer.observe(myEl);
                 this.myChart = echarts.init(chartDom);
-                this.setOptions()
+                this.myChart.setOption(this.option);
+                this.myChart.resize({
+                    width: 'auto',
+                    height: 'auto',
+                });
             }
         }
     }
     setOptions() {
-        if (this.myChart !== undefined) {
-            this.option = {
-                tooltip: {
-                    trigger: 'item'
-                },
-                series: [
-                    {
-                        name: this.label,
-                        type: 'pie',
-                        radius: ['70%', '90%'],
-                        avoidLabelOverlap: true,
+        this.option = {
+            tooltip: {
+                trigger: 'item'
+            },
+            series: [
+                {
+                    name: this.label,
+                    type: 'pie',
+                    radius: ['70%', '90%'],
+                    avoidLabelOverlap: true,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
                         label: {
                             show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
-                            label: {
-                                show: false,
-                                fontSize: 8,
-                                fontWeight: 'bold'
-                            }
-                        },
-                        labelLine: {
-                            show: false
-                        },
-                        data: []
-                    }
-                ]
-            };
-            this.data.forEach((value : any, index : number)=>{
-                this.option.series[0].data.push({
-                    name: value.name,
-                    value: value.value,
-                    itemStyle : {
-                        color: this.scheme.domain[index]
-                    }
-                })
+                            fontSize: 8,
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: []
+                }
+            ]
+        };
+        this.data.forEach((value : any, index : number)=>{
+            this.option.series[0].data.push({
+                name: value.name,
+                value: value.value,
+                itemStyle : {
+                    color: this.scheme.domain[index]
+                }
             })
-            this.myChart.setOption(this.option);
-        }
+        })
+
     }
 
   total(results: any) {
@@ -135,20 +143,15 @@ export class PieChartPlusComponent implements AfterViewInit, OnInit, AfterConten
     {
         if (this.myDiv !== undefined) {
             if (this.isVisible === false && this.myDiv.nativeElement.offsetParent != null) {
-                console.log(this.label + ' isVisible switched from false to true');
+           //     console.log(this.label + ' isVisible switched from false to true');
                 this.isVisible = true;
-                /*
-                var chartDom = this.myDiv.nativeElement;
-                if (this.option !== undefined && chartDom !== undefined) {
-                    this.myChart = echarts.init(chartDom);
-                    this.myChart.setOption(this.option);
-                }*/
+
             } else if (this.isVisible === true && this.myDiv.nativeElement.offsetParent == null) {
-                console.log(this.label + ' iisVisible switched from true to false');
+                console.log(this.label + ' isVisible switched from true to false');
                 this.isVisible = false;
             }
         } else {
-            console.log(this.label + ' Not visible, no div');
+       //     console.log(this.label + ' Not visible, no div');
             this.isVisible = false;
         }
     }

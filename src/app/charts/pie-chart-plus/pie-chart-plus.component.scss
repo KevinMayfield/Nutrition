@@ -1,5 +1,15 @@
 .internalMatGrid{  border:1px solid red; min-width:80%;}
 
+.demo-chart{
+  width: 150px;
+  height: 150px;
+  background: #fff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: normal;
+}
+
 .mGraph-wrapper{
   width: 150px;
   height: 150px;

@@ -1,12 +1,14 @@
 <div layout="row" #containerRef>
-    <div class="mGraph-wrapper">
+  <!--  <div class="mGraph-wrapper">
         <div #PIEDiv class="mGraph"></div>
     </div>
-        <div layout="column">
+       -->
+    <div echarts [options]="option" class="demo-chart"></div>
+  <div layout="column">
                 <span>
                         <h3>{{label}}</h3></span>
-                        <h2>{{total(data)}} {{unit}}</h2>
-                <span>
+    <h2>{{total(data)}} {{unit}}</h2>
+    <span>
                          <table class="mat-table">
                               <thead>
                                 <tr>
@@ -28,5 +30,6 @@
                               </tbody>
                          </table>
                 </span>
-        </div>
+  </div>
 </div>
+

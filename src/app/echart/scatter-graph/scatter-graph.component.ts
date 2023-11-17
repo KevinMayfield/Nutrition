@@ -25,23 +25,30 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
   @Input()
   yMax: number | undefined
 
+  // @ts-ignore
+  option: EChartsOption
+
 
   // @ts-ignore
   @ViewChild('myDiv', {static: false}) myDiv: ElementRef;
 
   myChart : EChartsType | undefined
   ngAfterViewInit() {
+    this.doChartSetup()
+  }
+
+  doChartSetup() {
     if (this.myDiv !== undefined) {
       var chartDom = this.myDiv.nativeElement;
       if (chartDom !== undefined) {
         this.myChart = echarts.init(chartDom);
-        this.setOptions()
+        this.myChart.setOption(this.option);
       }
     }
   }
   setOptions() {
-    if (this.myChart !== undefined) {
-      var option: EChartsOption = {
+
+      this.option = {
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -57,17 +64,10 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
         },
         series: this.data
       }
-      this.myChart.setOption(option);
-    }
+
   }
 
   ngOnInit(): void {
-    if (this.myDiv !== undefined) {
-      var chartDom = this.myDiv.nativeElement;
-      if (chartDom !== undefined) {
-        this.myChart = echarts.init(chartDom);
-        this.setOptions()
-      }
-    }
+    this.doChartSetup()
   }
 }
