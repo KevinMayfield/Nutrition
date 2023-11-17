@@ -129,7 +129,7 @@
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
 
                     <h3>Heart Rate</h3>
-                <mat-accordion>
+
                     <mat-expansion-panel *ngFor="let pie of stacked; let i = index" (opened)="heartPanelOpenState[i] = true"
                                          (closed)="heartPanelOpenState[i] = false">
                         <mat-expansion-panel-header>
@@ -154,7 +154,7 @@
                                     </app-pie-chart-plus>
                                 </span>
                     </mat-expansion-panel>
-                </mat-accordion>
+
             </span>
              <div>
                 <table mat-table [dataSource]="dataSourceHR" class="mat-elevation-z8"
@@ -267,7 +267,7 @@
             <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR" type="power"></app-summary-graph>
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
                 <h3>Power</h3>
-                <mat-accordion>
+
                     <mat-expansion-panel *ngFor="let pie of stacked; let i = index" (opened)="pwrPanelOpenState[i] = true"
                                          (closed)="pwrPanelOpenState[i] = false">
                         <mat-expansion-panel-header>
@@ -292,7 +292,7 @@
                                 </app-pie-chart-plus>
                            </span>
                     </mat-expansion-panel>
-                </mat-accordion>
+
             </span>
             <h3>Activity Logs</h3>
             <div>
