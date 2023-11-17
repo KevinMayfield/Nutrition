@@ -29,7 +29,7 @@
     </mat-accordion>
     </span>
     <h3>Vitals</h3>
-    <mat-accordion *ngIf="bpSeries != undefined && bpSeries[0].series != undefined && bpSeries[0].series.length > 1">
+    <span *ngIf="bpSeries != undefined && bpSeries[0].series != undefined && bpSeries[0].series.length > 1">
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -92,9 +92,9 @@
                 <br/>
                 <br/>
         </mat-expansion-panel>
-    </mat-accordion>
-    <mat-accordion *ngIf="hba1c != undefined && hba1c[0].series != undefined && hba1c[0].series.length > 1">
-        <mat-expansion-panel >
+    </span>
+    <span *ngIf="hba1c != undefined && hba1c[0].series != undefined && hba1c[0].series.length > 1">
+        <mat-expansion-panel  >
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Blood Glucose - &nbsp;<b>{{round2DP(getLastSingle(hba1c[0]))}} mmol</b>
@@ -188,9 +188,9 @@
             </mat-expansion-panel>
 
         </mat-expansion-panel>
-    </mat-accordion>
-    <mat-accordion *ngIf="spo2 != undefined && spo2[0].series != undefined && spo2[0].series.length > 1">
-    <mat-expansion-panel >
+    </span>
+    <span *ngIf="spo2 != undefined && spo2[0].series != undefined && spo2[0].series.length > 1">
+    <mat-expansion-panel (opened)="spo2PanelOpenState = true" (closed)="spo2PanelOpenState = false">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 SPO2 - Min &nbsp;<b>{{getLastSingle(spo2[1])}} </b> &nbsp;Max &nbsp;<b>{{getLastSingle(spo2[2])}} %</b>
@@ -199,11 +199,12 @@
                 Last Daily Average &nbsp;<b>{{round1DP(getLast(spo2))}} %</b>
             </mat-panel-description>
         </mat-expansion-panel-header>
-        <app-scatter-graph [setData]="spo2Data" [yMax]="spo2Max" [yMin]="spo2Min"></app-scatter-graph>
-
+        <span *ngIf="spo2PanelOpenState">
+            <app-scatter-graph [setData]="spo2Data" [yMax]="spo2Max" [yMin]="spo2Min"></app-scatter-graph>
+        </span>
     </mat-expansion-panel>
-    </mat-accordion>
-    <mat-accordion *ngIf="weights != undefined && weights[0].series != undefined && weights[0].series.length > 1">
+    </span>
+    <span *ngIf="weights != undefined && weights[0].series != undefined && weights[0].series.length > 1">
         <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title >
@@ -221,7 +222,8 @@
                 </span>
             </mat-panel-description>
         </mat-expansion-panel-header>
-            <div #panelRef>
+            <app-scatter-graph [setData]="weightData" [yMax]="weightMax" [yMin]="weightMin"></app-scatter-graph>
+          <!--  <div #panelRef>
             <ngx-charts-line-chart
                     [view]="[panelRef.offsetWidth, 200]"
                     [scheme]="colorSeries"
@@ -257,7 +259,7 @@
                     </ul>
                 </ng-template>
             </ngx-charts-line-chart>
-            </div>
+            </div> -->
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -270,7 +272,8 @@
                 </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <div #panelRef>
+             <app-scatter-graph [setData]="weightData" [yMax]="fatMax" [yMin]="fatMin"></app-scatter-graph>
+       <!--     <div #panelRef>
             <ngx-charts-line-chart
                     [view]="[panelRef.offsetWidth, 200]"
                     [scheme]="colorSeries"
@@ -306,7 +309,7 @@
                     </ul>
                 </ng-template>
             </ngx-charts-line-chart>
-            </div>
+            </div> -->
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -322,7 +325,8 @@
                     </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <div #panelRef>
+             <app-scatter-graph [setData]="weightData" [yMax]="muscleMax" [yMin]="muscleMin"></app-scatter-graph>
+        <!--    <div #panelRef>
             <ngx-charts-line-chart
                     [view]="[panelRef.offsetWidth, 200]"
                     [scheme]="colorSeries"
@@ -358,7 +362,7 @@
                     </ul>
                 </ng-template>
             </ngx-charts-line-chart>
-            </div>
+            </div> -->
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -377,7 +381,8 @@
                 </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <div #panelRef>
+             <app-scatter-graph [setData]="weightData" [yMax]="hydrationMax" [yMin]="hydrationMin"></app-scatter-graph>
+         <!--   <div #panelRef>
             <ngx-charts-line-chart
                     [view]="[panelRef.offsetWidth, 200]"
                     [scheme]="colorSeries"
@@ -414,7 +419,7 @@
                     </ul>
                 </ng-template>
             </ngx-charts-line-chart>
-            </div>
+            </div> -->
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -427,7 +432,8 @@
                 </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <div #panelRef>
+             <app-scatter-graph [setData]="weightData" [yMax]="boneMax" [yMin]="boneMin"></app-scatter-graph>
+          <!--  <div #panelRef>
                 <ngx-charts-line-chart
                         [view]="[panelRef.offsetWidth, 200]"
                         [scheme]="colorSeries"
@@ -463,9 +469,9 @@
                         </ul>
                     </ng-template>
                 </ngx-charts-line-chart>
-            </div>
+            </div> -->
         </mat-expansion-panel>
-    </mat-accordion>
+    </span>
 
 
 </div>

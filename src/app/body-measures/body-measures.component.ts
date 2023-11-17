@@ -23,6 +23,7 @@ export class BodyMeasuresComponent {
 
 
   weights: LineChartSeries[] | undefined
+  weightData: any[] = [];
   muscle: LineChartSeries[] | undefined
   spo2: LineChartSeries[] | undefined
   spo2Data: any[] = [];
@@ -88,6 +89,7 @@ export class BodyMeasuresComponent {
   dataSourceHbA1c: any;
   displayedColumnsHbA1c = ['date', 'time', 'value', 'context']
   @ViewChild('HbA1cSort') HbA1cSort: MatSort | null | undefined;
+  spo2PanelOpenState: boolean = false;
 
   constructor(public epr: EPRService,
               private _liveAnnouncer: LiveAnnouncer){
@@ -120,6 +122,33 @@ export class BodyMeasuresComponent {
         data: [],
         type: 'line',
         name: 'high'
+      }
+    ];
+    const weightData: any[] = [
+      {
+        data: [],
+        type: 'line',
+        name: 'Body Mass'
+      },
+      {
+        data: [],
+        type: 'line',
+        name: 'Fat Mass'
+      },
+      {
+        data: [],
+        type: 'line',
+        name: 'Muscle Mass'
+      },
+      {
+        data: [],
+        type: 'line',
+        name: 'Body Water'
+      },
+      {
+        data: [],
+        type: 'line',
+        name: 'Bone Mass'
       }
     ];
 
@@ -190,6 +219,11 @@ export class BodyMeasuresComponent {
             value: observations.weight
           }
           weights[0].series.push(weight)
+
+          const idata: any[] = []
+          idata.push( observations.day.toISOString())
+          idata.push(observations.weight)
+          weightData[0].data.push(idata)
         }
         if (observations.muscle_mass !== undefined) {
           if (observations.muscle_mass < this.muscleMin) this.muscleMin = observations.muscle_mass
@@ -199,6 +233,11 @@ export class BodyMeasuresComponent {
             value: observations.muscle_mass
           }
           muscle[0].series.push(weight)
+
+          const idata: any[] = []
+          idata.push( observations.day.toISOString())
+          idata.push(observations.muscle_mass)
+          weightData[2].data.push(idata)
         }
       if (observations.fat_mass !== undefined) {
         if (observations.fat_mass < this.fatMin) this.fatMin = observations.fat_mass
@@ -208,6 +247,11 @@ export class BodyMeasuresComponent {
           value: observations.fat_mass
         }
         fats[0].series.push(weight)
+
+        const idata: any[] = []
+        idata.push( observations.day.toISOString())
+        idata.push(observations.fat_mass)
+        weightData[1].data.push(idata)
       }
 
       if (observations.bone_mass !== undefined) {
@@ -218,6 +262,10 @@ export class BodyMeasuresComponent {
           value: observations.bone_mass
         }
         bone[0].series.push(weight)
+        const idata: any[] = []
+        idata.push( observations.day.toISOString())
+        idata.push(observations.bone_mass)
+        weightData[4].data.push(idata)
       }
       if (observations.hydration !== undefined) {
         if (observations.hydration < this.hydrationMin) this.hydrationMin = observations.hydration
@@ -227,6 +275,11 @@ export class BodyMeasuresComponent {
           value: observations.hydration
         }
         hydration[0].series.push(weight)
+
+        const idata: any[] = []
+        idata.push( observations.day.toISOString())
+        idata.push(observations.hydration)
+        weightData[3].data.push(idata)
       }
       if (observations.glucose !== undefined) {
         let ent = {
@@ -316,6 +369,7 @@ export class BodyMeasuresComponent {
     }));
 
     this.spo2Data = spo2Data
+    this.weightData = weightData
     var sum = 0
     let referenceLines = []
 
