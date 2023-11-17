@@ -223,95 +223,19 @@
             </mat-panel-description>
         </mat-expansion-panel-header>
             <app-scatter-graph [setData]="weightData" [yMax]="weightMax" [yMin]="weightMin"></app-scatter-graph>
-          <!--  <div #panelRef>
-            <ngx-charts-line-chart
-                    [view]="[panelRef.offsetWidth, 200]"
-                    [scheme]="colorSeries"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxis]="true"
-                    [yAxis]="true"
-                    [curve]="curve"
-                    [yScaleMin]="weightMin"
-                    [yScaleMax]="weightMax"
-                    [legend]="false"
-                    xAxisLabel="Date"
-                    yAxisLabel="Body Weight"
-                    [timeline]="timeline"
-                    [results]="weights"
-                    [referenceLines]="weightReferenceLines"
-                    [showRefLines]="true"
-            >
-                <ng-template #tooltipTemplate let-model="model">
-             <span *ngIf="model !== undefined">
-                    {{getTime(model)}}
-                </span>
-                    <ul>
-                        <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
-                    </ul>
-                </ng-template>
-                <ng-template #seriesTooltipTemplate let-model="model">
-                    <span *ngIf="model !== undefined && model.length >0">
-                    {{getTime(model[0])}}
-                </span>
-                    <ul>
-                        <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
-                    </ul>
-                </ng-template>
-            </ngx-charts-line-chart>
-            </div> -->
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Fat Mass - &nbsp;<b>{{round1DP(getLast(fats))}} Kg ({{round1DP(getLast(fats) * 100 / getLast(weights))}} %)</b>
+                    Body Composition
                 </mat-panel-title>
                 <mat-panel-description>
-                      <span *ngIf="fatsReferenceLines.length > 0">
-                         Average Fat Mass {{round1DP(fatsReferenceLines[0].value)}} Kg
-                </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-             <app-scatter-graph [setData]="weightData" [yMax]="fatMax" [yMin]="fatMin"></app-scatter-graph>
-       <!--     <div #panelRef>
-            <ngx-charts-line-chart
-                    [view]="[panelRef.offsetWidth, 200]"
-                    [scheme]="colorSeries"
-                    [curve]="curve"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxis]="true"
-                    [yAxis]="true"
-                    [yScaleMin]="fatMin"
-                    [yScaleMax]="fatMax"
-                    [legend]="false"
-                    xAxisLabel="Date"
-                    yAxisLabel="Fat Mass"
-                    [timeline]="timeline"
-                    [results]="fats"
-                    [referenceLines]="fatsReferenceLines"
-                    [showRefLines]="true"
-            >
-                <ng-template #tooltipTemplate let-model="model">
-             <span *ngIf="model !== undefined">
-                    {{getTime(model)}}
-                </span>
-                    <ul>
-                        <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
-                    </ul>
-                </ng-template>
-                <ng-template #seriesTooltipTemplate let-model="model">
-                    <span *ngIf="model !== undefined && model.length >0">
-                    {{getTime(model[0])}}
-                </span>
-                    <ul>
-                        <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
-                    </ul>
-                </ng-template>
-            </ngx-charts-line-chart>
-            </div> -->
+             <app-scatter-graph [setData]="weightData" [yMax]="muscleMax" [yMin]="boneMin" height="600px"></app-scatter-graph>
+
         </mat-expansion-panel>
-        <mat-expansion-panel>
+    <!--    <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Muscle Mass - &nbsp;<b>{{round1DP(getLast(muscle))}} Kg ({{round1DP(getLast(muscle) * 100 / getLast(weights))}} %)</b>
@@ -326,43 +250,7 @@
                 </mat-panel-description>
             </mat-expansion-panel-header>
              <app-scatter-graph [setData]="weightData" [yMax]="muscleMax" [yMin]="muscleMin"></app-scatter-graph>
-        <!--    <div #panelRef>
-            <ngx-charts-line-chart
-                    [view]="[panelRef.offsetWidth, 200]"
-                    [scheme]="colorSeries"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [curve]="curve"
-                    [xAxis]="true"
-                    [yAxis]="true"
-                    [yScaleMin]="muscleMin"
-                    [yScaleMax]="muscleMax"
-                    [legend]="false"
-                    xAxisLabel="Date"
-                    yAxisLabel="Muscle Mass"
-                    [timeline]="timeline"
-                    [results]="muscle"
-                    [referenceLines]="muscleReferenceLines"
-                    [showRefLines]="true"
-            >
-                <ng-template #tooltipTemplate let-model="model">
-             <span *ngIf="model !== undefined">
-                    {{getTime(model)}}
-                </span>
-                    <ul>
-                        <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
-                    </ul>
-                </ng-template>
-                <ng-template #seriesTooltipTemplate let-model="model">
-                    <span *ngIf="model !== undefined && model.length >0">
-                    {{getTime(model[0])}}
-                </span>
-                    <ul>
-                        <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
-                    </ul>
-                </ng-template>
-            </ngx-charts-line-chart>
-            </div> -->
+
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -382,44 +270,7 @@
                 </mat-panel-description>
             </mat-expansion-panel-header>
              <app-scatter-graph [setData]="weightData" [yMax]="hydrationMax" [yMin]="hydrationMin"></app-scatter-graph>
-         <!--   <div #panelRef>
-            <ngx-charts-line-chart
-                    [view]="[panelRef.offsetWidth, 200]"
-                    [scheme]="colorSeries"
 
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxis]="true"
-                    [yAxis]="true"
-                    [curve]="curve"
-                    [yScaleMin]="hydrationMin"
-                    [yScaleMax]="hydrationMax"
-                    [legend]="false"
-                    xAxisLabel="Date"
-                    yAxisLabel="Body Water"
-                    [timeline]="timeline"
-                    [results]="hydration"
-                    [referenceLines]="hydrationReferenceLines"
-                    [showRefLines]="true"
-            >
-                <ng-template #tooltipTemplate let-model="model">
-             <span *ngIf="model !== undefined">
-                    {{getTime(model)}}
-                </span>
-                    <ul>
-                        <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
-                    </ul>
-                </ng-template>
-                <ng-template #seriesTooltipTemplate let-model="model">
-                    <span *ngIf="model !== undefined && model.length >0">
-                    {{getTime(model[0])}}
-                </span>
-                    <ul>
-                        <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
-                    </ul>
-                </ng-template>
-            </ngx-charts-line-chart>
-            </div> -->
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -433,44 +284,8 @@
                 </mat-panel-description>
             </mat-expansion-panel-header>
              <app-scatter-graph [setData]="weightData" [yMax]="boneMax" [yMin]="boneMin"></app-scatter-graph>
-          <!--  <div #panelRef>
-                <ngx-charts-line-chart
-                        [view]="[panelRef.offsetWidth, 200]"
-                        [scheme]="colorSeries"
-                        [curve]="curve"
-                        [showXAxisLabel]="showXAxisLabel"
-                        [showYAxisLabel]="showYAxisLabel"
-                        [xAxis]="true"
-                        [yAxis]="true"
-                        [yScaleMin]="boneMin"
-                        [yScaleMax]="boneMax"
-                        [legend]="false"
-                        xAxisLabel="Date"
-                        yAxisLabel="Bone Mass"
-                        [timeline]="timeline"
-                        [results]="bone"
-                        [referenceLines]="boneReferenceLines"
-                        [showRefLines]="true"
-                >
-                    <ng-template #tooltipTemplate let-model="model">
-             <span *ngIf="model !== undefined">
-                    {{getTime(model)}}
-                </span>
-                        <ul>
-                            <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
-                        </ul>
-                    </ng-template>
-                    <ng-template #seriesTooltipTemplate let-model="model">
-                    <span *ngIf="model !== undefined && model.length >0">
-                    {{getTime(model[0])}}
-                </span>
-                        <ul>
-                            <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
-                        </ul>
-                    </ng-template>
-                </ngx-charts-line-chart>
-            </div> -->
-        </mat-expansion-panel>
+
+        </mat-expansion-panel>-->
     </span>
 
 

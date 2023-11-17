@@ -20,19 +20,29 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
 
 
   @Input()
-  yMin: number | undefined
+  set yMin(yMin: number){
+    this.min = yMin
+    this.setOptions()
+  }
 
   @Input()
-  yMax: number | undefined
+  set yMax(yMax: number){
+    this.max = yMax
+  }
+  min: number | undefined
+  max: number | undefined
 
   // @ts-ignore
   option: EChartsOption
-
 
   // @ts-ignore
   @ViewChild('myDiv', {static: false}) myDiv: ElementRef;
 
   myChart : EChartsType | undefined
+
+  @Input()
+  height = "300px"
+
   ngAfterViewInit() {
     this.doChartSetup()
   }
@@ -59,8 +69,8 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
           type: 'time'
         },
         yAxis: {
-          min: this.yMin,
-          max: this.yMax
+          min: this.min,
+          max: this.max
         },
         series: this.data
       }
