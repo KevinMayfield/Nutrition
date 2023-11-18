@@ -21,15 +21,13 @@ export class BodyMeasuresComponent {
   measures :Observations[] = []
   activity: SummaryActivity[] = []
 
-
-  weights: LineChartSeries[] | undefined
   weightData: any[] = [];
-  muscle: LineChartSeries[] | undefined
+  bodyComposition: any[] = [];
+
   spo2: LineChartSeries[] | undefined
   spo2Data: any[] = [];
   hba1c: LineChartSeries[] | undefined
-  fats: LineChartSeries[] | undefined
-  bone: LineChartSeries[] | undefined
+
   hydration: LineChartSeries[] | undefined
   steps: LineSeries[] = [];
   bpSeries : any;
@@ -66,10 +64,7 @@ export class BodyMeasuresComponent {
   hydrationMax= 0;
 
   avgWeight = 0
-  avgFat = 0
-  avgMuscle = 0
-  avgHydration = 0
-  avgBone = 0
+
   //curve = curveBasis
   curve = curveCatmullRom
   schemeType: ScaleType = ScaleType.Linear;
@@ -77,11 +72,7 @@ export class BodyMeasuresComponent {
   scaleMin = 9999;
   scaleMax = 0;
   bpReferenceLines: any[] = [];
-  hydrationReferenceLines: any[] = [];
-  muscleReferenceLines: any[] = [];
-  fatsReferenceLines: any[] = [];
-  boneReferenceLines: any[] = [];
-  weightReferenceLines: any[] = [];
+
   spo2Min = 9999;
   spo2Max = 0;
 
@@ -91,6 +82,90 @@ export class BodyMeasuresComponent {
   @ViewChild('HbA1cSort') HbA1cSort: MatSort | null | undefined;
   spo2PanelOpenState: boolean = false;
 
+  yAxisBodyComposition : any =
+      [
+        {
+          type: 'value',
+          name: 'Body Weight',
+          position: 'left',
+          alignTicks: false,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: this.colorSeries.domain[0]
+            }
+          },
+          axisLabel: {
+            formatter: '{value} Kg'
+          }
+        },
+        {
+          type: 'value',
+          name: 'Fat Mass',
+          position: 'right',
+          alignTicks: false,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: this.colorSeries.domain[1]
+            }
+          },
+          axisLabel: {
+            formatter: '{value} Kg'
+          }
+        },
+        {
+          type: 'value',
+          name: 'Muscle',
+          position: 'right',
+          alignTicks: true,
+          show: false,
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.colorSeries.domain[2]
+            }
+          },
+          axisLabel: {
+            formatter: '{value}'
+          }
+        },
+        {
+          type: 'value',
+          name: 'Water',
+          position: 'right',
+          alignTicks: true,
+
+          show: false,
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.colorSeries.domain[3]
+            }
+          },
+          axisLabel: {
+            formatter: '{value}'
+          }
+        },
+        {
+          type: 'value',
+          name: 'Bone',
+          position: 'right',
+          alignTicks: true,
+          show: false,
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.colorSeries.domain[4]
+            }
+          },
+          axisLabel: {
+            formatter: '{value}'
+          }
+        }
+      ]
+  bodyPanelOpenState = false;
+
   constructor(public epr: EPRService,
               private _liveAnnouncer: LiveAnnouncer){
 
@@ -99,10 +174,7 @@ export class BodyMeasuresComponent {
 
 
   private refreshActivity() {
-    this.weights = []
-    this.muscle = []
-    this.fats = []
-    this.bone = []
+
     this.hydration = []
     this.bpSeries = []
     this.spo2 = []
@@ -128,29 +200,47 @@ export class BodyMeasuresComponent {
       {
         data: [],
         type: 'line',
+        name: 'Body Mass',
+        markPoint: {
+          data: [
+            { type: 'max', name: 'Max' },
+            { type: 'min', name: 'Min' }
+          ]
+        }
+      }
+    ];
+    const bodyComposition: any[] = [
+      {
+        data: [],
+        type: 'line',
         name: 'Body Mass'
       },
       {
         data: [],
         type: 'line',
+        yAxisIndex: 1,
         name: 'Fat Mass'
       },
       {
         data: [],
         type: 'line',
+        yAxisIndex: 2,
         name: 'Muscle Mass'
       },
       {
         data: [],
         type: 'line',
-        name: 'Body Water'
+        yAxisIndex: 3,
+        name: 'Body Water',
       },
       {
         data: [],
         type: 'line',
+        yAxisIndex: 4,
         name: 'Bone Mass'
       }
     ];
+
 
 
     this.steps = []
@@ -160,31 +250,7 @@ export class BodyMeasuresComponent {
         name: 'Blood Glucose',
         series: []
       }]
-    var weights: LineChartSeries[] = [
-      {
-        name: 'Body Weight',
-        series: []
-      }]
-    var muscle: LineChartSeries[] = [
-      {
-        name: 'Muscle Mass',
-        series: []
-      }]
-    var fats: LineChartSeries[] = [
-      {
-        name: 'Fat Mass',
-        series: []
-      }]
-    var hydration: LineChartSeries[] = [
-      {
-        name: 'Body Water',
-        series: []
-      }]
-    var bone: any[] = [
-      {
-        name: 'Bone Mass',
-        series: []
-      }]
+
     var bp : LineChartSeries[]= [
       {
         name: 'Systole',
@@ -214,73 +280,53 @@ export class BodyMeasuresComponent {
         if (observations.weight !== undefined) {
           if (observations.weight < this.weightMin) this.weightMin = observations.weight
           if (observations.weight > this.weightMax) this.weightMax = observations.weight
-          let weight = {
-            name: observations.day,
-            value: observations.weight
-          }
-          weights[0].series.push(weight)
 
           const idata: any[] = []
-          idata.push( observations.day.toISOString())
+          idata.push(observations.day.toISOString())
           idata.push(observations.weight)
           weightData[0].data.push(idata)
-        }
-        if (observations.muscle_mass !== undefined) {
-          if (observations.muscle_mass < this.muscleMin) this.muscleMin = observations.muscle_mass
-          if (observations.muscle_mass > this.muscleMax) this.muscleMax = observations.muscle_mass
-          let weight = {
-            name: observations.day,
-            value: observations.muscle_mass
+          bodyComposition[0].data.push(idata)
+
+          if (observations.fat_mass !== undefined) {
+            if (observations.fat_mass < this.fatMin) this.fatMin = observations.fat_mass
+            if (observations.fat_mass > this.fatMax) this.fatMax = observations.fat_mass
+
+            const idata: any[] = []
+            idata.push(observations.day.toISOString())
+            idata.push(observations.fat_mass)
+            bodyComposition[1].data.push(idata)
           }
-          muscle[0].series.push(weight)
+          if (observations.muscle_mass !== undefined) {
+            if (observations.muscle_mass < this.muscleMin) this.muscleMin = observations.muscle_mass
+            if (observations.muscle_mass > this.muscleMax) this.muscleMax = observations.muscle_mass
 
-          const idata: any[] = []
-          idata.push( observations.day.toISOString())
-          idata.push(observations.muscle_mass)
-          weightData[2].data.push(idata)
-        }
-      if (observations.fat_mass !== undefined) {
-        if (observations.fat_mass < this.fatMin) this.fatMin = observations.fat_mass
-        if (observations.fat_mass > this.fatMax) this.fatMax = observations.fat_mass
-        let weight = {
-          name: observations.day,
-          value: observations.fat_mass
-        }
-        fats[0].series.push(weight)
 
-        const idata: any[] = []
-        idata.push( observations.day.toISOString())
-        idata.push(observations.fat_mass)
-        weightData[1].data.push(idata)
-      }
+            const idata: any[] = []
+            idata.push(observations.day.toISOString())
+            idata.push(observations.muscle_mass)
+            bodyComposition[2].data.push(idata)
+          }
+          if (observations.hydration !== undefined) {
+            if (observations.hydration < this.hydrationMin) this.hydrationMin = observations.hydration
+            if (observations.hydration > this.hydrationMax) this.hydrationMax = observations.hydration
 
-      if (observations.bone_mass !== undefined) {
-        if (observations.bone_mass < this.boneMin) this.boneMin = observations.bone_mass
-        if (observations.bone_mass > this.boneMax) this.boneMax = observations.bone_mass
-        let weight = {
-          name: observations.day,
-          value: observations.bone_mass
-        }
-        bone[0].series.push(weight)
-        const idata: any[] = []
-        idata.push( observations.day.toISOString())
-        idata.push(observations.bone_mass)
-        weightData[4].data.push(idata)
-      }
-      if (observations.hydration !== undefined) {
-        if (observations.hydration < this.hydrationMin) this.hydrationMin = observations.hydration
-        if (observations.hydration > this.hydrationMax) this.hydrationMax = observations.hydration
-        let weight = {
-          name: observations.day,
-          value: observations.hydration
-        }
-        hydration[0].series.push(weight)
 
-        const idata: any[] = []
-        idata.push( observations.day.toISOString())
-        idata.push(observations.hydration)
-        weightData[3].data.push(idata)
-      }
+            const idata: any[] = []
+            idata.push(observations.day.toISOString())
+            idata.push(observations.hydration)
+            bodyComposition[3].data.push(idata)
+          }
+
+          if (observations.bone_mass !== undefined) {
+            if (observations.bone_mass < this.boneMin) this.boneMin = observations.bone_mass
+            if (observations.bone_mass > this.boneMax) this.boneMax = observations.bone_mass
+
+            const idata: any[] = []
+            idata.push(observations.day.toISOString())
+            idata.push(observations.bone_mass)
+            bodyComposition[4].data.push(idata)
+          }
+        }
       if (observations.glucose !== undefined) {
         let ent = {
           name: observations.day,
@@ -346,11 +392,7 @@ export class BodyMeasuresComponent {
         steps.push(ent)
       }
     })
-    this.muscle = muscle
-    this.hydration = hydration
-    this.weights = weights
-    this.fats = fats
-    this.bone = bone
+
     this.bpSeries = bp
 
     this.spo2 = spo2
@@ -369,7 +411,7 @@ export class BodyMeasuresComponent {
     }));
 
     this.spo2Data = spo2Data
-    this.weightData = weightData
+
     var sum = 0
     let referenceLines = []
 
@@ -395,51 +437,27 @@ export class BodyMeasuresComponent {
     }
     this.bpReferenceLines = referenceLines
 
-    sum=0
-    muscle[0].series.forEach((entry: any) => {
-      sum += entry.value
-    })
-    this.avgMuscle = sum / muscle[0].series.length
-    this.muscleReferenceLines = [{
-      name: 'Average',
-      value: this.avgMuscle
-    }]
+    this.weightData = weightData
+    this.bodyComposition = bodyComposition
+    this.yAxisBodyComposition[0].min = Math.floor(this.weightMin - 7)
+    this.yAxisBodyComposition[0].max = Math.ceil(this.weightMax)
+
+    this.yAxisBodyComposition[1].min = Math.floor(this.fatMin -2)
+    this.yAxisBodyComposition[1].max = Math.ceil(this.fatMax + 5)
+
+    this.yAxisBodyComposition[2].min = Math.floor(this.muscleMin - 11)
+    this.yAxisBodyComposition[2].max = Math.ceil(this.muscleMax + 3)
+
+    this.yAxisBodyComposition[3].min = Math.floor(this.hydrationMin - 7)
+    this.yAxisBodyComposition[3].max = Math.ceil(this.hydrationMax + 4)
+
+    this.yAxisBodyComposition[4].min = Math.floor(this.boneMin * 10) / 10
+    this.yAxisBodyComposition[4].max = Math.ceil(1 + this.boneMax * 10  ) / 10
     sum = 0
-    weights[0].series.forEach((entry: any) => {
+    weightData[0].data.forEach((entry: any) => {
       sum += entry.value
     })
-    this.avgWeight = sum / weights[0].series.length
-    this.weightReferenceLines = [{
-      name: 'Average',
-      value: this.avgWeight
-    }]
-    sum = 0
-    fats[0].series.forEach((entry: any) => {
-      sum += entry.value
-    })
-    this.avgFat = sum / fats[0].series.length
-    this.fatsReferenceLines = [{
-      name: 'Average',
-      value: this.avgFat
-    }]
-    sum = 0
-    bone[0].series.forEach((entry: any) => {
-      sum += entry.value
-    })
-    this.avgBone = sum / weights[0].series.length
-    this.boneReferenceLines = [{
-      name: 'Average',
-      value: this.avgBone
-    }]
-    sum = 0
-    hydration[0].series.forEach((entry: any) => {
-      sum += entry.value
-    })
-    this.avgHydration = sum / hydration[0].series.length
-    this.hydrationReferenceLines = [{
-      name: 'Average',
-      value: this.avgHydration
-    }]
+    this.avgWeight = sum / weightData[0].data.length
   }
 
   getLast(series: any[] | undefined) {
@@ -477,6 +495,31 @@ export class BodyMeasuresComponent {
     }
     if (latest !== undefined) return latest.value
     return undefined
+  }
+  getLastE(data: any[]) {
+
+    var latest : any = undefined
+    if ( data !== undefined) {
+      data.forEach((entry: any) => {
+        if (latest == undefined) latest = entry
+        else if (latest[0] < entry[0]) {
+          latest = entry
+        }
+      })
+    }
+    if (latest !== undefined) return latest[1]
+    return undefined
+  }
+  getAvgE(data: any[]) {
+    let sum = 0
+    var latest : any = undefined
+    if ( data !== undefined) {
+      data.forEach((entry: any) => {
+        sum += entry[1]
+      })
+      return sum/data.length
+    }
+    return 0
   }
   round2DP(value : number) {
     return Math.round(value * 100) / 100
@@ -535,4 +578,6 @@ export class BodyMeasuresComponent {
       }
       return result
   }
+
+
 }

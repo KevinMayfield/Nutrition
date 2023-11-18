@@ -1,13 +1,13 @@
 import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import * as echarts from "echarts";
 import {EChartsOption, EChartsType} from "echarts";
+import * as echarts from "echarts";
 
 @Component({
-  selector: 'app-scatter-graph',
-  templateUrl: './scatter-graph.component.html',
-  styleUrls: ['./scatter-graph.component.scss']
+  selector: 'app-line-chart',
+  templateUrl: './line-chart.component.html',
+  styleUrls: ['./line-chart.component.scss']
 })
-export class ScatterGraphComponent implements AfterViewInit, OnInit {
+export class LineChartComponent implements AfterViewInit, OnInit {
 
   @Input()
   set setData(data: any[]) {
@@ -18,26 +18,25 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
       // @ts-ignore
       | undefined
 
+  @Input() colours : string[] = [ '#7aa3e5','#5AA454','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
+
 
   @Input()
-  set yMin(yMin: number){
-    this.min = yMin
+  set yAxis(yAxis: any[]){
+
+    this.yAxisData = yAxis
     this.setOptions()
   }
-
-  @Input()
-  set yMax(yMax: number){
-    this.max = yMax
-  }
-  min: number | undefined
-  max: number | undefined
+  yAxisData: any | undefined
 
 
   // @ts-ignore
   option: EChartsOption
 
+
   @Input()
   height = "300px"
+
 
   ngAfterViewInit() {
     this.doChartSetup()
@@ -48,7 +47,10 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
   }
   setOptions() {
 
-      this.option = {
+    this.option == undefined
+    if (this.yAxisData !== undefined && this.data !== undefined) {
+      let option :any = {
+        color: this.colours,
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -65,16 +67,18 @@ export class ScatterGraphComponent implements AfterViewInit, OnInit {
           bottom: 10
         }
       }
-      this.option.yAxis = {
-        min: this.min,
-        max: this.max
-      }
+
+        option.yAxis = this.yAxisData
+
+
       if (this.data !== undefined) {
         this.data.forEach(data => {
           // @ts-ignore
-          this.option.legend.data.push(data.name)
+          option.legend.data.push(data.name)
         })
       }
+      this.option = option
+    }
   }
 
   ngOnInit(): void {

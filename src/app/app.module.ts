@@ -49,7 +49,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import { PieChartPlusComponent } from './charts/pie-chart-plus/pie-chart-plus.component';
 import { NgxEchartsModule} from "ngx-echarts";
 import { ScatterGraphComponent } from './echart/scatter-graph/scatter-graph.component';
-import { LineGraphComponent } from './echart/line-graph/line-graph.component';
+import { LineChartComponent } from './echart/line-chart/line-chart.component';
 
 @NgModule({
     declarations: [
@@ -70,7 +70,7 @@ import { LineGraphComponent } from './echart/line-graph/line-graph.component';
         BodyMeasuresComponent,
         PieChartPlusComponent,
         ScatterGraphComponent,
-        LineGraphComponent
+        LineChartComponent
     ],
     imports: [
         BrowserModule,

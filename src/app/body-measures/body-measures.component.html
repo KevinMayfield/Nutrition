@@ -204,88 +204,60 @@
         </span>
     </mat-expansion-panel>
     </span>
-    <span *ngIf="weights != undefined && weights[0].series != undefined && weights[0].series.length > 1">
+    <span *ngIf="weightData != undefined && weightData[0].data != undefined && weightData[0].data.length > 1">
         <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title >
-                Weight - &nbsp;<b>{{round1DP(getLast(weights))}} Kg</b>
+                Weight - &nbsp;<b>{{round1DP(getLastE(weightData[0].data))}} Kg</b>
             </mat-panel-title>
             <mat-panel-description>
-                <span *ngIf="weightReferenceLines.length > 0">
-                         <span *ngIf="(getLast(weights) - weightReferenceLines[0].value) > epr.weightWarnHigh">
+                <span *ngIf="avgWeight > 0">
+                         <span *ngIf="(getLastE(weightData[0].data) - avgWeight) > epr.weightWarnHigh">
                             <button mat-flat-button [ngStyle]="getOK()">Full</button>
                          </span>
-                          <span *ngIf="(getLast(weights) - weightReferenceLines[0].value) < epr.weightWarnLow">
+                          <span *ngIf="(getLastE(weightData[0].data) - avgWeight) < epr.weightWarnLow">
                             <button mat-flat-button [ngStyle]="getWarning()">Refuel & Drink</button>
                          </span>
-                         Average Weight {{round1DP(weightReferenceLines[0].value)}} Kg
+                         Average Weight {{round1DP(avgWeight)}} Kg
                 </span>
             </mat-panel-description>
         </mat-expansion-panel-header>
             <app-scatter-graph [setData]="weightData" [yMax]="weightMax" [yMin]="weightMin"></app-scatter-graph>
         </mat-expansion-panel>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Body Composition
-                </mat-panel-title>
-                <mat-panel-description>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-             <app-scatter-graph [setData]="weightData" [yMax]="muscleMax" [yMin]="boneMin" height="600px"></app-scatter-graph>
+         <span *ngIf="bodyComposition != undefined && bodyComposition[0].data != undefined && bodyComposition[0].data.length > 1">
+            <mat-expansion-panel (opened)="bodyPanelOpenState = true"
+                                 (closed)="bodyPanelOpenState = false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Body Composition
+                    </mat-panel-title>
+                    <mat-panel-description>
 
-        </mat-expansion-panel>
-    <!--    <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Muscle Mass - &nbsp;<b>{{round1DP(getLast(muscle))}} Kg ({{round1DP(getLast(muscle) * 100 / getLast(weights))}} %)</b>
-                </mat-panel-title>
-                <mat-panel-description>
-                      <span *ngIf="muscleReferenceLines.length > 0">
-                           <span *ngIf="(getLast(muscle) - muscleReferenceLines[0].value) < epr.muscleWarnLow">
+
+                      <span *ngIf="bodyComposition != undefined && bodyComposition[2].data != undefined">
+                           <span *ngIf="(getLastE(bodyComposition[2].data) - getAvgE(bodyComposition[2].data)) < epr.muscleWarnLow">
                             <button mat-flat-button [ngStyle]="getInfo()">Check Carbs Intake</button>
                          </span>
-                         Average Muscle Mass {{round1DP(muscleReferenceLines[0].value)}} Kg
-                    </span>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-             <app-scatter-graph [setData]="weightData" [yMax]="muscleMax" [yMin]="muscleMin"></app-scatter-graph>
 
-        </mat-expansion-panel>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Body Water - &nbsp;<b>{{round1DP(getLast(hydration))}} Kg ({{round1DP(getLast(hydration) * 100 / getLast(weights))}} %)</b>
-                </mat-panel-title>
-                <mat-panel-description>
-                      <span *ngIf="hydrationReferenceLines.length > 0">
-                           <span *ngIf="(getLast(hydration) - hydrationReferenceLines[0].value) > epr.hydratedWarnHigh">
+                    </span>
+
+                      <span *ngIf="bodyComposition != undefined && bodyComposition[3].data != undefined">
+                           <span *ngIf="(getLastE(bodyComposition[3].data) - getAvgE(bodyComposition[3].data)) > epr.hydratedWarnHigh">
                             <button mat-flat-button [ngStyle]="getOK()">Hydrated</button>
                          </span>
-                          <span *ngIf="(getLast(hydration) - hydrationReferenceLines[0].value) < epr.hydratedWarnLow">
+                          <span *ngIf="(getLastE(bodyComposition[3].data) - getAvgE(bodyComposition[3].data)) < epr.hydratedWarnLow">
                             <button mat-flat-button [ngStyle]="getWarning()">Dehydrated</button>
                          </span>
-                         Average Body Water {{round1DP(hydrationReferenceLines[0].value)}} Kg
-                </span>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-             <app-scatter-graph [setData]="weightData" [yMax]="hydrationMax" [yMin]="hydrationMin"></app-scatter-graph>
 
-        </mat-expansion-panel>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Bone Mass - &nbsp;<b>{{round2DP(getLast(bone))}} Kg</b>
-                </mat-panel-title>
-                <mat-panel-description>
-                      <span *ngIf="boneReferenceLines.length > 0">
-                         Average Bone Mass {{round2DP(boneReferenceLines[0].value)}} Kg
                 </span>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-             <app-scatter-graph [setData]="weightData" [yMax]="boneMax" [yMin]="boneMin"></app-scatter-graph>
 
-        </mat-expansion-panel>-->
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                <span *ngIf="bodyPanelOpenState">
+                     <app-line-chart [setData]="bodyComposition" [yAxis]="yAxisBodyComposition" height="600px"></app-line-chart>
+                </span>
+            </mat-expansion-panel>
+         </span>
     </span>
 
 
