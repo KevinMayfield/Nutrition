@@ -453,11 +453,9 @@ export class BodyMeasuresComponent {
 
     this.yAxisBodyComposition[4].min = Math.floor(this.boneMin * 10) / 10
     this.yAxisBodyComposition[4].max = Math.ceil(1 + this.boneMax * 10  ) / 10
-    sum = 0
-    weightData[0].data.forEach((entry: any) => {
-      sum += entry.value
-    })
-    this.avgWeight = sum / weightData[0].data.length
+
+
+    this.avgWeight = this.round1DP(this.getAvgE(bodyComposition[0].data))
   }
 
   getLast(series: any[] | undefined) {
