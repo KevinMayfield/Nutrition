@@ -236,7 +236,7 @@
 
                       <span *ngIf="bodyComposition != undefined && bodyComposition[2].data != undefined">
                            <span *ngIf="(getLastE(bodyComposition[2].data) - getAvgE(bodyComposition[2].data)) < epr.muscleWarnLow">
-                            <button mat-flat-button [ngStyle]="getInfo()">Check Carbs Intake</button>
+                            <button mat-flat-button [ngStyle]="getInfo()">Check Carbs Intake</button> Current Muscle Mass is {{round1DP( (getLastE(bodyComposition[2].data) - getAvgE(bodyComposition[2].data)))}} Kg less than average
                          </span>
 
                     </span>
@@ -246,7 +246,7 @@
                             <button mat-flat-button [ngStyle]="getOK()">Hydrated</button>
                          </span>
                           <span *ngIf="(getLastE(bodyComposition[3].data) - getAvgE(bodyComposition[3].data)) < epr.hydratedWarnLow">
-                            <button mat-flat-button [ngStyle]="getWarning()">Dehydrated</button>
+                            <button mat-flat-button [ngStyle]="getWarning()">Dehydrated</button> Current Body Water is {{round1DP( (getLastE(bodyComposition[3].data) - getAvgE(bodyComposition[3].data)))}} l less than average
                          </span>
 
                 </span>

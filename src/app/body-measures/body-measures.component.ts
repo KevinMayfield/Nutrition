@@ -567,12 +567,15 @@ export class BodyMeasuresComponent {
           activityEndDate.setMinutes(activityDate.getMinutes() + (activity.elapsed_time/60))
           //console.log(activity.elapsed_time/60)
           var diff = (activityDate.valueOf() - contextDate.valueOf()) / (1000 *60)
-          if (diff > 0 && diff < 60) {
+          if (activityDate > contextDate && diff > 0 && diff < 60) {
             result = 'Pre Exercise'
           }
           diff = (activityEndDate.valueOf() - contextDate.valueOf()) / (1000 *60)
-          if (diff < 0 && diff > -60) {
+          if (activityEndDate < contextDate &&  diff < 0 && diff > -60) {
             result = 'Post Exercise'
+          }
+          if (contextDate > activityDate && contextDate < activityEndDate) {
+            result = 'During Exercice'
           }
         })
       }
