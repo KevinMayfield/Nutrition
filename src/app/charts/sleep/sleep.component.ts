@@ -1,9 +1,8 @@
 import {Component, Input} from '@angular/core';
-import {Color, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
+import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {Observations} from "../../models/observations";
-import {curveBasis, curveCatmullRom} from "d3-shape";
 import {EPRService} from "../../service/epr.service";
-import {StravaService} from "../../service/strava.service";
+
 
 @Component({
   selector: 'app-sleep',
@@ -13,44 +12,23 @@ import {StravaService} from "../../service/strava.service";
 export class SleepComponent {
   measure :Observations[] = []
 
-  sleepScore: any[] | undefined
-  hrv: any[] | undefined
-  avg_hearrate : any[] | undefined
-   seriesHRV: any[] | undefined
-    seriesHR: any[] | undefined
-    series: any[] | undefined
 
-  showXAxis = true;
-  showYAxis = true;
-  gradient = false;
-  showLegend = false;
-  timeline: boolean = false;
-    curve = curveCatmullRom
-    //  curve = curveBasis
-  showXAxisLabel = false;
-  showYAxisLabel = true;
+    sleepScoreData: any[] = []
+    sleepData: any[] = []
+
+
+
     scaleMin= 99999;
     scaleMax= 0;
-  colorScheme: Color = {
-    domain: [
-       'lightblue'
-    ], group: ScaleType.Ordinal, name: "", selectable: false
-  }
+
     colorSleep: Color = {
         domain: [
             'lightblue'
         ], group: ScaleType.Ordinal, name: "", selectable: false
     }
-    colorSeries = {
-        domain: [ '#7aa3e5','#5AA454','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
-        , group: ScaleType.Ordinal, name: "", selectable: false
-    };
-    colorSeries2 = {
-        domain: [ '#5AA454','#7aa3e5','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
-        , group: ScaleType.Ordinal, name: "", selectable: false
-    };
-    legendPosition: LegendPosition = LegendPosition.Below;
+
     referenceLines= [{ name: 'hr', value: 50 }];
+    sleepScoreXAxis: any[] | undefined;
 
   @Input() set measures(measure: Observations[]) {
 
@@ -61,131 +39,123 @@ export class SleepComponent {
     constructor(public epr: EPRService){}
 
   private refreshActivity() {
-    this.sleepScore = undefined
-      this.colorSleep.domain = []
-    this.hrv = undefined
-    this.avg_hearrate = undefined
-      this.seriesHRV = undefined
-      this.seriesHR = undefined
-      this.series = undefined
-    var sleepScore: any[] = []
-    var hrv: any[] = []
-    var avg_heartrate: any[] = []
-      var seriesHRV: any[] = [{
-        name: 'HRV',
-          series: []
-      }]
-      var avg_heartrate: any[] = []
-      var seriesHR: any[] = [
-          {
-              name: 'Avg Heart Rate',
-              series: []
-          }]
-    if (this.measure !== undefined) {
 
+      this.colorSleep.domain = []
+      this.sleepData = []
+      this.sleepScoreData = []
+      this.sleepScoreXAxis = undefined
+      var sleepScoreXAxis : any = [
+              {
+                  data: []
+              }
+          ]
+
+      var sleepData : any[] = [
+          {
+              name: 'Heart Rate Variability (HRV)',
+              type: 'line',
+              data: []
+          },
+          {
+              name: 'Average Heart Rate',
+              type: 'line',
+              data: []
+          }
+      ]
+      var sleepScoreData : any[] = [
+          {
+              name: 'Green',
+              color: '#5AA454',
+              stack: 'Sleep',
+              type: 'bar',
+              data: []
+          },
+          {
+              name: 'Yellow',
+              color: '#C7B42C',
+              stack: 'Sleep',
+              type: 'bar',
+              data: []
+          },
+          {
+              name: 'Red',
+              color: '#A10A28',
+              stack: 'Sleep',
+              type: 'bar',
+              data: []
+          }
+
+      ]
+    var sleepScore: any[] = []
+
+    if (this.measure !== undefined) {
       for (let measure of this.measure) {
 
-          let entSleep = {
-              name: measure.day,
-              value: 0
-          }
           if (measure.sleepScore !== undefined) {
-              entSleep.value = measure.sleepScore
-              if (measure.sleepScore > 85) this.colorSleep.domain.push('#5AA454')
-              else if (measure.sleepScore > 50) this.colorSleep.domain.push('#C7B42C')
-              else this.colorSleep.domain.push('#A10A28')
-          } else {
-              this.colorSleep.domain.push('#AAAAAA')
-          }
-          sleepScore.push(entSleep)
 
-          let entHrv = {
-              name: measure.day,
-              value: 0
+              sleepScoreXAxis[0].data.push(measure.day.toISOString().split('T')[0])
+
+              if (measure.sleepScore > 85) {
+                  sleepScoreData[0].data.push(measure.sleepScore)
+                  sleepScoreData[2].data.push(0)
+                  sleepScoreData[1].data.push(0)
+              }
+              else if (measure.sleepScore > 50) {
+
+                  sleepScoreData[1].data.push(measure.sleepScore)
+                  sleepScoreData[0].data.push(0)
+                  sleepScoreData[2].data.push(0)
+              }
+              else {
+
+                  sleepScoreData[2].data.push(measure.sleepScore)
+                  sleepScoreData[0].data.push(0)
+                  sleepScoreData[1].data.push(0)
+              }
+          } else {
+
           }
+
+
+
           if (measure.hrv !== undefined) {
               if (this.scaleMax < measure.hrv) this.scaleMax = measure.hrv
               if (this.scaleMin > measure.hrv) this.scaleMin = measure.hrv
-              entHrv.value = measure.hrv
-          }
-          hrv.push(entHrv)
 
-
-          let entAvgHeartrate = {
-              name: measure.day,
-              value: 0
+              const idata: any[] = []
+              idata.push(measure.day.toISOString())
+              idata.push(measure.hrv)
+              sleepData[0].data.push(idata)
           }
+
           if (measure.hr_average !== undefined) {
               if (this.scaleMax < measure.hr_average) this.scaleMax = measure.hr_average
               if (this.scaleMin > measure.hr_average) this.scaleMin = measure.hr_average
-              entAvgHeartrate.value = measure.hr_average
-          }
-          avg_heartrate.push(entAvgHeartrate)
-
-          if (measure.hr_average !== undefined) {
-              seriesHRV[0].series.push(entHrv)
-              seriesHR[0].series.push(entAvgHeartrate)
+              const idata: any[] = []
+              idata.push(measure.day.toISOString())
+              idata.push(measure.hr_average)
+              sleepData[1].data.push(idata)
           }
       }
     }
-    this.sleepScore = sleepScore
-    this.hrv = hrv
-    this.avg_hearrate = avg_heartrate
-      this.seriesHRV = seriesHRV
-      this.seriesHR = seriesHR
-      let referenceLines = []
-      let sum = 0
 
-      if (this.seriesHR.length > 0 && this.seriesHR[0].series !== undefined) {
-          sum =0
-          this.seriesHR[0].series.forEach((entry: any) => {
-              sum += entry.value
-          })
-          referenceLines.push({
-              name: 'Average Heart Rate',
-              value: Math.round(sum / this.seriesHR[0].series.length)
-          })
-      }
-      if (this.seriesHRV.length > 0 && this.seriesHRV[0].series !== undefined) {
-          sum =0
-          this.seriesHRV[0].series.forEach((entry: any) => {
-              sum += entry.value
-          })
-          referenceLines.push({
-              name: 'Average Heart Rate Variability',
-              value: Math.round(sum / this.seriesHRV[0].series.length)
-          })
-      }
-
-      this.referenceLines = referenceLines
-
-    var series = []
-    series.push(seriesHRV[0])
-      series.push(seriesHR[0])
-      this.series = series
+      this.sleepScoreData = sleepScoreData
+      this.sleepScoreXAxis = sleepScoreXAxis
+    this.sleepData = sleepData
   }
 
-    getLast(series: any[] | undefined) {
-        if (series == undefined) return undefined
-        if (series.length === 0 ) return undefined
-        var latest : any = undefined
-        if (series[0].series !== undefined) {
-            series[0].series.forEach((entry: any) => {
-                if (latest == undefined) latest = entry
-                else if (latest.name < entry.name) {
-                    latest = entry
-                }
-            })
-        } else {
-            series.forEach((entry: any) => {
-                if (latest == undefined) latest = entry
-                else if (latest.name < entry.name) {
-                    latest = entry
-                }
-            })
-        }
-        if (latest !== undefined) return latest.value
-        return undefined
+    getLastE(data: any[]) {
+        return this.epr.getLastE(data)
+    }
+
+    getMinE(data: any[]) {
+        return this.epr.getMinE(data)
+    }
+    getMaxE(data: any[]) {
+        return this.epr.getMaxE(data)
+    }
+    getAvgE(data: any[]) {
+        return this.epr.getAvgE(data)
     }
     round(value : number) {
         return Math.round(value )
@@ -210,4 +180,20 @@ export class SleepComponent {
         return this.epr.getInfo()
     }
 
+    getLast(series: any[] | undefined) {
+       var lastScore = 0
+        series?.forEach(dataSeries =>{
+            const last = dataSeries.data[dataSeries.data.length -1]
+            if (last > 0) lastScore = last
+        })
+        return lastScore
+    }
+
+    getMin(sleepData: any[]) {
+        var min = 9999
+        sleepData.forEach(series=>{
+            if (this.getMinE(series.data) < min) min = this.getMinE(series.data)
+        })
+        return min;
+    }
 }

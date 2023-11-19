@@ -1,93 +1,42 @@
 <div #containerRef>
-    <h3>Sleep</h3>
-    <mat-accordion>
+    <h3>Sleep and Steps</h3>
+        <span *ngIf="sleepData.length > 0 && sleepData[0].data != undefined && sleepData[0].data.length > 1">
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Sleep Heart Rate - &nbsp;<b>{{round(getLast(seriesHR))}} bpm</b>. HRV &nbsp;<b>{{round(getLast(seriesHRV))}}</b>
+                    Sleep Average Heart Rate - &nbsp;<b>{{round(getLastE(sleepData[1].data))}} bpm</b>. HRV &nbsp;<b>{{round(getLastE(sleepData[0].data))}}</b>
                 </mat-panel-title>
                 <mat-panel-description>
                      <span *ngIf="referenceLines.length > 1">
-                         <span *ngIf="(round(getLast(seriesHRV)) - referenceLines[1].value) < epr.hrvWarnLow">
+                         <span *ngIf="(round(getLastE(sleepData[0].data)) - referenceLines[1].value) < epr.hrvWarnLow">
                             <button mat-flat-button [ngStyle]="getWarning()">Low HRV</button>
                          </span>
-                          <span *ngIf="(round(getLast(seriesHRV)) - referenceLines[1].value) > epr.hrvRested">
+                          <span *ngIf="(round(getLastE(sleepData[0].data)) - referenceLines[1].value) > epr.hrvRested">
                             <button mat-flat-button [ngStyle]="getOK()">Rested (HRV)</button>
                          </span>
-                         <span *ngIf="(round(getLast(seriesHR)) - referenceLines[0].value) > epr.hrWarnHigh">
+                         <span *ngIf="(round(getLastE(sleepData[1].data)) - referenceLines[0].value) > epr.hrWarnHigh">
                             <button mat-flat-button [ngStyle]="getWarning()">High HR</button>
                          </span>
-                          <span *ngIf="(round(getLast(seriesHR)) - referenceLines[0].value) < epr.hrRested">
+                          <span *ngIf="(round(getLastE(sleepData[1].data)) - referenceLines[0].value) < epr.hrRested">
                             <button mat-flat-button [ngStyle]="getOK()">Rested (HR)</button>
                          </span>
-                         Average Heart Rate {{referenceLines[0].value}} Average HRV {{referenceLines[1].value}}
+                         Average Heart Rate {{getAvgE(sleepData[1].data)}} Average HRV {{getAvgE(sleepData[0].data)}}
                      </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <ngx-charts-line-chart
-                    [view]="[containerRef.offsetWidth, 250]"
-                    [scheme]="colorSeries"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxis]="showXAxis"
-                    [yScaleMin]="scaleMin"
-                    [yScaleMax]="scaleMax"
-                    [curve]="curve"
-                    [yAxis]="true"
-                    [legend]="true"
-                    [legendPosition]="legendPosition"
-                    xAxisLabel="Date"
-                    [timeline]="timeline"
-                    [referenceLines]="referenceLines"
-                    [showRefLines]="true"
-                    [results]="series"
-            >
-                <ng-template #tooltipTemplate let-model="model">
-             <span *ngIf="model !== undefined">
-                    {{getTime(model)}}
-                </span>
-                    <ul>
-                        <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
-                    </ul>
-                </ng-template>
-                <ng-template #seriesTooltipTemplate let-model="model">
-                    <span *ngIf="model !== undefined && model.length >0">
-                    {{getTime(model[0])}}
-                </span>
-                    <ul>
-                        <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
-                    </ul>
-                </ng-template>
-            </ngx-charts-line-chart>
-            <!-- These breaks allow for legend display TODO -->
-            <br/>
-            <br/>
-            <br/>
+            <app-scatter-graph [setData]="sleepData" [yMin]="getMin(sleepData)"></app-scatter-graph>
         </mat-expansion-panel>
+        </span>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Sleep Score - &nbsp;<b>{{round(getLast(sleepScore))}} %</b>
+                    Sleep Score - &nbsp;<b>{{round(getLast(sleepScoreData))}} %</b>
                 </mat-panel-title>
                 <mat-panel-description>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <ngx-charts-bar-vertical *ngIf="sleepScore !== undefined"
-                                     [view]="[containerRef.offsetWidth, 150]"
-                                     [scheme]="colorSleep"
-                                     [results]="sleepScore"
-                                     [gradient]="gradient"
-                                     [xAxis]="showXAxis"
-                                     [yAxis]="showYAxis"
-                                     [legend]="showLegend"
-                                     [showXAxisLabel]="showXAxisLabel"
-                                     [showYAxisLabel]="showYAxisLabel"
-
-                                     yAxisLabel="Sleep Score %"
-                                     [animations]="false"
-            >
-
-            </ngx-charts-bar-vertical>
+            <span *ngIf="sleepScoreData.length > 0 && sleepScoreXAxis !== undefined">
+                <app-stacked-chart [setData]="sleepScoreData" [xAxis]="sleepScoreXAxis"></app-stacked-chart>
+            </span>
         </mat-expansion-panel>
-    </mat-accordion>
 </div>

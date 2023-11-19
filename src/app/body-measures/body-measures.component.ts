@@ -1,14 +1,11 @@
 import { Component,Input, ViewChild} from '@angular/core';
 import {Observations} from "../models/observations";
-import {Color, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
-import { curveCatmullRom} from 'd3-shape';
+import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {EPRService} from "../service/epr.service";
 import {MatSort, Sort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatTableDataSource} from "@angular/material/table";
-import {LineChartSeries, LineSeries} from "../models/graphs";
 import {SummaryActivity} from "../models/summary-activity";
-
 
 @Component({
   selector: 'app-body-measures',
@@ -24,15 +21,13 @@ export class BodyMeasuresComponent {
   weightData: any[] = [];
   bodyComposition: any[] = [];
 
-  spo2: LineChartSeries[] | undefined
   spo2Data: any[] = [];
-  hba1c: LineChartSeries[] | undefined
+  hba1cData: any[] = []
 
-  hydration: LineChartSeries[] | undefined
-  steps: LineSeries[] = [];
-  bpSeries : any;
+  steps: any[] = [];
+  bpSeries :any[] = []
+
   @Input() set observations(measure: Observations[]) {
-   // DEBUG  console.log('No. of measures = ' + measure.length)
     this.measures = measure
     this.refreshActivity()
   }
@@ -42,7 +37,6 @@ export class BodyMeasuresComponent {
 
   showXAxisLabel = false;
   showYAxisLabel = true;
-  timeline: boolean = false;
   colorSeries = {
     domain: [ '#7aa3e5','#5AA454','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
     , group: ScaleType.Ordinal, name: "", selectable: false
@@ -65,13 +59,8 @@ export class BodyMeasuresComponent {
 
   avgWeight = 0
 
-  //curve = curveBasis
-  curve = curveCatmullRom
-  schemeType: ScaleType = ScaleType.Linear;
-  legendPosition: LegendPosition = LegendPosition.Below;
   scaleMin = 9999;
   scaleMax = 0;
-  bpReferenceLines: any[] = [];
 
   spo2Min = 9999;
   spo2Max = 0;
@@ -175,9 +164,9 @@ export class BodyMeasuresComponent {
 
   private refreshActivity() {
 
-    this.hydration = []
+
     this.bpSeries = []
-    this.spo2 = []
+
     const spo2Data: any[] = [
         {
           symbolSize: 5,
@@ -242,40 +231,32 @@ export class BodyMeasuresComponent {
     ];
 
 
-
     this.steps = []
-    var steps: LineSeries[]=[]
-    var hb1ac: LineChartSeries[] = [
+    var steps: any[]=[{
+      data: [],
+      type: 'bar',
+      name: 'Steps'
+    }]
+    var hb1ac: any[] = [
       {
-        name: 'Blood Glucose',
-        series: []
+        data: [],
+        type: 'line',
+        name: 'Blood Glucose'
       }]
 
-    var bp : LineChartSeries[]= [
+    var bpData : any[]= [
       {
         name: 'Systole',
-        series: []
+        type: 'line',
+        data: []
       },
       {
         name: 'Diastole',
-        series: []
+        type: 'line',
+        data: []
       }
     ]
-    var spo2 : LineChartSeries[]= [
-      {
-        name: 'Average',
-        series: []
-      },
-      {
-        name: 'Min',
-        series: []
-      }
-      ,
-      {
-        name: 'Max',
-        series: []
-      }
-    ]
+
     this.measures.forEach(observations => {
         if (observations.weight !== undefined) {
           if (observations.weight < this.weightMin) this.weightMin = observations.weight
@@ -328,18 +309,14 @@ export class BodyMeasuresComponent {
           }
         }
       if (observations.glucose !== undefined) {
-        let ent = {
-          name: observations.day,
-          value: observations.glucose.val
-        }
-        hb1ac[0].series.push(ent)
+        const idata: any[] = []
+        idata.push( observations.day.toISOString())
+        idata.push(observations.glucose.val)
+        hb1ac[0].data.push(idata)
       }
       if (observations.spo2 !== undefined) {
         if (observations.spo2.avg !== undefined) {
-          spo2[0].series.push({
-            name: observations.day,
-            value: observations.spo2.avg
-          })
+
           const idata: any[] = []
           idata.push( observations.day.toISOString())
           idata.push(observations.spo2.avg)
@@ -347,10 +324,7 @@ export class BodyMeasuresComponent {
         }
         if (observations.spo2.min !== undefined) {
           if (observations.spo2.min < this.spo2Min) this.spo2Min = observations.spo2.min
-          spo2[1].series.push({
-            name: observations.day,
-            value: observations.spo2.min
-          })
+
           const idata: any[] = []
           idata.push( observations.day.toISOString())
           idata.push(observations.spo2.min)
@@ -358,10 +332,7 @@ export class BodyMeasuresComponent {
         }
         if (observations.spo2.max !== undefined) {
           if (observations.spo2.max > this.spo2Max) this.spo2Max = observations.spo2.max
-          spo2[2].series.push({
-            name: observations.day,
-            value: observations.spo2.max
-          })
+
           const idata: any[] = []
           idata.push( observations.day.toISOString())
           idata.push(observations.spo2.max)
@@ -371,71 +342,45 @@ export class BodyMeasuresComponent {
       if (observations.diastolic !== undefined || observations.systolic !== undefined) {
         if (observations.diastolic !== undefined) {
           if (observations.diastolic < this.scaleMin) this.scaleMin = observations.diastolic
-          bp[1].series.push({
-            name: observations.day,
-            value: observations.diastolic
-          })
+
+          const idata: any[] = []
+          idata.push( observations.day.toISOString())
+          idata.push(observations.diastolic)
+          bpData[1].data.push(idata)
         }
         if (observations.systolic !== undefined) {
           if (observations.systolic > this.scaleMax) this.scaleMax = observations.systolic
-          bp[0].series.push({
-            name: observations.day,
-            value: observations.systolic
-          })
+          const idata: any[] = []
+          idata.push( observations.day.toISOString())
+          idata.push(observations.systolic)
+          bpData[0].data.push(idata)
         }
       }
       if (observations.steps !== undefined) {
-        let ent = {
-          name: observations.day,
-          value: observations.steps
-        }
-        steps.push(ent)
+        const idata: any[] = []
+        idata.push( observations.day.toISOString())
+        idata.push(observations.steps)
+        steps[0].data.push(idata)
       }
     })
 
-    this.bpSeries = bp
+    this.bpSeries = bpData
 
-    this.spo2 = spo2
-    this.hba1c = hb1ac
+    this.hba1cData = hb1ac
     this.steps = steps
 
-    this.dataSourceHbA1c = new MatTableDataSource<any>(this.hba1c[0].series.sort((a, b) => {
-      if (a.name < b.name) {
+    this.dataSourceHbA1c = new MatTableDataSource<any>(this.hba1cData[0].data.sort((a: any[], b: any[]) => {
+      if (a[0] < b[0]) {
         return 1;
       }
 
-      if (a.name > b.name) {
+      if (a[0] > b[0]) {
         return -1;
       }
       return 0;
     }));
 
     this.spo2Data = spo2Data
-
-    var sum = 0
-    let referenceLines = []
-
-    if (this.bpSeries.length > 0 && this.bpSeries[0].series !== undefined) {
-      sum =0
-      this.bpSeries[0].series.forEach((entry: any) => {
-        sum += entry.value
-      })
-      referenceLines.push({
-        name: 'Average Systolic',
-        value: Math.round(sum / this.bpSeries[0].series.length)
-      })
-    }
-    if (this.bpSeries.length > 1 && this.bpSeries[1].series !== undefined) {
-      sum =0
-      this.bpSeries[1].series.forEach((entry: any) => {
-        sum += entry.value
-      })
-      referenceLines.push({
-        name: 'Average Diastolic',
-        value: Math.round(sum / this.bpSeries[1].series.length)
-      })
-    }
-    this.bpReferenceLines = referenceLines
 
     this.weightData = weightData
     this.bodyComposition = bodyComposition
@@ -458,67 +403,21 @@ export class BodyMeasuresComponent {
     this.avgWeight = this.round1DP(this.getAvgE(bodyComposition[0].data))
   }
 
-  getLast(series: any[] | undefined) {
-    if (series == undefined) return undefined
-    if (series.length === 0 ) return undefined
-    var latest : any = undefined
-    if (series[0] !== undefined && series[0].series !== undefined) {
-      series[0].series.forEach((entry: any) => {
-        if (latest == undefined) latest = entry
-        else if (latest.name < entry.name) {
-          latest = entry
-        }
-      })
-    } else {
-      series.forEach((entry: any) => {
-        if (latest == undefined) latest = entry
-        else if (latest.name < entry.name) {
-          latest = entry
-        }
-      })
-    }
-    if (latest !== undefined) return latest.value
-    return undefined
-  }
-  getLastSingle(series: any| undefined) {
-    if (series == undefined) return undefined
-    var latest : any = undefined
-    if ( series.series !== undefined) {
-      series.series.forEach((entry: any) => {
-        if (latest == undefined) latest = entry
-        else if (latest.name < entry.name) {
-          latest = entry
-        }
-      })
-    }
-    if (latest !== undefined) return latest.value
-    return undefined
-  }
-  getLastE(data: any[]) {
 
-    var latest : any = undefined
-    if ( data !== undefined) {
-      data.forEach((entry: any) => {
-        if (latest == undefined) latest = entry
-        else if (latest[0] < entry[0]) {
-          latest = entry
-        }
-      })
-    }
-    if (latest !== undefined) return latest[1]
-    return undefined
+  getLastE(data: any[]) {
+    return this.epr.getLastE(data)
+  }
+
+  getMinE(data: any[]) {
+    return this.epr.getMinE(data)
+  }
+  getMaxE(data: any[]) {
+    return this.epr.getMaxE(data)
   }
   getAvgE(data: any[]) {
-    let sum = 0
-    var latest : any = undefined
-    if ( data !== undefined) {
-      data.forEach((entry: any) => {
-        sum += entry[1]
-      })
-      return sum/data.length
-    }
-    return 0
+    return this.epr.getAvgE(data)
   }
+
   round2DP(value : number) {
     return Math.round(value * 100) / 100
   }
@@ -555,10 +454,11 @@ export class BodyMeasuresComponent {
     }
   }
 
-  getContext(measurement : LineSeries) {
+  getContext(measurement : any[]) {
       var result: string | undefined = undefined
-      if (measurement.name instanceof Date) {
-        var contextDate: Date = measurement.name
+      var measurementDate = new Date(measurement[0])
+      if (measurementDate instanceof Date) {
+        var contextDate: Date =measurementDate
         this.activity.forEach(activity => {
           var activityDate = new Date(activity.start_date)
           var activityEndDate = new Date(activityDate)
@@ -576,7 +476,7 @@ export class BodyMeasuresComponent {
             result = 'During Exercice'
           }
         })
-      }
+      } else { console.log('Not a date')}
       return result
   }
 

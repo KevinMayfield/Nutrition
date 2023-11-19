@@ -50,6 +50,7 @@ import { PieChartPlusComponent } from './charts/pie-chart-plus/pie-chart-plus.co
 import { NgxEchartsModule} from "ngx-echarts";
 import { ScatterGraphComponent } from './echart/scatter-graph/scatter-graph.component';
 import { LineChartComponent } from './echart/line-chart/line-chart.component';
+import { StackedChartComponent } from './echart/stacked-chart/stacked-chart.component';
 
 @NgModule({
     declarations: [
@@ -70,7 +71,8 @@ import { LineChartComponent } from './echart/line-chart/line-chart.component';
         BodyMeasuresComponent,
         PieChartPlusComponent,
         ScatterGraphComponent,
-        LineChartComponent
+        LineChartComponent,
+        StackedChartComponent
     ],
     imports: [
         BrowserModule,

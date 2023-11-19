@@ -1,141 +1,53 @@
 <div #containerRef id="containerRef">
-    <span *ngIf="steps != undefined && steps.length > 1">
-    <h3>Steps</h3>
+    <span *ngIf="steps != undefined && steps[0].data != undefined && steps[0].data.length > 1">
     <mat-accordion >
         <mat-expansion-panel [expanded]="true">
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Steps
+                     Steps
                 </mat-panel-title>
                 <mat-panel-description>
 
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <ngx-charts-bar-vertical
-                                     [view]="[containerRef.offsetWidth, 150]"
-                                     [results]="steps"
-                                     [scheme]="colorNeutral"
-                                     [gradient]="false"
-                                     [xAxis]="true"
-                                     [yAxis]="true"
-                                     [legend]="false"
-                                     [showXAxisLabel]="showXAxisLabel"
-                                     [showYAxisLabel]="showYAxisLabel"
-                                     yAxisLabel="Steps"
-                                     [animations]="false"
-            >
-            </ngx-charts-bar-vertical>
+            <app-scatter-graph [setData]="steps" [yMin]="0" [yMax]="getMaxE(steps[0].data)" ></app-scatter-graph>
         </mat-expansion-panel>
     </mat-accordion>
     </span>
     <h3>Vitals</h3>
-    <span *ngIf="bpSeries != undefined && bpSeries[0].series != undefined && bpSeries[0].series.length > 1">
+    <span *ngIf="bpSeries != undefined && bpSeries[0].data != undefined && bpSeries[0].data.length > 1">
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Blood Pressure - &nbsp;<b>{{round(getLast(bpSeries))}}/{{round(getLastSingle(bpSeries[1]))}} mmHg</b>
+                    Blood Pressure - &nbsp;<b>{{round(getLastE(bpSeries[0].data))}}/{{round(getLastE(bpSeries[1].data))}} mmHg</b>
                 </mat-panel-title>
                 <mat-panel-description>
-                     <span *ngIf="(getLast(bpSeries) > 135 || getLastSingle(bpSeries[1]) > 85)">
+                     <span *ngIf="(getLastE(bpSeries[0].data) > 135 || getLastE(bpSeries[1].data) > 85)">
                             <button mat-flat-button [ngStyle]="getWarning()">High</button>
                          </span>
-                     <span *ngIf="(getLast(bpSeries) < 89 || getLastSingle(bpSeries[1]) < 59)">
+                     <span *ngIf="(getLastE(bpSeries[0].data) < 89 || getLastE(bpSeries[1].data) < 59)">
                             <button mat-flat-button [ngStyle]="getWarning()">Low</button>
                      </span>
-                     <span *ngIf="bpReferenceLines.length > 1">
-                         <span *ngIf="(getLastSingle(bpSeries[1])- bpReferenceLines[1].value > 5) || (getLast(bpSeries) - bpReferenceLines[0].value > 5)">
-                            <button mat-flat-button [ngStyle]="getInfo()">Overtraining?</button>
-                         </span>
-                         Average Blood Pressure {{bpReferenceLines[0].value}}/{{bpReferenceLines[1].value}} mmHg
+
+                     <span *ngIf="(getLastE(bpSeries[1].data)- getAvgE(bpSeries[1].data) > 5) || (getLastE(bpSeries[0].data) - getAvgE(bpSeries[0].data) > 5)">
+                        <button mat-flat-button [ngStyle]="getInfo()">Overtraining?</button>
                      </span>
+                     Average Blood Pressure {{getAvgE(bpSeries[0].data)}}/{{getAvgE(bpSeries[1].data)}} mmHg
+
                 </mat-panel-description>
             </mat-expansion-panel-header>
-                <ngx-charts-line-chart
-                        [view]="[containerRef.offsetWidth, 250]"
-                        [scheme]="colorSeries"
-
-                        [showXAxisLabel]="false"
-                        [showYAxisLabel]="true"
-                        [xAxis]="true"
-                        [curve]="curve"
-                        [yAxis]="true"
-                        [legend]="true"
-                        [yScaleMin]="scaleMin"
-                        [yScaleMax]="scaleMax"
-                        [legendPosition]="legendPosition"
-                        xAxisLabel="Date"
-                        yAxisLabel="mmHg"
-                        [referenceLines]="bpReferenceLines"
-                        [showRefLines]="true"
-                        [timeline]="timeline"
-                        [results]="bpSeries"
-                >
-                    <ng-template #tooltipTemplate let-model="model">
-             <span *ngIf="model !== undefined">
-                    {{getTime(model)}}
-                </span>
-                        <ul>
-                            <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
-                        </ul>
-                    </ng-template>
-                    <ng-template #seriesTooltipTemplate let-model="model">
-                    <span *ngIf="model !== undefined && model.length >0">
-                    {{getTime(model[0])}}
-                </span>
-                        <ul>
-                            <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
-                        </ul>
-                    </ng-template>
-                </ngx-charts-line-chart>
-                <!-- These breaks allow for legend display TODO -->
-                <br/>
-                <br/>
-                <br/>
+              <app-scatter-graph [setData]="bpSeries" [yMin]="getMinE(bpSeries[1].data)" [yMax]="getMaxE(bpSeries[0].data)"></app-scatter-graph>
         </mat-expansion-panel>
     </span>
-    <span *ngIf="hba1c != undefined && hba1c[0].series != undefined && hba1c[0].series.length > 1">
+    <span *ngIf="hba1cData != undefined && hba1cData[0].data != undefined && hba1cData[0].data.length > 1">
         <mat-expansion-panel  >
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Blood Glucose - &nbsp;<b>{{round2DP(getLastSingle(hba1c[0]))}} mmol</b>
+                    Blood Glucose - &nbsp;<b>{{round2DP(getLastE(hba1cData[0].data))}} mmol</b>
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            <ngx-charts-line-chart
-                    [view]="[containerRef.offsetWidth, 250]"
-                    [scheme]="colorSeries"
-                    [showXAxisLabel]="false"
-                    [showYAxisLabel]="true"
-                    [xAxis]="true"
-                    [curve]="curve"
-                    [yAxis]="true"
-                    [legend]="true"
-                    [legendPosition]="legendPosition"
-                    xAxisLabel="Date"
-                    yAxisLabel="mmol"
-                    [showRefLines]="false"
-                    [timeline]="timeline"
-                    [results]="hba1c"
-            >
-                <ng-template #tooltipTemplate let-model="model">
-             <span *ngIf="model !== undefined">
-                    {{getTime(model)}}
-                </span>
-                    <ul>
-                        <li><span style="color:#000;">{{model.series}} - {{round1DP(model.value)}}</span></li>
-                    </ul>
-                </ng-template>
-                <ng-template #seriesTooltipTemplate let-model="model">
-                    <span *ngIf="model !== undefined && model.length >0">
-                    {{getTime(model[0])}}
-                </span>
-                    <ul>
-                        <li *ngFor="let ent of model" [style]="getPointColour(ent)"><span style="color:#000;">{{ent.series}} - {{round1DP(ent.value)}}</span></li>
-                    </ul>
-                </ng-template>
-            </ngx-charts-line-chart>
-            <br/>
-            <br/>
-            <br/>
+             <app-scatter-graph [setData]="hba1cData"></app-scatter-graph>
+
             <mat-expansion-panel [expanded]="false">
                 <mat-expansion-panel-header>
                     <mat-panel-title>Blood Glucose Measurements
@@ -148,7 +60,7 @@
                         <th mat-header-cell mat-sort-header *matHeaderCellDef style="width: 20%;"> Date </th>
                         <td mat-cell *matCellDef="let measurement">
                             <div layout="column" layout-align="space-around start">
-                                {{measurement.name | date: 'dd-MMM-yyyy'}}
+                                {{measurement[0] | date: 'dd-MMM-yyyy'}}
                             </div>
                         </td>
                     </ng-container>
@@ -156,7 +68,7 @@
                         <th mat-header-cell *matHeaderCellDef style="width: 20%;"> Time </th>
                         <td mat-cell *matCellDef="let measurement">
                             <div layout="column" layout-align="space-around start">
-                                {{measurement.name | date: 'HH:mm'}}
+                                {{measurement[0] | date: 'HH:mm'}}
                             </div>
                         </td>
                     </ng-container>
@@ -164,7 +76,7 @@
                         <th mat-header-cell mat-sort-header *matHeaderCellDef > Value </th>
                         <td mat-cell *matCellDef="let measurement">
                             <div layout="column" layout-align="space-around start">
-                                {{round1DP(measurement.value)}}
+                                {{round1DP(measurement[1])}}
                             </div>
                         </td>
                     </ng-container>
@@ -189,14 +101,14 @@
 
         </mat-expansion-panel>
     </span>
-    <span *ngIf="spo2 != undefined && spo2[0].series != undefined && spo2[0].series.length > 1">
+    <span *ngIf="spo2Data != undefined && spo2Data[0].data != undefined && spo2Data[0].data.length > 1">
     <mat-expansion-panel (opened)="spo2PanelOpenState = true" (closed)="spo2PanelOpenState = false">
         <mat-expansion-panel-header>
             <mat-panel-title>
-                SPO2 - Min &nbsp;<b>{{getLastSingle(spo2[1])}} </b> &nbsp;Max &nbsp;<b>{{getLastSingle(spo2[2])}} %</b>
+                SPO2 - Min &nbsp;<b>{{getLastE(spo2Data[1].data)}} </b> &nbsp;Max &nbsp;<b>{{getLastE(spo2Data[2].data)}} %</b>
             </mat-panel-title>
            <mat-panel-description>
-                Last Daily Average &nbsp;<b>{{round1DP(getLast(spo2))}} %</b>
+                Average &nbsp;<b>{{round1DP(getAvgE(spo2Data[0].data))}} %</b>
             </mat-panel-description>
         </mat-expansion-panel-header>
         <span *ngIf="spo2PanelOpenState">

@@ -502,6 +502,52 @@ getHRZone() {
   getInfo() {
     return {'background':'lightblue'};
   }
+  getLastE(data: any[]) {
+    var latest : any = undefined
+    if ( data !== undefined) {
+      data.forEach((entry: any) => {
+        if (latest == undefined) latest = entry
+        else if (latest[0] < entry[0]) {
+          latest = entry
+        }
+      })
+    }
+    if (latest !== undefined) return latest[1]
+    return undefined
+  }
 
+  getMinE(data: any[]) {
+    let min = 9999
+    var latest : any = undefined
+    if ( data !== undefined) {
+      data.forEach((entry: any) => {
+        if (entry[1] < min) min = entry[1]
+      })
+      return min
+    }
+    return 0
+  }
+  getMaxE(data: any[]) {
+    let max = 0
+    var latest : any = undefined
+    if ( data !== undefined) {
+      data.forEach((entry: any) => {
+        if (entry[1] > max) max = entry[1]
+      })
+      return max
+    }
+    return 0
+  }
+  getAvgE(data: any[]) {
+    let sum = 0
+    var latest : any = undefined
+    if ( data !== undefined) {
+      data.forEach((entry: any) => {
+        sum += entry[1]
+      })
+      return sum/data.length
+    }
+    return 0
+  }
 
 }
