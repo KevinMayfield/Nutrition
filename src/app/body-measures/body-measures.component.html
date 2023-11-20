@@ -32,7 +32,7 @@
                      <span *ngIf="(getLastE(bpSeries[1].data)- getAvgE(bpSeries[1].data) > 5) || (getLastE(bpSeries[0].data) - getAvgE(bpSeries[0].data) > 5)">
                         <button mat-flat-button [ngStyle]="getInfo()">Overtraining?</button>
                      </span>
-                     Average Blood Pressure {{getAvgE(bpSeries[0].data)}}/{{getAvgE(bpSeries[1].data)}} mmHg
+                     Average Blood Pressure {{round(getAvgE(bpSeries[0].data))}}/{{round(getAvgE(bpSeries[1].data))}} mmHg
 
                 </mat-panel-description>
             </mat-expansion-panel-header>
