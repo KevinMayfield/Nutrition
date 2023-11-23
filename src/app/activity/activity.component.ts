@@ -1354,5 +1354,8 @@ export class ActivityComponent implements OnInit{
     }
 
 
-
+    getWeekNumberD(start_date: any) {
+        let date = new Date(start_date)
+        return this.getWeekNumber(date)
+    }
 }

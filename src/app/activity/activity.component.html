@@ -178,7 +178,7 @@
                                         <a *ngIf="activity.type !== undefined" mat-icon-button color="primary" href="https://www.strava.com/activities/{{activity.id}}" target="_blank">
                                             <span class="material-symbols-outlined">{{getType(activity.type)}}</span>
                                         </a>
-                                        <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
+                                        {{getWeekNumberD(activity.start_date)}}&nbsp; <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
                                         &nbsp;
                                         <span *ngIf="activity.trimp !== undefined">
                                             <mat-chip style="background: {{getBackgroundTrimp(activity.trimp)}}; width: 50px" layout-align="center">
@@ -318,7 +318,7 @@
                                     <a *ngIf="activity.type !== undefined" mat-icon-button color="primary" href="https://www.strava.com/activities/{{activity.id}}" target="_blank">
                                         <span class="material-symbols-outlined">{{getType(activity.type)}}</span>
                                     </a>
-                                    <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
+                                    {{getWeekNumberD(activity.start_date)}}&nbsp; <b>{{activity.start_date | date: 'dd-MMM-yyyy HH:mm'}}</b>
                                     &nbsp;
                                     <mat-chip style="background: {{getBackgroundTSS(activity)}}; width: 50px" matTooltip="< 150 recovery under a day.
                                      < 300 recovered by 2nd day.
