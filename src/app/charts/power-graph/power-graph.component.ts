@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SummaryActivity} from "../../models/summary-activity";
 import {EPRService} from "../../service/epr.service";
-import {Color, id, ScaleType} from "@swimlane/ngx-charts";
 
 @Component({
   selector: 'app-power-graph',

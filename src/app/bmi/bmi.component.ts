@@ -3,9 +3,7 @@ import {
     Bundle,
     Observation,
     Parameters,
-    Patient,
     QuestionnaireResponse,
-    ValueSet,
     ValueSetExpansionContains
 } from "fhir/r4";
 import {HttpClient} from "@angular/common/http";

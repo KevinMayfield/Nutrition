@@ -14,11 +14,9 @@ import {ActivityType} from "../models/activity-type";
 import {EPRService} from "../service/epr.service";
 import {ActivityDay, ActivitySession} from "../models/activity-day";
 import {MatDatepickerInputEvent} from "@angular/material/datepicker";
-import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {WithingsService} from "../service/withings.service";
 import {Observations} from "../models/observations";
 import {MeasurementSetting} from "../models/enums/MeasurementSetting";
-import {curveCatmullRom} from "d3-shape";
 import {AuthService} from "../service/auth.service";
 import {GoogleFitService} from "../service/google-fit.service";
 
@@ -172,11 +170,7 @@ export class ActivityComponent implements OnInit{
             'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
         ]
 
-    colorSingle: Color = {
-        domain: [
-            'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
-        ], group: ScaleType.Ordinal, name: "", selectable: false
-    }
+    colorSingle =  ['lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink']
 
 
     constructor(
@@ -1039,7 +1033,7 @@ export class ActivityComponent implements OnInit{
             }
             this.stacked = undefined
 
-            this.colorSingle.domain = []
+            this.colorSingle = []
             var stacked = []
 
             var domain = []
@@ -1123,7 +1117,7 @@ export class ActivityComponent implements OnInit{
                 }
                 return 0;
             });
-            this.colorSingle.domain = domain
+            this.colorSingle = domain
         }
     }
     getWeekNumber(d : Date) {
@@ -1330,7 +1324,6 @@ export class ActivityComponent implements OnInit{
         return `${(c.label)} (grams)`;
     }
 
-    protected readonly curveCatmullRom = curveCatmullRom;
 
 
     totalPie(pie: any) : number {

@@ -32,7 +32,6 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import { PowerGraphComponent } from './charts/power-graph/power-graph.component';
-import {BarChartModule, BoxChartModule, LineChartModule, PieChartModule, TreeMapModule} from "@swimlane/ngx-charts";
 import { HeartGraphComponent } from './charts/heart-graph/heart-graph.component';
 import {MatChipsModule} from "@angular/material/chips";
 import { NutritionComponent } from './nutrition/nutrition.component';
@@ -102,16 +101,11 @@ import { StackedChartComponent } from './echart/stacked-chart/stacked-chart.comp
         MatSidenavModule,
         MatTabsModule,
         MatProgressBarModule,
-        BarChartModule,
         MatChipsModule,
         MatDatepickerModule,
         MatNativeDateModule,
         MatToolbarModule,
-        PieChartModule,
-        LineChartModule,
         MatExpansionModule,
-        TreeMapModule,
-        BoxChartModule,
         NgxEchartsModule.forRoot({
             echarts: () => import('echarts')
         })

@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {Observations} from "../../models/observations";
 import {EPRService} from "../../service/epr.service";
 
@@ -21,11 +20,7 @@ export class SleepComponent {
     scaleMin= 99999;
     scaleMax= 0;
 
-    colorSleep: Color = {
-        domain: [
-            'lightblue'
-        ], group: ScaleType.Ordinal, name: "", selectable: false
-    }
+    colorSleep =['lightblue']
 
     referenceLines= [{ name: 'hr', value: 50 }];
     sleepScoreXAxis: any[] | undefined;
@@ -40,7 +35,7 @@ export class SleepComponent {
 
   private refreshActivity() {
 
-      this.colorSleep.domain = []
+      this.colorSleep = []
       this.sleepData = []
       this.sleepScoreData = []
       this.sleepScoreXAxis = undefined

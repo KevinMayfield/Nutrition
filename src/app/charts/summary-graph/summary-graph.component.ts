@@ -1,5 +1,4 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {Color, LegendPosition, ScaleType} from "@swimlane/ngx-charts";
 import {EPRService} from "../../service/epr.service";
 import {ActivityDay, ActivitySession} from "../../models/activity-day";
 import {hrZone} from "../../models/person";

@@ -1,6 +1,5 @@
 import { Component,Input, ViewChild} from '@angular/core';
 import {Observations} from "../models/observations";
-import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {EPRService} from "../service/epr.service";
 import {MatSort, Sort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
@@ -37,15 +36,9 @@ export class BodyMeasuresComponent {
 
   showXAxisLabel = false;
   showYAxisLabel = true;
-  colorSeries = {
-    domain: [ '#7aa3e5','#5AA454','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
-    , group: ScaleType.Ordinal, name: "", selectable: false
-  };
-  colorNeutral: Color = {
-    domain: [
-      '#7aa3e5'
-    ], group: ScaleType.Ordinal, name: "", selectable: false
-  }
+  colorSeries =  [ '#7aa3e5','#5AA454','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
+
+  colorNeutral = ['#7aa3e5']
   weightMin= 99999;
   weightMax= 0;
   muscleMin= 99999;
@@ -81,7 +74,7 @@ export class BodyMeasuresComponent {
           axisLine: {
             show: true,
             lineStyle: {
-              color: this.colorSeries.domain[0]
+              color: this.colorSeries[0]
             }
           },
           axisLabel: {
@@ -96,7 +89,7 @@ export class BodyMeasuresComponent {
           axisLine: {
             show: true,
             lineStyle: {
-              color: this.colorSeries.domain[1]
+              color: this.colorSeries[1]
             }
           },
           axisLabel: {
@@ -112,7 +105,7 @@ export class BodyMeasuresComponent {
           axisLine: {
             show: false,
             lineStyle: {
-              color: this.colorSeries.domain[2]
+              color: this.colorSeries[2]
             }
           },
           axisLabel: {
@@ -129,7 +122,7 @@ export class BodyMeasuresComponent {
           axisLine: {
             show: false,
             lineStyle: {
-              color: this.colorSeries.domain[3]
+              color: this.colorSeries[3]
             }
           },
           axisLabel: {
@@ -145,7 +138,7 @@ export class BodyMeasuresComponent {
           axisLine: {
             show: false,
             lineStyle: {
-              color: this.colorSeries.domain[4]
+              color: this.colorSeries[4]
             }
           },
           axisLabel: {
