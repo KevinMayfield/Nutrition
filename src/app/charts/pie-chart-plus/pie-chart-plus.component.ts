@@ -14,7 +14,7 @@ export class PieChartPlusComponent implements AfterViewInit, OnInit, AfterConten
   @Input()
   view: any;
   @Input()
-  scheme: any;
+  scheme: string[] =[]
   @Input()
   label: any;
   data : any;
@@ -37,10 +37,7 @@ export class PieChartPlusComponent implements AfterViewInit, OnInit, AfterConten
 
     option: any
 
-  labelFormatting(c : any) {
 
-    return `${(c.label)} (grams)`;
-  }
   ngAfterViewInit(): void {
         this.setChart()
   }
@@ -104,7 +101,7 @@ export class PieChartPlusComponent implements AfterViewInit, OnInit, AfterConten
                 name: value.name,
                 value: value.value,
                 itemStyle : {
-                    color: this.scheme.domain[index]
+                    color: this.scheme[index]
                 }
             })
         })
@@ -133,12 +130,7 @@ export class PieChartPlusComponent implements AfterViewInit, OnInit, AfterConten
      return 0
   }
 
-    getWidth(offsetWidth: number) {
-        if (this.data != undefined && this.data.length > 1) {
-            return offsetWidth / (this.data.length + 1)
-        }
-        return offsetWidth / 2
-    }
+
     ngAfterContentChecked(): void
     {
         if (this.myDiv !== undefined) {

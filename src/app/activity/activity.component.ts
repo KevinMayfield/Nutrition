@@ -56,14 +56,11 @@ export class ActivityComponent implements OnInit{
         false,
         false
     ]
-    colorScheme: Color = {
-        domain: ['#7aa3e5','#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
-        group: ScaleType.Ordinal,
-        name: "",
-        selectable: false
-    }
+    colorScheme= ['#7aa3e5','#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+
     @Input()
     widthQuota: number = 2;
+    exerciseEnergyOption: any | undefined;
     viewEnergyPie:  [number, number] = [500, 200];
     energy= [{
         "name": "Base Metabolic Rate",
@@ -93,17 +90,8 @@ export class ActivityComponent implements OnInit{
     powerActivities: SummaryActivity[] = [];
     sleepMeasures: Observations[] = []
     bodyMeasures: Observations[] = []
-    legendHR = true;
-    exerciseEnergy= [
-        {
-            "name": "Lower Intake",
-            "value": 8940000
-        },
-        {
-            "name": "Upper Intake",
-            "value": 5000000
-        }
-    ];
+
+
     exerciseIntenses: ValueSetExpansionContains[] = [
         {
             code: 'very-light',
@@ -176,20 +164,13 @@ export class ActivityComponent implements OnInit{
     multiPWR: any[] | undefined;
     yScaleMax =0;
     stacked: any[] | undefined;
-    gradient = false;
 
-    colorFTP: Color = {
-        domain: this.epr.getFTPColours(),
-        group: ScaleType.Ordinal,
-        name: "",
-        selectable: false
-    }
 
-    colorStacked: Color = {
-        domain: [
+    colorFTP =this.epr.getFTPColours()
+
+    colorStacked =[
             'lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink'
-        ], group: ScaleType.Ordinal, name: "", selectable: false
-    }
+        ]
 
     colorSingle: Color = {
         domain: [
@@ -223,7 +204,7 @@ export class ActivityComponent implements OnInit{
             this.setGenders()
         })
         if (this.epr.person !== undefined && this.epr.person.ftp !== undefined) {
-            this.colorFTP.domain = this.epr.getFTPColours()
+            this.colorFTP = this.epr.getFTPColours()
         }
 
         this.zoneHR = this.epr.getHRZone()
@@ -759,16 +740,58 @@ export class ActivityComponent implements OnInit{
                         lower = 8
                         upper = 12
                     }
-                    this.exerciseEnergy = [
-                        {
-                            "name": "Daily Carbohydrate Intake (Lower)",
-                            "value": this.perKgKCal(lower)
+                    this.exerciseEnergyOption = {
+                        polar: {
+                            radius: [30, '80%']
                         },
-                        {
-                            "name": "Daily Carbohydrate Intake (Upper)",
-                            "value": this.perKgKCal(upper)
-                        }
-                    ];
+                        radiusAxis: {
+                            type: 'category',
+                            data: ['lower', 'upper']
+                        },
+                        angleAxis: {
+                            max: 1500,
+                            startAngle: 75
+                        },
+                        tooltip: {},
+                        series: {
+                            type: 'bar',
+                            data: [{
+                                value: this.perKgKCal(lower),
+                                itemStyle: {
+                                    color: this.colorScheme[0]
+                                }
+                            },{
+                                value: this.perKgKCal(upper),
+                                itemStyle: {
+                                    color: this.colorScheme[1]
+                                }
+                            }],
+                            coordinateSystem: 'polar'
+                        },
+                        animation: false
+                    };
+                    /*
+                    this.exerciseEnergyOption = {
+                        series: [
+                            {
+                                type: 'treemap',
+                                data: [
+                                    {
+                                        name: "Daily Carbohydrate Intake (Lower)",
+                                        value: this.perKgKCal(lower),
+
+                                    },
+                                    {
+                                        name: "Daily Carbohydrate Intake (Upper)",
+                                        value: this.perKgKCal(upper)
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+
+                     */
+
                 }
             }
             this.calculateEnergy()
@@ -1308,6 +1331,7 @@ export class ActivityComponent implements OnInit{
     }
 
     protected readonly curveCatmullRom = curveCatmullRom;
+
 
     totalPie(pie: any) : number {
         let total = 0

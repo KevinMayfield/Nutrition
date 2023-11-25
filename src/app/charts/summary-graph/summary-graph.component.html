@@ -1,7 +1,10 @@
 <div #containerRef>
     <span *ngIf="type ==='kcal'">
     <h3>Energy (kcal)</h3>
-                <ngx-charts-bar-vertical-stacked *ngIf="calories!==undefined"
+         <span *ngIf="caloriesData !== undefined && XAxis !== undefined">
+             <app-stacked-chart [setData]="caloriesData" [xAxis]="XAxis"></app-stacked-chart>
+         </span>
+             <!--   <ngx-charts-bar-vertical-stacked *ngIf="calories!==undefined"
                                                  [view]="[containerRef.offsetWidth, 150]"
                                          [scheme]="colorScheme"
                                          [results]="calories"
@@ -18,7 +21,7 @@
                                             [animations]="false"
                                                 >
                     <ng-template #tooltipTemplate let-model="model">
-                      <!--  {{model|json}} -->
+
                         <b>Heart Rate Zone {{model.name}}</b>
                         <br/>
                         <br/>
@@ -50,49 +53,22 @@
                         </span>
 
                     </ng-template>
-                </ngx-charts-bar-vertical-stacked>
+                </ngx-charts-bar-vertical-stacked> -->
             <br/>
         <br/>
         <br/>
         </span>
     <span *ngIf="type ==='heart'">
     <h4>Heart Rate Stress Scores (TRIMP)</h4>
-    <ngx-charts-bar-vertical *ngIf="trimp!==undefined"
-                             [view]="[containerRef.offsetWidth, 150]"
-                             [scheme]="colorTrimp"
-                             [results]="trimp"
-                             [gradient]="gradient"
-                             [xAxis]="showXAxis"
-                             [yAxis]="showYAxis"
-                             [legend]="showLegend"
-                             [showXAxisLabel]="showXAxisLabel"
-                             [showYAxisLabel]="showYAxisLabel"
-                             [xAxisLabel]="xAxisLabel"
-                             yAxisLabel="TRIMP"
-                             (select)="onSelect($event)"
-                             [animations]="false"
-    >
+    <span *ngIf="trimpData !== undefined && XAxis !== undefined">
+         <app-stacked-chart [setData]="trimpData" [xAxis]="XAxis"></app-stacked-chart>
+    </span>
 
-    </ngx-charts-bar-vertical>
     </span>
     <span *ngIf="type ==='power'">
     <h5>Power Stress Score</h5>
-    <ngx-charts-bar-vertical *ngIf="tss!==undefined"
-                             [view]="[containerRef.offsetWidth, 150]"
-                             [scheme]="colorTSS"
-                             [results]="tss"
-                             [gradient]="gradient"
-                             [xAxis]="showXAxis"
-                             [yAxis]="showYAxis"
-                             [legend]="showLegend"
-                             [showXAxisLabel]="showXAxisLabel"
-                             [showYAxisLabel]="showYAxisLabel"
-                             [xAxisLabel]="xAxisLabel"
-                             yAxisLabel="TSS"
-                             (select)="onSelect($event)"
-                             [animations]="false"
-    >
-
-    </ngx-charts-bar-vertical>
+            <span *ngIf="tssData !== undefined && XAxis !== undefined">
+         <app-stacked-chart [setData]="tssData" [xAxis]="XAxis"></app-stacked-chart>
+    </span>
     </span>
 </div>

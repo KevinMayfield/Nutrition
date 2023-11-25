@@ -22,7 +22,7 @@
                                 <tr>
                                   <td class="mat-cell" *ngFor="let i of data; let f = index">
                                       <span layout="column">
-                                           <span> <mat-chip style="background:{{scheme.domain[f]}};"></mat-chip> &nbsp;{{i.name}}</span>
+                                           <span> <mat-chip style="background:{{scheme[f]}};"></mat-chip> &nbsp;{{i.name}}</span>
                                           <span> {{average(i.value)}} % </span>
                                       </span>
                                   </td>

@@ -57,14 +57,17 @@
                         <mat-grid-tile layout-align="centre ">
                             <span class="bigger">{{exerciseIntense?.display}}</span>
                             <br/>
-                            <ngx-charts-tree-map
-                                    [view]="viewEnergyPie"
-                                    [scheme]="colorScheme"
-                                    [results]="exerciseEnergy"
-                                    [animations]="false"
-                                    [labelFormatting]="labelFormatting">
-                            </ngx-charts-tree-map>
+                            <span *ngIf="exerciseIntense !== undefined && exerciseEnergyOption !== undefined">
+                                <div layout="row" #containerRef>
+                                    <span>
+                                        <span class="bigger">Daily Carbohydrate</span>
+                                        <br/>
+                                        <span class="bigger">Intake (grams)</span>
+                                    </span>
+                                    <div echarts [options]="exerciseEnergyOption" class="demo-chart" style="height:150px;width:150px"></div>
 
+                                </div>
+                            </span>
                         </mat-grid-tile>
 
                         </mat-grid-list>
