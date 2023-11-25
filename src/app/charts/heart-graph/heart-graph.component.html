@@ -1,24 +1,4 @@
-<ngx-charts-bar-vertical *ngIf="single!==undefined"
-                         [scheme]="colorScheme"
-                         [view]="view"
-                         [results]="single"
-                         [gradient]="gradient"
-                         [xAxis]="showXAxis"
-                         [yAxis]="showYAxis"
-                         [legend]="showLegend"
-                         [showXAxisLabel]="showXAxisLabel"
-                         [showYAxisLabel]="showYAxisLabel"
-                         [xAxisLabel]="xAxisLabel"
-                         [yAxisLabel]="yAxisLabel"
-                         (select)="onSelect($event)"
-                         (window:resize)="onResize($event)">
-    <ng-template #tooltipTemplate let-model="model">
+<span *ngIf="option !== undefined && height !== undefined" >
+    <div echarts [options]="option" class="demo-chart" style="height:{{height}}px;"></div>
+</span>
 
-             <span class="material-symbols-outlined">
-                                             timer
-                                             </span>
-        {{duration(model.value)}}
-        <br/>
-        {{round(model.value * 100 / model.extra.totalTime)}} %
-    </ng-template>
-</ngx-charts-bar-vertical>
