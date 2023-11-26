@@ -313,52 +313,52 @@ export class BodyMeasuresComponent {
 
     this.measures.forEach(observations => {
         if (observations.weight !== undefined) {
-          if (observations.weight < this.weightMin) this.weightMin = observations.weight
-          if (observations.weight > this.weightMax) this.weightMax = observations.weight
+          if (observations.weight < this.weightMin) this.weightMin = this.round1DP(observations.weight)
+          if (observations.weight > this.weightMax) this.weightMax = this.round1DP(observations.weight)
 
           const idata: any[] = []
           idata.push(observations.day.toISOString())
-          idata.push(observations.weight)
+          idata.push(this.round1DP(observations.weight))
           weightData[0].data.push(idata)
           bodyComposition[0].data.push(idata)
 
           if (observations.fat_mass !== undefined) {
-            if (observations.fat_mass < this.fatMin) this.fatMin = observations.fat_mass
-            if (observations.fat_mass > this.fatMax) this.fatMax = observations.fat_mass
+            if (observations.fat_mass < this.fatMin) this.fatMin = this.round1DP(observations.fat_mass)
+            if (observations.fat_mass > this.fatMax) this.fatMax = this.round1DP(observations.fat_mass)
 
             const idata: any[] = []
             idata.push(observations.day.toISOString())
-            idata.push(observations.fat_mass)
+            idata.push(this.round1DP(observations.fat_mass))
             bodyComposition[1].data.push(idata)
           }
           if (observations.muscle_mass !== undefined) {
-            if (observations.muscle_mass < this.muscleMin) this.muscleMin = observations.muscle_mass
-            if (observations.muscle_mass > this.muscleMax) this.muscleMax = observations.muscle_mass
+            if (observations.muscle_mass < this.muscleMin) this.muscleMin = this.round1DP(observations.muscle_mass)
+            if (observations.muscle_mass > this.muscleMax) this.muscleMax = this.round1DP(observations.muscle_mass)
 
 
             const idata: any[] = []
             idata.push(observations.day.toISOString())
-            idata.push(observations.muscle_mass)
+            idata.push(this.round1DP(observations.muscle_mass))
             bodyComposition[2].data.push(idata)
           }
           if (observations.hydration !== undefined) {
-            if (observations.hydration < this.hydrationMin) this.hydrationMin = observations.hydration
-            if (observations.hydration > this.hydrationMax) this.hydrationMax = observations.hydration
+            if (observations.hydration < this.hydrationMin) this.hydrationMin = this.round1DP(observations.hydration)
+            if (observations.hydration > this.hydrationMax) this.hydrationMax = this.round1DP(observations.hydration)
 
 
             const idata: any[] = []
             idata.push(observations.day.toISOString())
-            idata.push(observations.hydration)
+            idata.push(this.round1DP(observations.hydration))
             bodyComposition[3].data.push(idata)
           }
 
           if (observations.bone_mass !== undefined) {
-            if (observations.bone_mass < this.boneMin) this.boneMin = observations.bone_mass
-            if (observations.bone_mass > this.boneMax) this.boneMax = observations.bone_mass
+            if (observations.bone_mass < this.boneMin) this.boneMin = this.round2DP(observations.bone_mass)
+            if (observations.bone_mass > this.boneMax) this.boneMax = this.round2DP(observations.bone_mass)
 
             const idata: any[] = []
             idata.push(observations.day.toISOString())
-            idata.push(observations.bone_mass)
+            idata.push(this.round2DP(observations.bone_mass))
             bodyComposition[4].data.push(idata)
           }
         }
@@ -517,6 +517,9 @@ export class BodyMeasuresComponent {
 
   round1DP(value : number) {
     return Math.round(value * 10) / 10
+  }
+  round2DP(value : number) {
+    return Math.round(value * 100) / 100
   }
   round(value : number) {
     return Math.round(value )
