@@ -1,10 +1,9 @@
 import { Component,Input, ViewChild} from '@angular/core';
-import {Observations} from "../models/observations";
-import {EPRService} from "../service/epr.service";
+import {Observations} from "../../models/observations";
+import {EPRService} from "../../service/epr.service";
 import {MatSort, Sort} from "@angular/material/sort";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
-import {MatTableDataSource} from "@angular/material/table";
-import {SummaryActivity} from "../models/summary-activity";
+import {SummaryActivity} from "../../models/summary-activity";
 
 @Component({
   selector: 'app-body-measures',
@@ -14,8 +13,8 @@ import {SummaryActivity} from "../models/summary-activity";
 export class BodyMeasuresComponent {
 
 
-  measures :Observations[] = []
-  activity: SummaryActivity[] = []
+  private measures :Observations[] = []
+  private activity: SummaryActivity[] = []
 
   weightData: any[] = [];
   bodyComposition: any[] = [];
@@ -30,15 +29,13 @@ export class BodyMeasuresComponent {
     this.measures = measure
     this.refreshActivity()
   }
-  @Input() set activities(activity: SummaryActivity[]) {
-    this.activity = activity
+  @Input() set activities(summaryActivities: SummaryActivity[]) {
+    this.activity = summaryActivities
+    this.refreshActivity()
   }
 
-  showXAxisLabel = false;
-  showYAxisLabel = true;
   colorSeries =  [ '#7aa3e5','#5AA454','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
 
-  colorNeutral = ['#7aa3e5']
   weightMin= 99999;
   weightMax= 0;
   muscleMin= 99999;
@@ -57,10 +54,9 @@ export class BodyMeasuresComponent {
 
   spo2Min = 9999;
   spo2Max = 0;
+  hba1cMin = 9999;
+  hba1cMax = 0;
 
-  // Blood glucose table
-  dataSourceHbA1c: any;
-  displayedColumnsHbA1c = ['date', 'time', 'value', 'context']
   @ViewChild('HbA1cSort') HbA1cSort: MatSort | null | undefined;
   spo2PanelOpenState: boolean = false;
 
@@ -147,6 +143,7 @@ export class BodyMeasuresComponent {
         }
       ]
   bodyPanelOpenState = false;
+  bpOption: any | undefined;
 
   constructor(public epr: EPRService,
               private _liveAnnouncer: LiveAnnouncer){
@@ -188,6 +185,9 @@ export class BodyMeasuresComponent {
             { type: 'max', name: 'Max' },
             { type: 'min', name: 'Min' }
           ]
+        },
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }]
         }
       }
     ];
@@ -195,31 +195,46 @@ export class BodyMeasuresComponent {
       {
         data: [],
         type: 'line',
-        name: 'Body Mass'
+        name: 'Body Mass',
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }]
+        }
       },
       {
         data: [],
         type: 'line',
         yAxisIndex: 1,
-        name: 'Fat Mass'
+        name: 'Fat Mass',
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }]
+        }
       },
       {
         data: [],
         type: 'line',
         yAxisIndex: 2,
-        name: 'Muscle Mass'
+        name: 'Muscle Mass',
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }]
+        }
       },
       {
         data: [],
         type: 'line',
         yAxisIndex: 3,
         name: 'Body Water',
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }]
+        }
       },
       {
         data: [],
         type: 'line',
         yAxisIndex: 4,
-        name: 'Bone Mass'
+        name: 'Bone Mass',
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }]
+        }
       }
     ];
 
@@ -234,7 +249,26 @@ export class BodyMeasuresComponent {
       {
         data: [],
         type: 'line',
-        name: 'Blood Glucose'
+        name: 'Blood Glucose',
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }]
+        }
+      },
+      {
+        data: [],
+        type: 'line',
+        name: 'Blood Glucose (Pre Exercise)',
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }]
+        }
+      },
+      {
+        data: [],
+        type: 'line',
+        name: 'Blood Glucose (Post Excercise)',
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }]
+        }
       }]
 
     var bpData : any[]= [
@@ -249,6 +283,33 @@ export class BodyMeasuresComponent {
         data: []
       }
     ]
+    this.bpOption = undefined
+    var bpOption :any = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'line'
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: []
+      },
+      yAxis: {
+        scale: true
+      },
+      series: [
+        {
+          type: 'candlestick',
+          encode: {
+            x: 0,
+            y: [1, 4, 3, 2]
+          },
+          data: []
+        }
+      ]
+    }
 
     this.measures.forEach(observations => {
         if (observations.weight !== undefined) {
@@ -301,11 +362,26 @@ export class BodyMeasuresComponent {
             bodyComposition[4].data.push(idata)
           }
         }
-      if (observations.glucose !== undefined) {
+      if (observations.glucose !== undefined && observations.glucose.val !== undefined) {
+        if (observations.glucose.val < this.hba1cMin) this.hba1cMin = observations.glucose.val
+        if (observations.glucose.val > this.hba1cMax) this.hba1cMax = observations.glucose.val
         const idata: any[] = []
         idata.push( observations.day.toISOString())
-        idata.push(observations.glucose.val)
-        hb1ac[0].data.push(idata)
+        idata.push(this.round1DP(observations.glucose.val))
+
+        if (this.activity !== undefined && this.activity.length > 0) {
+          const context = this.getObservationContext(observations)
+          if (context !== undefined) {
+            if (context === 'Pre Exercise') {
+              hb1ac[1].data.push(idata)
+            }
+            if (context === 'Post Exercise') {
+              hb1ac[2].data.push(idata)
+            }
+          }
+        } else {
+          hb1ac[0].data.push(idata)
+        }
       }
       if (observations.spo2 !== undefined) {
         if (observations.spo2.avg !== undefined) {
@@ -349,6 +425,7 @@ export class BodyMeasuresComponent {
           bpData[0].data.push(idata)
         }
       }
+
       if (observations.steps !== undefined) {
         const idata: any[] = []
         idata.push( observations.day.toISOString())
@@ -356,22 +433,49 @@ export class BodyMeasuresComponent {
         steps[0].data.push(idata)
       }
     })
+    var sortedMeasure: Observations[] = this.measures.sort((n1,n2) => {
+
+      if (n1.day > n2.day) {
+        return 1;
+      }
+
+      // @ts-ignore
+      if (n1.day < n2.day) {
+        return -1;
+      }
+      return 0;
+    });
+    sortedMeasure.forEach(observations => {
+      if (observations.diastolic !== undefined && observations.systolic !== undefined) {
+        bpOption.xAxis.data.push(observations.day.toISOString())
+        const idata : any[] = []
+        idata.push(observations.diastolic)
+        idata.push(observations.systolic)
+        idata.push(observations.diastolic)
+        idata.push(observations.systolic)
+        var colour = '#5AA454'
+        if (observations.systolic > 130) colour = '#C7B42C'
+        if (observations.diastolic > 80) colour = '#C7B42C'
+        if (observations.systolic > 135) colour = '#A10A28'
+        if (observations.diastolic > 85) colour = '#A10A28'
+
+        const data = {
+          value: idata,
+          itemStyle: {
+            color: colour,
+          }
+        }
+        bpOption.series[0].data.push(data)
+      }
+    })
 
     this.bpSeries = bpData
+    this.bpOption = bpOption
 
     this.hba1cData = hb1ac
     this.steps = steps
 
-    this.dataSourceHbA1c = new MatTableDataSource<any>(this.hba1cData[0].data.sort((a: any[], b: any[]) => {
-      if (a[0] < b[0]) {
-        return 1;
-      }
 
-      if (a[0] > b[0]) {
-        return -1;
-      }
-      return 0;
-    }));
 
     this.spo2Data = spo2Data
 
@@ -411,9 +515,6 @@ export class BodyMeasuresComponent {
     return this.epr.getAvgE(data)
   }
 
-  round2DP(value : number) {
-    return Math.round(value * 100) / 100
-  }
   round1DP(value : number) {
     return Math.round(value * 10) / 10
   }
@@ -421,13 +522,6 @@ export class BodyMeasuresComponent {
     return Math.round(value )
   }
 
-  getPointColour(ent: any) {
-    return 'color: '+ ent.color+ ';'
-  }
-
-  getTime(entry: any) {
-    return entry.name.toLocaleString()
-  }
 
   getOK() {
     return this.epr.getOK()
@@ -448,6 +542,7 @@ export class BodyMeasuresComponent {
   }
 
   getContext(measurement : any[]) {
+
       var result: string | undefined = undefined
       var measurementDate = new Date(measurement[0])
       if (measurementDate instanceof Date) {
@@ -471,6 +566,31 @@ export class BodyMeasuresComponent {
         })
       } else { console.log('Not a date')}
       return result
+  }
+  getObservationContext(measurement : Observations) {
+    var result: string | undefined = undefined
+    var measurementDate = new Date(measurement.day)
+    if (measurementDate instanceof Date) {
+      var contextDate: Date =measurementDate
+      this.activity.forEach(activity => {
+        var activityDate = new Date(activity.start_date)
+        var activityEndDate = new Date(activityDate)
+        activityEndDate.setMinutes(activityDate.getMinutes() + (activity.elapsed_time/60))
+        //console.log(activity.elapsed_time/60)
+        var diff = (activityDate.valueOf() - contextDate.valueOf()) / (1000 *60)
+        if (activityDate > contextDate && diff > 0 && diff < 60) {
+          result = 'Pre Exercise'
+        }
+        diff = (activityEndDate.valueOf() - contextDate.valueOf()) / (1000 *60)
+        if (activityEndDate < contextDate &&  diff < 0 && diff > -60) {
+          result = 'Post Exercise'
+        }
+        if (contextDate > activityDate && contextDate < activityEndDate) {
+          result = 'During Exercice'
+        }
+      })
+    } else { console.log('Not a date')}
+    return result
   }
 
 

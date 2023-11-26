@@ -31,8 +31,8 @@ export class EPRService {
   hydratedWarnLow= -0.5;
 
   hrvRested = 5
-  hrvWarnLow = -5
-  hrWarnHigh = 5
+  hrvWarnLow = -3
+  hrWarnHigh = 3
   hrRested = -5
   // /\ Traffic Lights /\
   ignoreElapsed = 120

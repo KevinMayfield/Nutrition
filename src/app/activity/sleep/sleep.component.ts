@@ -3,6 +3,7 @@ import {Observations} from "../../models/observations";
 import {EPRService} from "../../service/epr.service";
 
 
+
 @Component({
   selector: 'app-sleep',
   templateUrl: './sleep.component.html',
@@ -49,12 +50,18 @@ export class SleepComponent {
           {
               name: 'Heart Rate Variability (HRV)',
               type: 'line',
-              data: []
+              data: [],
+              markLine: {
+                  data: [{ type: 'average', name: 'Avg' }]
+              }
           },
           {
               name: 'Average Heart Rate',
               type: 'line',
-              data: []
+              data: [],
+              markLine: {
+                  data: [{ type: 'average', name: 'Avg' }]
+              }
           }
       ]
       var sleepScoreData : any[] = [
@@ -119,7 +126,7 @@ export class SleepComponent {
 
               const idata: any[] = []
               idata.push(measure.day.toISOString())
-              idata.push(measure.hrv)
+              idata.push(this.round1DP(measure.hrv))
               sleepData[0].data.push(idata)
           }
 

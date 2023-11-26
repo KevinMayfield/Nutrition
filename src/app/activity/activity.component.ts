@@ -311,7 +311,13 @@ export class ActivityComponent implements OnInit{
 
                     this.setSelectAnswers()
                     // supports activity detail
-                    this.activities.push(activity)
+
+                    // force a change
+                    var tempActivity: SummaryActivity[] = []
+                    for (let temp of this.activities) tempActivity.push(temp)
+                    tempActivity.push(activity)
+                    this.activities = tempActivity
+
                     if (activity.device_watts) {
                         this.hasPowerData = true
                         this.powerActivities.push(activity)
@@ -962,7 +968,6 @@ export class ActivityComponent implements OnInit{
 
 
     refreshActivity() {
-        console.log('Refresh Activity')
         this.activitiesWeek = []
         if (this.activityArray !== undefined) {
             var sortedActivity: ActivityDay[] = this.activityArray.sort((n1,n2) => {
