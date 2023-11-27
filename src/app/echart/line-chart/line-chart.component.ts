@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {EChartsOption, EChartsType} from "echarts";
 import * as echarts from "echarts";
+import {EPRService} from "../../service/epr.service";
 
 @Component({
   selector: 'app-line-chart',
@@ -8,7 +9,9 @@ import * as echarts from "echarts";
   styleUrls: ['./line-chart.component.scss']
 })
 export class LineChartComponent implements AfterViewInit, OnInit {
-
+  constructor(
+      private epr: EPRService){
+  }
   @Input()
   set setData(data: any[]) {
     this.data = data
@@ -18,7 +21,7 @@ export class LineChartComponent implements AfterViewInit, OnInit {
       // @ts-ignore
       | undefined
 
-  @Input() colours : string[] = [ '#7aa3e5','#5AA454','#CFC0BB', '#E44D25',  '#a8385d', '#aae3f5']
+  @Input() colours : string[] = this.epr.chartColours
 
 
   @Input()

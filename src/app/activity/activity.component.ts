@@ -54,7 +54,7 @@ export class ActivityComponent implements OnInit{
         false,
         false
     ]
-    colorScheme= ['#7aa3e5','#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+
 
     @Input()
     widthQuota: number = 2;
@@ -88,6 +88,8 @@ export class ActivityComponent implements OnInit{
     powerActivities: SummaryActivity[] = [];
     sleepMeasures: Observations[] = []
     bodyMeasures: Observations[] = []
+
+    colorScheme = this.epr.chartColours
 
 
     exerciseIntenses: ValueSetExpansionContains[] = [
@@ -758,12 +760,12 @@ export class ActivityComponent implements OnInit{
                             data: [{
                                 value: this.perKgKCal(lower),
                                 itemStyle: {
-                                    color: this.colorScheme[0]
+                                    color: this.epr.chartColours[0]
                                 }
                             },{
                                 value: this.perKgKCal(upper),
                                 itemStyle: {
-                                    color: this.colorScheme[1]
+                                    color: this.epr.chartColours[1]
                                 }
                             }],
                             coordinateSystem: 'polar'

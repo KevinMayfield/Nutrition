@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {EChartsOption} from "echarts";
+import {EPRService} from "../../service/epr.service";
 
 @Component({
   selector: 'app-stacked-chart',
@@ -7,6 +8,10 @@ import {EChartsOption} from "echarts";
   styleUrls: ['./stacked-chart.component.scss']
 })
 export class StackedChartComponent implements AfterViewInit, OnInit {
+
+  constructor(
+      private epr: EPRService){
+  }
 
   @Input()
   set setData(data: any[]) {
@@ -18,7 +23,7 @@ export class StackedChartComponent implements AfterViewInit, OnInit {
       // @ts-ignore
       | undefined
 
-  @Input() colours: string[] = ['#7aa3e5', '#5AA454', '#CFC0BB', '#E44D25', '#a8385d', '#aae3f5']
+  @Input() colours: string[] = this.epr.chartColours
 
 
   @Input()

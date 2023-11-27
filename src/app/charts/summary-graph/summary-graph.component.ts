@@ -34,7 +34,6 @@ export class SummaryGraphComponent {
   trimpData: any[] | undefined
   tssData: any[] | undefined
 
-  colorScheme =  [ '#7aa3e5','#5AA454','#C7B42C','#A10A28']
 
   constructor(
       private epr: EPRService,
@@ -71,7 +70,7 @@ export class SummaryGraphComponent {
         var entryTss=  0
 
         var entryCalories :number[] = []
-        for (let f=0;f<4;f++) {
+        for (let f=0;f<5;f++) {
           entryCalories.push(0)
         }
         for (let session of act.sessions) {
@@ -132,10 +131,10 @@ export class SummaryGraphComponent {
       var caloriesData :any[] = [
       ]
 
-       for (let f=0;f<4;f++) {
+       for (let f=0;f<5;f++) {
           let ser :any = {
-            name: 'Heart Rate based Load Zone ' + (f+1),
-            color: this.colorScheme[f],
+            name: 'Intensity Zone ' + (f+1),
+            color: this.epr.color[f],
             stack: 'calories',
             type: 'bar',
             data:[]
@@ -143,7 +142,7 @@ export class SummaryGraphComponent {
           caloriesData.push(ser)
         }
       calories.forEach(value=>{
-        for (let f=0;f<4;f++) {
+        for (let f=0;f<5;f++) {
           caloriesData[f].data.push(value[f])
         }
       })
@@ -158,7 +157,7 @@ export class SummaryGraphComponent {
     if (zone == undefined) return 0;
     if (session.activity == undefined) return 1;
     if (session.activity.trimp !== undefined) {
-     return this.epr.getTrimpZone(session.activity.trimp)
+     return this.epr.getIntensityZone(session.activity.trimp, session.activity.elapsed_time)
     }
     return 1
 

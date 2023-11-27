@@ -13,7 +13,7 @@ export class HeartGraphComponent implements OnInit{
   activity: SummaryActivity | undefined
 
   single: any[] | undefined;
-  color = ['lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink']
+
   height : number | undefined;
   option: any | undefined;
   @Input()
@@ -59,7 +59,7 @@ export class HeartGraphComponent implements OnInit{
                 value: Math.round(res.time/60),
                 name: Math.round((res.time) * 100 / totalTome),
                 itemStyle: {
-                  color: this.color[index]
+                  color: this.epr.color[index]
                 }
               })
             })

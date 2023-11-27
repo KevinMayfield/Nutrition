@@ -4,7 +4,6 @@ import {SummaryActivity} from "../models/summary-activity";
 import {Zones} from "../models/stream";
 import {Sex} from "../models/sex";
 import {LocalService} from "./local.service";
-import {StravaService} from "./strava.service";
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +44,36 @@ export class EPRService {
     this.setToDate(tempDate);
    var person = localStore.getData('activityPerson')
    if (person !== null && person !== undefined && person !== '') this.person = JSON.parse(person)
+  }
+
+  //colorScheme= ['#7aa3e5','#5AA454',  '#C7B42C','#A10A28', '#AAAAAA']
+ // colorScheme = ['lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink']
+  color = ['lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink']
+  chartColours = ['#7aa3e5', '#5AA454', '#CFC0BB', '#E44D25', '#a8385d', '#aae3f5']
+  getTSSColour(entryTss: number): string {
+    if (entryTss > 400) {
+      return this.color[4]
+    } else
+    if (entryTss > 200) {
+      return this.color[3]
+    } else if (entryTss > 100) {
+      return this.color[2]
+    } else {
+      return this.color[1]
+    }
+  }
+
+  getTrimpColour(trimp: number) : string {
+    if (trimp > 500) {
+      return this.color[4]
+    } else
+    if (trimp > 350) {
+      return this.color[3]
+    } else if (trimp > 200) {
+      return this.color[2]
+    } else {
+      return this.color[1]
+    }
   }
 
   setToDate(date : Date) {
@@ -457,42 +486,26 @@ getHRZone() {
     }
   }
 
-  getTrimpColour(trimp: number) : string {
-    if (trimp > 500) {
-      return '#A10A28'
+
+
+  getIntensityZone(trimp: number, elapsed_time: number) : number {
+    const duration = elapsed_time/60
+    const intensity = 10 * trimp / duration
+    if (intensity > 30 ) {
+      return 5
     } else
-    if (trimp > 350) {
-      return '#C7B42C'
-    } else if (trimp > 200) {
-      return '#5AA454'
-    } else {
-      return '#7aa3e5'
-    }
-  }
-  getTrimpZone(trimp: number) : number {
-    if (trimp > 500) {
+    if (intensity > 25 ) {
       return 4
     } else
-    if (trimp > 350) {
+    if (intensity > 20) {
       return 3
-    } else if (trimp > 200) {
+    } else if (intensity > 10) {
       return 2
     } else {
       return 1
     }
   }
-  getTSSColour(entryTss: number): string {
-    if (entryTss > 450) {
-      return '#A10A28'
-    } else
-    if (entryTss > 300) {
-      return '#C7B42C'
-    } else if (entryTss > 150) {
-      return '#5AA454'
-    } else {
-      return '#7aa3e5'
-    }
-  }
+
   getOK() {
     return {'background':'lightgreen'};
   }

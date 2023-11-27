@@ -353,12 +353,12 @@ export class BodyMeasuresComponent {
           }
 
           if (observations.bone_mass !== undefined) {
-            if (observations.bone_mass < this.boneMin) this.boneMin = this.round2DP(observations.bone_mass)
-            if (observations.bone_mass > this.boneMax) this.boneMax = this.round2DP(observations.bone_mass)
+            if (observations.bone_mass < this.boneMin) this.boneMin = this.round3DP(observations.bone_mass)
+            if (observations.bone_mass > this.boneMax) this.boneMax = this.round3DP(observations.bone_mass)
 
             const idata: any[] = []
             idata.push(observations.day.toISOString())
-            idata.push(this.round2DP(observations.bone_mass))
+            idata.push(this.round3DP(observations.bone_mass))
             bodyComposition[4].data.push(idata)
           }
         }
@@ -520,6 +520,9 @@ export class BodyMeasuresComponent {
   }
   round2DP(value : number) {
     return Math.round(value * 100) / 100
+  }
+  round3DP(value : number) {
+    return Math.round(value * 1000) / 1000
   }
   round(value : number) {
     return Math.round(value )
