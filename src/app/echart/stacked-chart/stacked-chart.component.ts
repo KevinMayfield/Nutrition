@@ -25,6 +25,16 @@ export class StackedChartComponent implements AfterViewInit, OnInit {
 
   @Input() colours: string[] = this.epr.chartColours
 
+  yAxisOption:any[] = [
+    {
+      type: 'value'
+    }
+  ]
+  @Input()
+  set yAxis(yAxis: any[]){
+    this.yAxisOption = yAxis
+    this.setOptions()
+  }
 
   @Input()
   set xAxis(xAxis: any[]) {
@@ -62,11 +72,7 @@ export class StackedChartComponent implements AfterViewInit, OnInit {
             type: 'cross'
           }
         },
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
+        yAxis: this.yAxisOption,
         xAxis: this.xAxisData,
         series: this.data,
         legend: {
@@ -75,8 +81,6 @@ export class StackedChartComponent implements AfterViewInit, OnInit {
           bottom: 10
         }
       }
-
-
       if (this.data !== undefined) {
         this.data.forEach(data => {
           // @ts-ignore

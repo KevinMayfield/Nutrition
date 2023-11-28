@@ -61,14 +61,14 @@
     <span *ngIf="type ==='heart'">
     <h4>Heart Rate Stress Scores (TRIMP)</h4>
     <span *ngIf="trimpData !== undefined && XAxis !== undefined">
-         <app-stacked-chart [setData]="trimpData" [xAxis]="XAxis"></app-stacked-chart>
+         <app-stacked-chart [setData]="trimpData" [xAxis]="XAxis" [yAxis]="yAxis"></app-stacked-chart>
     </span>
 
     </span>
     <span *ngIf="type ==='power'">
     <h5>Power Stress Score</h5>
             <span *ngIf="tssData !== undefined && XAxis !== undefined">
-         <app-stacked-chart [setData]="tssData" [xAxis]="XAxis"></app-stacked-chart>
+         <app-stacked-chart [setData]="tssData" [xAxis]="XAxis" [yAxis]="yAxis" ></app-stacked-chart>
     </span>
     </span>
 </div>

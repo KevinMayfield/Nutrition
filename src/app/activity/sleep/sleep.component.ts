@@ -125,7 +125,7 @@ export class SleepComponent {
               if (this.scaleMin > measure.hrv) this.scaleMin = measure.hrv
 
               const idata: any[] = []
-              idata.push(measure.day.toISOString())
+              idata.push(measure.day.toISOString().split('T')[0])
               idata.push(this.round1DP(measure.hrv))
               sleepData[0].data.push(idata)
           }
@@ -134,7 +134,7 @@ export class SleepComponent {
               if (this.scaleMax < measure.hr_average) this.scaleMax = measure.hr_average
               if (this.scaleMin > measure.hr_average) this.scaleMin = measure.hr_average
               const idata: any[] = []
-              idata.push(measure.day.toISOString())
+              idata.push(measure.day.toISOString().split('T')[0])
               idata.push(measure.hr_average)
               sleepData[1].data.push(idata)
           }

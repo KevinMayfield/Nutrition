@@ -946,11 +946,11 @@ export class ActivityComponent implements OnInit{
 
     }
     getBackgroundTrimp(trimp : number) :string {
-        return this.epr.getTrimpColour(trimp)
+        return this.epr.color[this.epr.getTrimpRecoveryZone(trimp)+1]
     }
     getBackgroundTSS(activity: SummaryActivity) :string {
         let stress = this.stressTraining(activity)
-        return this.epr.getTSSColour(stress)
+        return this.epr.color[this.epr.getTSSRecoveryZone(stress)+1]
     }
 
     intensityFactor(activity: SummaryActivity) {

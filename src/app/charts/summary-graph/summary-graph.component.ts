@@ -33,7 +33,22 @@ export class SummaryGraphComponent {
   XAxis: any[] | undefined;
   trimpData: any[] | undefined
   tssData: any[] | undefined
+  yAxis : any =
+      [
+        {
+          type: 'value',
+          name: 'Score',
+          position: 'left',
+          alignTicks: false
+        },
+        {
+          type: 'value',
+          name: 'Acute Load',
+          position: 'right',
+          alignTicks: false,
 
+        }
+      ]
 
   constructor(
       private epr: EPRService,
@@ -54,6 +69,7 @@ export class SummaryGraphComponent {
     var calories: any[] = []
     var trimp: number[] = []
     var tss: number[] = []
+
 
 
     var XAxis : any = [
@@ -92,39 +108,89 @@ export class SummaryGraphComponent {
       }
 
       var trimpData :any = [
-        {
-          name: 'Trimp',
-          stack: 'Trimp',
-          type: 'bar',
-          data: []
-        }
       ]
-      trimp.forEach(value => {
-        trimpData[0].data.push({
-          value: value,
-          itemStyle: {
-            color: this.epr.getTrimpColour(value)
-          }
-        })
-      })
-      this.trimpData = trimpData
 
-      var tssData :any = [
-        {
-          name: 'TSS',
-          stack: 'TSS',
+      for (let f=0;f<4;f++) {
+        let ser :any = {
+          name: 'Recovery Level ' + (f+1),
+          color: this.epr.color[f+1],
+          stack: 'trimp',
+          type: 'bar',
+          data:[]
+        }
+        trimp.forEach(value => {
+            if (this.epr.getTrimpRecoveryZone(value) === f) {
+              ser.data.push({
+                value: value
+              })
+            } else {
+              ser.data.push({
+                value: 0
+              })
+            }
+          }
+        )
+        trimpData.push(ser)
+      }
+
+      let ser :any = {
+        name: 'Acute Load',
+        type: 'line',
+        yAxisIndex: 1,
+        data:[]
+      }
+      trimp.forEach((value, index) => {
+        var sum: number | undefined = undefined
+        var start = index - 7
+        if (start >= 0) {
+          sum = 0
+          for (var i = start; i <= index; i++) {
+            sum += trimp[i]
+          }
+        }
+          ser.data.push(sum)
+      })
+      // ACL
+      trimpData.push(ser)
+      this.trimpData = trimpData
+      var tssData :any = []
+      for (let f=0;f<4;f++) {
+        let ser: any = {
+          name: 'Recovery Level ' + (f + 1),
+          color: this.epr.color[f + 1],
+          stack: 'tss',
           type: 'bar',
           data: []
         }
-      ]
-      tss.forEach(value => {
-        tssData[0].data.push({
-          value: value,
-          itemStyle: {
-            color: this.epr.getTSSColour(value)
+        tss.forEach(value => {
+          if (this.epr.getTSSRecoveryZone(value) === f) {
+            ser.data.push({value: value})
+          } else {
+            ser.data.push({value: 0})
           }
         })
+        tssData.push(ser)
+      }
+      ser = {
+        name: 'Acute Load',
+        type: 'line',
+        yAxisIndex: 1,
+        data:[]
+      }
+      tss.forEach((value, index) => {
+        var sum: number | undefined = undefined
+        var start = index - 7
+        if (start >= 0) {
+          sum = 0
+          for (var i = start; i <= index; i++) {
+            sum += tss[i]
+          }
+        }
+        ser.data.push(sum)
       })
+      // ACL
+      tssData.push(ser)
+
       this.tssData = tssData
       this.XAxis = XAxis
 

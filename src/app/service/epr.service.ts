@@ -12,7 +12,7 @@ export class EPRService {
 
   private from: Date | undefined;
   private to: Date | undefined;
-  private baseDuration = 14; // keep low while developing to avoid hitting rate limits
+  private baseDuration = 28; // keep low while developing to avoid hitting rate limits
   public duration = this.baseDuration
   endWeekChanged: EventEmitter<any> = new EventEmitter();
 
@@ -50,29 +50,29 @@ export class EPRService {
  // colorScheme = ['lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink']
   color = ['lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink']
   chartColours = ['#7aa3e5', '#5AA454', '#CFC0BB', '#E44D25', '#a8385d', '#aae3f5']
-  getTSSColour(entryTss: number): string {
+  getTSSRecoveryZone(entryTss: number): number {
     if (entryTss > 400) {
-      return this.color[4]
+      return 3
     } else
     if (entryTss > 200) {
-      return this.color[3]
+      return 2
     } else if (entryTss > 100) {
-      return this.color[2]
+      return 1
     } else {
-      return this.color[1]
+      return 0
     }
   }
 
-  getTrimpColour(trimp: number) : string {
+  getTrimpRecoveryZone(trimp: number) : number {
     if (trimp > 500) {
-      return this.color[4]
+      return 3
     } else
     if (trimp > 350) {
-      return this.color[3]
+      return 2
     } else if (trimp > 200) {
-      return this.color[2]
+      return 1
     } else {
-      return this.color[1]
+      return 0
     }
   }
 
