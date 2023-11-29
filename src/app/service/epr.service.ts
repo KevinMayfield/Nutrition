@@ -12,7 +12,7 @@ export class EPRService {
 
   private from: Date | undefined;
   private to: Date | undefined;
-  private baseDuration = 28; // keep low while developing to avoid hitting rate limits
+  private baseDuration = 14; //28; // keep low while developing to avoid hitting rate limits
   public duration = this.baseDuration
   endWeekChanged: EventEmitter<any> = new EventEmitter();
 
@@ -519,12 +519,22 @@ getHRZone() {
     var latest : any = undefined
     if ( data !== undefined) {
       data.forEach((entry: any) => {
-        if (latest == undefined) latest = entry
-        else if (latest[0] < entry[0]) {
-          latest = entry
+        if (entry.value === undefined) {
+          if (latest == undefined) latest = entry
+          else if (latest[0] < entry[0]) {
+            latest = entry
+          }
+        } else {
+            if (latest == undefined) {
+              latest = entry
+            }
+            else if (latest.value[0] < entry.value[0]) {
+              latest = entry
+            }
         }
       })
     }
+    if (latest.value !== undefined) return latest.value[1]
     if (latest !== undefined) return latest[1]
     return undefined
   }
@@ -534,7 +544,11 @@ getHRZone() {
     var latest : any = undefined
     if ( data !== undefined) {
       data.forEach((entry: any) => {
-        if (entry[1] < min) min = entry[1]
+        if (entry.value === undefined) {
+          if (entry[1] < min) min = entry[1]
+        } else {
+          if (entry.value[1] < min) min = entry.value[1]
+        }
       })
       return min
     }
@@ -545,7 +559,11 @@ getHRZone() {
     var latest : any = undefined
     if ( data !== undefined) {
       data.forEach((entry: any) => {
-        if (entry[1] > max) max = entry[1]
+        if (entry.value === undefined) {
+          if (entry[1] > max) max = entry[1]
+        } else {
+          if (entry.value[1] > max) max = entry.value[1]
+        }
       })
       return max
     }
@@ -556,7 +574,12 @@ getHRZone() {
     var latest : any = undefined
     if ( data !== undefined) {
       data.forEach((entry: any) => {
-        sum += entry[1]
+        if (entry.value === undefined) {
+          sum += entry[1]
+        } else {
+          sum += entry.value[1]
+        }
+
       })
       return sum/data.length
     }

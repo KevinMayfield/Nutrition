@@ -23,7 +23,6 @@ export class BodyMeasuresComponent {
   hba1cData: any[] = []
 
   steps: any[] = [];
-  bpSeries :any[] = []
 
   @Input() set observations(measure: Observations[]) {
     this.measures = measure
@@ -48,9 +47,6 @@ export class BodyMeasuresComponent {
   hydrationMax= 0;
 
   avgWeight = 0
-
-  scaleMin = 9999;
-  scaleMax = 0;
 
   spo2Min = 9999;
   spo2Max = 0;
@@ -155,7 +151,6 @@ export class BodyMeasuresComponent {
   private refreshActivity() {
 
 
-    this.bpSeries = []
 
     const spo2Data: any[] = [
         {
@@ -271,18 +266,6 @@ export class BodyMeasuresComponent {
         }
       }]
 
-    var bpData : any[]= [
-      {
-        name: 'Systole',
-        type: 'line',
-        data: []
-      },
-      {
-        name: 'Diastole',
-        type: 'line',
-        data: []
-      }
-    ]
     this.bpOption = undefined
     var bpOption :any = {
       tooltip: {
@@ -292,22 +275,34 @@ export class BodyMeasuresComponent {
         }
       },
       xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: []
+        type: 'time'
       },
       yAxis: {
         scale: true
       },
+      legend: {
+        data: [],
+        left: 'center',
+        bottom: 10
+      },
       series: [
         {
-          type: 'candlestick',
-          encode: {
-            x: 0,
-            y: [1, 4, 3, 2]
-          },
-          data: []
-        }
+          type: 'line',
+          name: 'systolic',
+          data: [],
+          areaStyle: {
+            color: this.colorSeries[0]
+          }
+        },
+        {
+          type: 'line',
+          name: 'diastolic',
+          data: [],
+          areaStyle: {
+            color: 'white'
+          }
+        },
+
       ]
     }
 
@@ -317,7 +312,7 @@ export class BodyMeasuresComponent {
           if (observations.weight > this.weightMax) this.weightMax = this.round1DP(observations.weight)
 
           const idata: any[] = []
-          idata.push(observations.day.toISOString())
+          idata.push(observations.day)
           idata.push(this.round1DP(observations.weight))
           weightData[0].data.push(idata)
           bodyComposition[0].data.push(idata)
@@ -327,7 +322,7 @@ export class BodyMeasuresComponent {
             if (observations.fat_mass > this.fatMax) this.fatMax = this.round1DP(observations.fat_mass)
 
             const idata: any[] = []
-            idata.push(observations.day.toISOString())
+            idata.push(observations.day)
             idata.push(this.round1DP(observations.fat_mass))
             bodyComposition[1].data.push(idata)
           }
@@ -337,7 +332,7 @@ export class BodyMeasuresComponent {
 
 
             const idata: any[] = []
-            idata.push(observations.day.toISOString())
+            idata.push(observations.day)
             idata.push(this.round1DP(observations.muscle_mass))
             bodyComposition[2].data.push(idata)
           }
@@ -347,7 +342,7 @@ export class BodyMeasuresComponent {
 
 
             const idata: any[] = []
-            idata.push(observations.day.toISOString())
+            idata.push(observations.day)
             idata.push(this.round1DP(observations.hydration))
             bodyComposition[3].data.push(idata)
           }
@@ -357,7 +352,7 @@ export class BodyMeasuresComponent {
             if (observations.bone_mass > this.boneMax) this.boneMax = this.round3DP(observations.bone_mass)
 
             const idata: any[] = []
-            idata.push(observations.day.toISOString())
+            idata.push(observations.day)
             idata.push(this.round3DP(observations.bone_mass))
             bodyComposition[4].data.push(idata)
           }
@@ -366,7 +361,7 @@ export class BodyMeasuresComponent {
         if (observations.glucose.val < this.hba1cMin) this.hba1cMin = observations.glucose.val
         if (observations.glucose.val > this.hba1cMax) this.hba1cMax = observations.glucose.val
         const idata: any[] = []
-        idata.push( observations.day.toISOString())
+        idata.push( observations.day)
         idata.push(this.round1DP(observations.glucose.val))
 
         if (this.activity !== undefined && this.activity.length > 0) {
@@ -387,7 +382,7 @@ export class BodyMeasuresComponent {
         if (observations.spo2.avg !== undefined) {
 
           const idata: any[] = []
-          idata.push( observations.day.toISOString())
+          idata.push( observations.day)
           idata.push(observations.spo2.avg)
           spo2Data[0].data.push(idata)
         }
@@ -395,7 +390,7 @@ export class BodyMeasuresComponent {
           if (observations.spo2.min < this.spo2Min) this.spo2Min = observations.spo2.min
 
           const idata: any[] = []
-          idata.push( observations.day.toISOString())
+          idata.push( observations.day)
           idata.push(observations.spo2.min)
           spo2Data[1].data.push(idata)
         }
@@ -403,73 +398,41 @@ export class BodyMeasuresComponent {
           if (observations.spo2.max > this.spo2Max) this.spo2Max = observations.spo2.max
 
           const idata: any[] = []
-          idata.push( observations.day.toISOString())
+          idata.push( observations.day)
           idata.push(observations.spo2.max)
           spo2Data[2].data.push(idata)
         }
       }
-      if (observations.diastolic !== undefined || observations.systolic !== undefined) {
-        if (observations.diastolic !== undefined) {
-          if (observations.diastolic < this.scaleMin) this.scaleMin = observations.diastolic
-
-          const idata: any[] = []
-          idata.push( observations.day.toISOString())
-          idata.push(observations.diastolic)
-          bpData[1].data.push(idata)
-        }
-        if (observations.systolic !== undefined) {
-          if (observations.systolic > this.scaleMax) this.scaleMax = observations.systolic
-          const idata: any[] = []
-          idata.push( observations.day.toISOString())
-          idata.push(observations.systolic)
-          bpData[0].data.push(idata)
-        }
-      }
-
-      if (observations.steps !== undefined) {
-        const idata: any[] = []
-        idata.push( observations.day.toISOString())
-        idata.push(observations.steps)
-        steps[0].data.push(idata)
-      }
-    })
-    var sortedMeasure: Observations[] = this.measures.sort((n1,n2) => {
-
-      if (n1.day > n2.day) {
-        return 1;
-      }
-
-      // @ts-ignore
-      if (n1.day < n2.day) {
-        return -1;
-      }
-      return 0;
-    });
-    sortedMeasure.forEach(observations => {
       if (observations.diastolic !== undefined && observations.systolic !== undefined) {
-        bpOption.xAxis.data.push(observations.day.toISOString())
-        const idata : any[] = []
-        idata.push(observations.diastolic)
-        idata.push(observations.systolic)
-        idata.push(observations.diastolic)
-        idata.push(observations.systolic)
+      //  bpOption.xAxis.data.push(observations.day)
+
         var colour = '#5AA454'
         if (observations.systolic > 130) colour = '#C7B42C'
         if (observations.diastolic > 80) colour = '#C7B42C'
         if (observations.systolic > 135) colour = '#A10A28'
         if (observations.diastolic > 85) colour = '#A10A28'
-
-        const data = {
-          value: idata,
-          itemStyle: {
-            color: colour,
+        bpOption.series[1].data.push({
+          value: [observations.day,observations.diastolic],
+          itemStyle : {
+            color: colour
           }
-        }
-        bpOption.series[0].data.push(data)
+        })
+        bpOption.series[0].data.push({
+          value: [observations.day,observations.systolic],
+          itemStyle : {
+            color: colour
+          }
+        })
+      }
+
+      if (observations.steps !== undefined) {
+        const idata: any[] = []
+        idata.push( observations.day)
+        idata.push(observations.steps)
+        steps[0].data.push(idata)
       }
     })
 
-    this.bpSeries = bpData
     this.bpOption = bpOption
 
     this.hba1cData = hb1ac

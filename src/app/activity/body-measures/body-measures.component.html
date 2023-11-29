@@ -1,5 +1,6 @@
 <div #containerRef id="containerRef">
     <span *ngIf="steps != undefined && steps[0].data != undefined && steps[0].data.length > 1">
+
     <mat-accordion >
         <mat-expansion-panel [expanded]="true">
             <mat-expansion-panel-header>
@@ -15,31 +16,31 @@
     </mat-accordion>
     </span>
     <h3>Vitals</h3>
-    <span *ngIf="bpSeries != undefined && bpSeries[0].data != undefined && bpSeries[0].data.length > 1">
+    <span *ngIf="bpOption !== undefined && bpOption.series[0].data !== undefined && bpOption.series[0].data.length > 1">
+
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Blood Pressure - &nbsp;<b>{{round(getLastE(bpSeries[0].data))}}/{{round(getLastE(bpSeries[1].data))}} mmHg</b>
+                    Blood Pressure - &nbsp;<b>{{round(getLastE(bpOption.series[0].data))}}/{{round(getLastE(bpOption.series[1].data))}} mmHg</b>
                 </mat-panel-title>
                 <mat-panel-description>
-                     <span *ngIf="(getLastE(bpSeries[0].data) > 135 || getLastE(bpSeries[1].data) > 85)">
+                     <span *ngIf="(getLastE(bpOption.series[0].data) > 135 || getLastE(bpOption.series[1].data) > 85)">
                             <button mat-flat-button [ngStyle]="getWarning()">High</button>
                          </span>
-                     <span *ngIf="(getLastE(bpSeries[0].data) < 89 || getLastE(bpSeries[1].data) < 59)">
+                     <span *ngIf="(getLastE(bpOption.series[0].data) < 89 || getLastE(bpOption.series[1].data) < 59)">
                             <button mat-flat-button [ngStyle]="getWarning()">Low</button>
                      </span>
 
-                     <span *ngIf="(getLastE(bpSeries[1].data)- getAvgE(bpSeries[1].data) > 5) || (getLastE(bpSeries[0].data) - getAvgE(bpSeries[0].data) > 5)">
+                     <span *ngIf="(getLastE(bpOption.series[1].data)- getAvgE(bpOption.series[1].data) > 5) || (getLastE(bpOption.series[0].data) - getAvgE(bpOption.series[0].data) > 5)">
                         <button mat-flat-button [ngStyle]="getInfo()">Overtraining?</button>
                      </span>
-                     Average Blood Pressure {{round(getAvgE(bpSeries[0].data))}}/{{round(getAvgE(bpSeries[1].data))}} mmHg
+                     Average Blood Pressure {{round(getAvgE(bpOption.series[0].data))}}/{{round(getAvgE(bpOption.series[1].data))}} mmHg
 
                 </mat-panel-description>
             </mat-expansion-panel-header>
              <span *ngIf="bpOption !== undefined">
                   <div echarts [options]="bpOption" class="demo-chart" style="height:400px;"></div>
              </span>
-              <app-scatter-graph [setData]="bpSeries" [yMin]="getMinE(bpSeries[1].data)" [yMax]="getMaxE(bpSeries[0].data)"></app-scatter-graph>
         </mat-expansion-panel>
     </span>
     <span *ngIf="hba1cData != undefined">
