@@ -292,6 +292,9 @@ export class BodyMeasuresComponent {
           data: [],
           areaStyle: {
             color: this.colorSeries[0]
+          },
+          markLine: {
+            data: [{ type: 'average', name: 'Avg' }]
           }
         },
         {
@@ -300,6 +303,9 @@ export class BodyMeasuresComponent {
           data: [],
           areaStyle: {
             color: 'white'
+          },
+          markLine: {
+            data: [{ type: 'average', name: 'Avg' }]
           }
         },
 
@@ -406,21 +412,22 @@ export class BodyMeasuresComponent {
       if (observations.diastolic !== undefined && observations.systolic !== undefined) {
       //  bpOption.xAxis.data.push(observations.day)
 
-        var colour = '#5AA454'
-        if (observations.systolic > 130) colour = '#C7B42C'
-        if (observations.diastolic > 80) colour = '#C7B42C'
-        if (observations.systolic > 135) colour = '#A10A28'
-        if (observations.diastolic > 85) colour = '#A10A28'
+        var diaColour = '#5AA454'
+        var sysColour = '#5AA454'
+        if (observations.systolic > 130) sysColour = '#C7B42C'
+        if (observations.diastolic > 80) diaColour = '#C7B42C'
+        if (observations.systolic > 135) sysColour = '#A10A28'
+        if (observations.diastolic > 85) diaColour = '#A10A28'
         bpOption.series[1].data.push({
           value: [observations.day,observations.diastolic],
           itemStyle : {
-            color: colour
+            color: diaColour
           }
         })
         bpOption.series[0].data.push({
           value: [observations.day,observations.systolic],
           itemStyle : {
-            color: colour
+            color: sysColour
           }
         })
       }
