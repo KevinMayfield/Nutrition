@@ -75,7 +75,7 @@ export class StravaService {
   }
 
   public getTokenAthlete(): Person | undefined {
-     var tokenStr = this.localStore.getData('stravaAccessToken')
+     var tokenStr = this.localStore.getData('stravaToken')
      if (tokenStr === undefined) {
        return undefined
      }
@@ -162,7 +162,7 @@ export class StravaService {
 
   setAccessToken(token: { access_token: undefined; }): void {
     console.log(JSON.stringify(token))
-    this.localStore.saveData('stravaAccessToken', JSON.stringify(token));
+    this.localStore.saveData('stravaToken', JSON.stringify(token));
     this.accessToken = token.access_token;
     this.tokenChange.emit(token);
   }
@@ -172,10 +172,10 @@ export class StravaService {
     if (token !== undefined) { this.tokenChange.emit(token); }
   }
   getAccessToken(): string | undefined {
+    let tolkien = this.localStore.getData('stravaToken')
+    if (tolkien !== undefined && tolkien !== '') {
 
-    if (this.localStore.getData('stravaAccessToken') !== undefined) {
-
-      const token: any = JSON.parse(this.localStore.getData('stravaAccessToken'));
+      const token: any = JSON.parse(tolkien);
 
       if (this.isTokenExpired(token)) {
         console.log('Strava refresh token');
@@ -196,7 +196,7 @@ export class StravaService {
     this.refreshingToken = true;
     console.log('Strava token expired');
 
-    const token: any = JSON.parse(this.localStore.getData('stravaAccessToken'));
+    const token: any = JSON.parse(this.localStore.getData('stravaToken'));
     const headers = new HttpHeaders(
 
     );
@@ -294,5 +294,8 @@ export class StravaService {
   }
 
 
-
+    clearLocalStore() {
+      console.log('removed strava - ClearlocalStore')
+      this.localStore.removeData('stravaToken');
+    }
 }

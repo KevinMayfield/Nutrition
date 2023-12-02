@@ -4,7 +4,7 @@ import {BMIComponent} from "./bmi/bmi.component";
 import {MainMenuComponent} from "./main-menu/main-menu.component";
 import {ActivityComponent} from "./activity/activity.component";
 import {AuthGuardService} from "./service/auth-guard.service";
-import {StravaComponent} from "./strava/strava.component";
+import {LoginComponent} from "./login/login.component";
 import {NutritionComponent} from "./nutrition/nutrition.component";
 import {PersonComponent} from "./person/person.component";
 
@@ -16,7 +16,7 @@ const routes: Routes = [ {
     { path: 'person', component: PersonComponent, canActivate: [AuthGuardService]},
     { path: 'summary', component: ActivityComponent, canActivate: [AuthGuardService] },
     { path: 'nutrition', component: NutritionComponent, canActivate: [AuthGuardService] },
-    { path: '**', component: StravaComponent }
+    { path: '**', component: LoginComponent }
   ]
 }];
 

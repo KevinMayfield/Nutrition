@@ -58,10 +58,14 @@ export class PersonComponent implements OnInit {
           // console.log('Withings detected');
           this.doWithingsSetup(code, state);
         }
-        if (scope !== undefined && (scope.includes('https://www.googleapis.com'))) {
+        /* else if (scope !== undefined && (scope.includes('https://www.googleapis.com'))) {
+          // Remove??
           console.log(code)
           console.log(scope)
           this.doGoogleSetup(code, scope);
+        } */
+        else {
+          this.doStravaSetup(code);
         }
       }
     });
@@ -198,13 +202,14 @@ export class PersonComponent implements OnInit {
     //  console.log(authorisationCode);
     this.withings.tokenChange.subscribe(
         (value) => {
-          this.router.navigateByUrl('/summary');
+          this.router.navigateByUrl('/person');
           console.log(value)
         }
     );
     const url = window.location.href.split('?');
     this.withings.getOAuth2AccessToken(authorisationCode, url[0]);
   }
+  /*
   private doGoogleSetup(authorisationCode: any, scope: string) {
     //  console.log(authorisationCode);
     this.googleFit.tokenChange.subscribe(
@@ -216,6 +221,21 @@ export class PersonComponent implements OnInit {
     const url = window.location.href.split('?');
     this.googleFit.getOAuth2AccessToken(authorisationCode, url[0]);
   }
+  */
+  doStravaSetup(authorisationCode: string): void  {
+
+    //   console.log(authorisationCode);
+
+    // Subscribe to the token change
+    this.strava.tokenChange.subscribe(
+        () => {
+          console.log('Token emit')
+          this.router.navigateByUrl('/person');
+        }
+    );
+    // this will emit a change when the token is retrieved
+    this.strava.getOAuth2AccessToken(authorisationCode);
+  }
 
   withingsConnected() {
     if (this.withings.getAccessToken() !== undefined) return true
@@ -225,19 +245,33 @@ export class PersonComponent implements OnInit {
   disconnectWithings() {
     this.withings.clearLocalStore()
   }
-
+/*
   disconnecGoogleFit() {
     this.googleFit.clearLocalStore()
   }
-
-  googleFitConnected() {
+    googleFitConnected() {
     if (this.googleFit.getAccessToken() !== undefined) return true
     return false
   }
-
-  connectGoogleFit() {
+   connectGoogleFit() {
     console.log(window.location.origin);
     this.googleFit.authorise(window.location.origin + this.getPathName(window.location.pathname) );
+  }
+  */
+  disconnectStrava() {
+    this.strava.clearLocalStore()
+  }
+
+  stravaConnected() {
+    if (this.strava.getAccessToken() !== undefined) return true
+    return false
+  }
+
+
+  connectStrava(): void {
+    console.log(window.location.origin);
+    console.log(window.location.pathname)
+    this.strava.authorise(window.location.origin + this.getPathName(window.location.pathname));
   }
 
 

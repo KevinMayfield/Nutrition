@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {StravaService} from "../service/strava.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Person} from "../models/person";
+import {GoogleFitService} from "../service/google-fit.service";
 
 @Component({
-  selector: 'app-strava',
-  templateUrl: './strava.component.html',
-  styleUrls: ['./strava.component.scss']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
-export class StravaComponent implements OnInit{
+export class LoginComponent implements OnInit{
 
     stravaConnect = true;
     stravaComplete = false;
@@ -53,14 +53,15 @@ These values are stored locally in your web browser, the application does not st
 
     anchor!: string;
 
-    constructor(public strava: StravaService,
+    constructor(private googleFit : GoogleFitService,
                 private router: Router,
                 private route: ActivatedRoute,) {
     }
-    connectStrava(): void {
+
+
+    connectGoogleFit() {
         console.log(window.location.origin);
-        console.log(window.location.pathname)
-        this.strava.authorise(window.location.origin + this.getPathName(window.location.pathname));
+        this.googleFit.authorise(window.location.origin + this.getPathName(window.location.pathname) );
     }
 
 
@@ -76,54 +77,33 @@ These values are stored locally in your web browser, the application does not st
         this.route.queryParams.subscribe(params => {
             const code = params['code'];
             const state = params['state'];
+            const scope : string = params['scope'];
             if (code !== undefined) {
-                if (state !== undefined && state === 'withings') {
-                    // console.log('Withings detected');
-
-                } else {
-                    this.doStravaSetup(code);
+                if (scope !== undefined && (scope.includes('https://www.googleapis.com'))) {
+                    console.log(code)
+                    console.log(scope)
+                    this.doGoogleSetup(code, scope);
                 }
             }
-        });
-        this.strava.tokenChange.subscribe(token => {
-            //  console.log('Strava Token Received');
-            if (token !== undefined) { this.stravaConnect = false; }
-            this.stravaLoad();
-        });
-        /*
-        this.strava.loaded.subscribe(activities => {
-            //    console.log('Strava Loaded Received');
-            //    console.log(activities)
-            const patientRef: Reference = {
-                reference: 'Patient/' + this.patientId
-            };
-            const transaction = this.strava.createTransaction(activities, patientRef);
-            this.fhirService.sendTransaction(transaction, 'Strava');
+
         });
 
-         */
     }
-    doStravaSetup(authorisationCode: string): void  {
 
-        //   console.log(authorisationCode);
-
-        // Subscribe to the token change
-        this.strava.tokenChange.subscribe(
-            () => {
-                console.log('Token emit')
-                this.router.navigateByUrl('/summary');
+    private doGoogleSetup(authorisationCode: any, scope: string) {
+        //  console.log(authorisationCode);
+        this.googleFit.tokenChange.subscribe(
+            (value) => {
+                this.router.navigateByUrl('/person');
+                console.log(value)
             }
         );
-        // this will emit a change when the token is retrieved
-        this.strava.getOAuth2AccessToken(authorisationCode);
+        const url = window.location.href.split('?');
+        this.googleFit.getOAuth2AccessToken(authorisationCode, url[0]);
     }
 
 
-    stravaLoad(): void {
-        this.getAthlete();
-
-      //  this.phrLoad(false);
-    }
+  /*
 
     getAthlete(): void {
         this.strava.getAthlete().subscribe(
@@ -146,5 +126,5 @@ These values are stored locally in your web browser, the application does not st
 
     jumpToH2(): void {
         this.anchor = 'heading-2';
-    }
+    }*/
 }

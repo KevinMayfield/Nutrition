@@ -24,7 +24,7 @@ import { ActivityComponent } from './activity/activity.component';
 import {SafeHtmlPipe} from "./service/safeHtmlPipe";
 import {SafeUrlPipe} from "./service/safeUrl";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import { StravaComponent } from './strava/strava.component';
+import { LoginComponent } from './login/login.component';
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatGridListModule} from "@angular/material/grid-list";
@@ -59,7 +59,7 @@ import { StackedChartComponent } from './echart/stacked-chart/stacked-chart.comp
         ActivityComponent,
         SafeHtmlPipe,
         SafeUrlPipe,
-        StravaComponent,
+        LoginComponent,
         PowerGraphComponent,
         HeartGraphComponent,
         NutritionComponent,

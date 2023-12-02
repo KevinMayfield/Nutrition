@@ -38,6 +38,7 @@ export class GoogleFitService {
           if (source.dataType !== undefined) {
             if (source.dataType.name !== undefined) {
               let systemUri = source.dataType.name
+              console.log(systemUri)
               if (systemUri === 'com.google.height') {
                 this.getAPIDataset(source.dataStreamId).subscribe(data => {
                   if (data.point !== undefined) {
@@ -413,7 +414,7 @@ export class GoogleFitService {
     this.tokenChange.emit(token);
   }
 
-  private isTokenExpired(
+  isTokenExpired(
       token: any,
       offsetSeconds?: number
   ): boolean {
