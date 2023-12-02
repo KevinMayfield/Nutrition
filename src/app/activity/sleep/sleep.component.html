@@ -9,30 +9,30 @@
                 <mat-panel-description>
                      <span *ngIf="sleepData !== undefined">
                          <span *ngIf="sleepData.length > 1">
-                      <span *ngIf="(getLastE(sleepData[0].data) - getAvgE(sleepData[0].data)) < epr.hrvWarnLow">
-                            <button mat-flat-button [ngStyle]="getWarning()">Low HRV - Rest</button>
-                         </span>
-                        <span *ngIf="(getLastE(sleepData[0].data) - getAvgE(sleepData[0].data)) > epr.hrvRested">
-                          <button mat-flat-button [ngStyle]="getOK()">HRV - Rested</button>
-                       </span>
-                       <span *ngIf="(getLastE(sleepData[1].data) - getAvgE(sleepData[1].data)) > epr.hrWarnHigh">
-                          <button mat-flat-button [ngStyle]="getWarning()">High HR - Rest</button>
-                       </span>
-                        <span *ngIf="(getLastE(sleepData[1].data) - getAvgE(sleepData[1].data)) < epr.hrRested">
-                          <button mat-flat-button [ngStyle]="getOK()">HR - Rested</button>
-                       </span>
-                         Average Heart Rate {{round(getAvgE(sleepData[1].data))}} Average HRV {{round(getAvgE(sleepData[0].data))}}
-                     </span>
+                              <span *ngIf="(getLastE(sleepData[0].data) - getAvgE(sleepData[0].data)) < epr.hrvWarnLow">
+                                    <button mat-flat-button [ngStyle]="getWarning()">Low HRV - Rest</button>
+                                 </span>
+                                <span *ngIf="(getLastE(sleepData[0].data) - getAvgE(sleepData[0].data)) > epr.hrvRested">
+                                  <button mat-flat-button [ngStyle]="getOK()">HRV - Rested</button>
+                               </span>
+                               <span *ngIf="(getLastE(sleepData[1].data) - getAvgE(sleepData[1].data)) > epr.hrWarnHigh">
+                                  <button mat-flat-button [ngStyle]="getWarning()">High HR - Rest</button>
+                               </span>
+                                <span *ngIf="(getLastE(sleepData[1].data) - getAvgE(sleepData[1].data)) < epr.hrRested">
+                                  <button mat-flat-button [ngStyle]="getOK()">HR - Rested</button>
+                               </span>
+                                 Average Heart Rate {{round(getAvgE(sleepData[1].data))}} Average HRV {{round(getAvgE(sleepData[0].data))}}
+                             </span>
                          </span>
                 </mat-panel-description>
             </mat-expansion-panel-header>
             <app-scatter-graph [setData]="sleepData" [yMin]="getMin(sleepData)"></app-scatter-graph>
         </mat-expansion-panel>
         </span>
-        <mat-expansion-panel>
+        <mat-expansion-panel *ngIf="sleepScoreData !== undefined && sleepScoreData.length > 0">
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    Sleep Score - &nbsp;<b>{{round(getLast(sleepScoreData))}} %</b>
+                    Sleep Score - &nbsp;<b>{{round(getLast(sleepScoreData[0].data))}} %</b>
                 </mat-panel-title>
                 <mat-panel-description>
                 </mat-panel-description>

@@ -75,7 +75,7 @@ export class BodyMeasuresComponent {
         },
         {
           type: 'value',
-          name: 'Fat Mass',
+          name: 'Composition Mass',
           position: 'right',
           alignTicks: false,
           axisLine: {

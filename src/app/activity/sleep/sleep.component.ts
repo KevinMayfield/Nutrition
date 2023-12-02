@@ -101,6 +101,14 @@ export class SleepComponent {
               data: []
           },
           {
+              name: 'Duration to sleep',
+              color: this.epr.color[0],
+              yAxisIndex: 1,
+              stack: 'duration',
+              type: 'bar',
+              data: []
+          },
+          {
               name: 'Light Sleep Duration',
               color: this.epr.color[1],
               yAxisIndex: 1,
@@ -146,23 +154,29 @@ export class SleepComponent {
                   data.itemStyle.color = this.epr.colorScheme[3]
               }
               sleepScoreData[0].data.push(data)
+              if (measure.durationtosleep !== undefined) {
+                  const data = {
+                      value: measure.durationtosleep,
+                  }
+                  sleepScoreData[1].data.push(data)
+              }
               if (measure.lightsleepduration !== undefined) {
                   const data = {
                       value: measure.lightsleepduration,
                   }
-                  sleepScoreData[1].data.push(data)
+                  sleepScoreData[2].data.push(data)
               }
               if (measure.remsleepduration !== undefined) {
                   const data = {
                       value: measure.remsleepduration,
                   }
-                  sleepScoreData[2].data.push(data)
+                  sleepScoreData[3].data.push(data)
               }
               if (measure.deepsleepduration !== undefined) {
                   const data = {
                       value: measure.deepsleepduration,
                   }
-                  sleepScoreData[3].data.push(data)
+                  sleepScoreData[4].data.push(data)
               }
 
           } else {
@@ -234,12 +248,13 @@ export class SleepComponent {
     }
 
     getLast(series: any[] | undefined) {
-       var lastScore = 0
-        series?.forEach(dataSeries =>{
-            const last = dataSeries.data[dataSeries.data.length -1]
-            if (last > 0) lastScore = last
-        })
-        return lastScore
+        if (series == undefined) return 0
+       const value = series[series.length -1]
+        if (value !== undefined) {
+            if (value.value !== undefined) return value.value
+            return value
+        }
+        return undefined
     }
 
     getMin(sleepData: any[]) {

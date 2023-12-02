@@ -12,7 +12,7 @@ export class EPRService {
 
   private from: Date | undefined;
   private to: Date | undefined;
-  private baseDuration = 7;//28; // keep low while developing to avoid hitting rate limits
+  private baseDuration = 28; // keep low while developing to avoid hitting rate limits
   public duration = this.baseDuration
   endWeekChanged: EventEmitter<any> = new EventEmitter();
 
@@ -534,8 +534,14 @@ getHRZone() {
         }
       })
     }
-    if (latest.value !== undefined) return latest.value[1]
-    if (latest !== undefined) return latest[1]
+    if (latest !== undefined) {
+      var value = latest
+      if (latest.value !== undefined) {
+       value = latest.value
+      }
+      if (value.length > 1) return value[1]
+      return value
+    }
     return undefined
   }
 
