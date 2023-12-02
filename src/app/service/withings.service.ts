@@ -169,6 +169,22 @@ export class WithingsService {
                     sleepScore: sleep.data.sleep_score,
                     hr_average: sleep.data.hr_average
                   }
+                  if (sleep.data.remsleepduration !== undefined) {
+                    measureDay.remsleepduration = sleep.data.remsleepduration / 60;
+                  }
+                  if (sleep.data.sleep_duration !== undefined) {
+                    measureDay.sleep_duration = sleep.data.sleep_duration/ 60;
+                  }
+                  if (sleep.data.lightsleepduration !== undefined) {
+                    measureDay.lightsleepduration = sleep.data.lightsleepduration/ 60;
+                  }
+                  if (sleep.data.durationtosleep !== undefined) {
+                    measureDay.durationtosleep = sleep.data.durationtosleep/ 60;
+                  }
+                  if (sleep.data.deepsleepduration !== undefined) {
+                    measureDay.deepsleepduration = sleep.data.deepsleepduration/ 60;
+                  }
+                  //console.log(measureDay)
 
                   this.sleepMeasures.emit(measureDay)
                 }

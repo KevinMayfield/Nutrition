@@ -446,6 +446,11 @@ export class ActivityComponent implements OnInit{
                         bank.hrv = measure.hrv
                         bank.sleepScore = measure.sleepScore
                         bank.hr_average = measure.hr_average
+                        bank.remsleepduration = measure.remsleepduration
+                        bank.sleep_duration = measure.sleep_duration
+                        bank.lightsleepduration = measure.lightsleepduration
+                        bank.durationtosleep = measure.durationtosleep
+                        bank.deepsleepduration = measure.deepsleepduration
                         var tempAct: any[] = []
                         for (let temp of this.sleepMeasures) tempAct.push(temp)
                         this.sleepMeasures = tempAct

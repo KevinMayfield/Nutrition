@@ -25,6 +25,33 @@ export class SleepComponent {
 
     referenceLines= [{ name: 'hr', value: 50 }];
     sleepScoreXAxis: any[] | undefined;
+    sleepScoreYAxis: any =
+        [
+            {
+                type: 'value',
+                name: 'Sleep Score',
+                position: 'left',
+                alignTicks: false,
+                axisLine: {
+                    show: true
+                },
+                axisLabel: {
+                    formatter: '{value} %'
+                }
+            },
+            {
+                type: 'value',
+                name: 'Sleep Composition',
+                position: 'right',
+                alignTicks: false,
+                axisLine: {
+                    show: true
+                },
+                axisLabel: {
+                    formatter: '{value} Mins'
+                }
+            }
+        ]
 
   @Input() set measures(measure: Observations[]) {
 
@@ -66,27 +93,37 @@ export class SleepComponent {
       ]
       var sleepScoreData : any[] = [
           {
-              name: 'Green',
+              name: 'Sleep Score',
               color: '#5AA454',
               stack: 'Sleep',
+              yAxisIndex: 0,
               type: 'bar',
               data: []
           },
           {
-              name: 'Yellow',
-              color: '#C7B42C',
-              stack: 'Sleep',
+              name: 'Light Sleep Duration',
+              color: this.epr.color[1],
+              yAxisIndex: 1,
+              stack: 'duration',
               type: 'bar',
               data: []
           },
           {
-              name: 'Red',
-              color: '#A10A28',
-              stack: 'Sleep',
+              name: 'REM Sleep Duration',
+              color: this.epr.color[2],
+              yAxisIndex: 1,
+              stack: 'duration',
+              type: 'bar',
+              data: []
+          },
+          {
+              name: 'Deep Sleep Duration',
+              color: this.epr.color[3],
+              yAxisIndex: 1,
+              stack: 'duration',
               type: 'bar',
               data: []
           }
-
       ]
     var sleepScore: any[] = []
 
@@ -96,24 +133,38 @@ export class SleepComponent {
           if (measure.sleepScore !== undefined) {
 
               sleepScoreXAxis[0].data.push(measure.day.toISOString().split('T')[0])
-
-              if (measure.sleepScore > 85) {
-                  sleepScoreData[0].data.push(measure.sleepScore)
-                  sleepScoreData[2].data.push(0)
-                  sleepScoreData[1].data.push(0)
+              const data = {
+                  value:measure.sleepScore,
+                  itemStyle: {
+                      color: this.epr.colorScheme[1]
+                  }
               }
-              else if (measure.sleepScore > 50) {
-
-                  sleepScoreData[1].data.push(measure.sleepScore)
-                  sleepScoreData[0].data.push(0)
-                  sleepScoreData[2].data.push(0)
+              if (measure.sleepScore < 85) {
+                 data.itemStyle.color = this.epr.colorScheme[2]
               }
-              else {
-
-                  sleepScoreData[2].data.push(measure.sleepScore)
-                  sleepScoreData[0].data.push(0)
-                  sleepScoreData[1].data.push(0)
+              else if (measure.sleepScore < 50) {
+                  data.itemStyle.color = this.epr.colorScheme[3]
               }
+              sleepScoreData[0].data.push(data)
+              if (measure.lightsleepduration !== undefined) {
+                  const data = {
+                      value: measure.lightsleepduration,
+                  }
+                  sleepScoreData[1].data.push(data)
+              }
+              if (measure.remsleepduration !== undefined) {
+                  const data = {
+                      value: measure.remsleepduration,
+                  }
+                  sleepScoreData[2].data.push(data)
+              }
+              if (measure.deepsleepduration !== undefined) {
+                  const data = {
+                      value: measure.deepsleepduration,
+                  }
+                  sleepScoreData[3].data.push(data)
+              }
+
           } else {
 
           }

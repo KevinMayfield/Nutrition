@@ -38,7 +38,7 @@
                 </mat-panel-description>
             </mat-expansion-panel-header>
             <span *ngIf="sleepScoreData.length > 0 && sleepScoreXAxis !== undefined">
-                <app-stacked-chart [setData]="sleepScoreData" [xAxis]="sleepScoreXAxis"></app-stacked-chart>
+                <app-stacked-chart [setData]="sleepScoreData" [xAxis]="sleepScoreXAxis" [yAxis]="sleepScoreYAxis"></app-stacked-chart>
             </span>
         </mat-expansion-panel>
 </div>

@@ -12,7 +12,7 @@ export class EPRService {
 
   private from: Date | undefined;
   private to: Date | undefined;
-  private baseDuration = 28; // keep low while developing to avoid hitting rate limits
+  private baseDuration = 7;//28; // keep low while developing to avoid hitting rate limits
   public duration = this.baseDuration
   endWeekChanged: EventEmitter<any> = new EventEmitter();
 
@@ -46,7 +46,7 @@ export class EPRService {
    if (person !== null && person !== undefined && person !== '') this.person = JSON.parse(person)
   }
 
-  //colorScheme= ['#7aa3e5','#5AA454',  '#C7B42C','#A10A28', '#AAAAAA']
+  colorScheme= ['#7aa3e5','#5AA454',  '#C7B42C','#A10A28', '#AAAAAA']
  // colorScheme = ['lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink']
   color = ['lightgrey', 'lightblue', 'lightgreen', 'lightsalmon', 'lightpink']
   chartColours = ['#7aa3e5', '#5AA454', '#CFC0BB', '#E44D25', '#a8385d', '#aae3f5']
