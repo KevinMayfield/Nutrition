@@ -408,7 +408,6 @@ export class GoogleFitService {
       }
     }
     console.log('new GoogleFit accessToken')
-    console.log(token)
     this.localStore.saveData('googleFitToken', JSON.stringify(token));
     this.accessToken = token.access_token;
     this.tokenChange.emit(token);
@@ -438,7 +437,6 @@ export class GoogleFitService {
 
     if (!decoded || !decoded.hasOwnProperty('expires_at')) {
       // Invalid format
-      console.log(decoded)
       console.log('removed googleFitToken - getTokenExpiration date')
       return null;
     }
