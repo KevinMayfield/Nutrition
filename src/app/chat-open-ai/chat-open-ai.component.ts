@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
-
+import {ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
+import * as monaco from "monaco-editor";
 
 
 const sql = `SELECT department_number, sampleid
@@ -75,6 +75,17 @@ export class ChatOpenAIComponent {
   editorLanguage = 'sql';
   editorVal: string = sql;
 
+
+  @ViewChild('container') set playerRef(ref: ElementRef<HTMLElement>) {
+    console.log(ref)
+
+/*
+    monaco.editor.create(ref.nativeElement, {
+      value: 'console.log("Hello, world")',
+      language: 'javascript'
+    })
+  */
+  }
   constructor(private _changeDetectorRef: ChangeDetectorRef) {}
 
   changeLanguage(): void {
