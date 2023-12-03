@@ -21,7 +21,7 @@
     "@angular/platform-browser-dynamic": "16.x.x",
     "@angular/router": "16.x.x",
     "@auth0/angular-jwt": "^5.1.2",
-    "@covalent/code-editor": "7.0.x",
+    "@covalent/code-editor": "7.1.1",
     "@covalent/core": "^7.1.1",
     "@covalent/dynamic-forms": "^7.1.1",
     "@covalent/highlight": "^7.1.1",

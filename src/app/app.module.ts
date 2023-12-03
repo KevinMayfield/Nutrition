@@ -52,6 +52,7 @@ import { LineChartComponent } from './echart/line-chart/line-chart.component';
 import { StackedChartComponent } from './echart/stacked-chart/stacked-chart.component';
 import { ChatOpenAIComponent } from './chat-open-ai/chat-open-ai.component';
 
+
 @NgModule({
     declarations: [
         AppComponent,
