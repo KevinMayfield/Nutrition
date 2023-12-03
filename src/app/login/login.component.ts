@@ -10,8 +10,6 @@ import {GoogleFitService} from "../service/google-fit.service";
 })
 export class LoginComponent implements OnInit{
 
-    stravaConnect = true;
-    stravaComplete = false;
     athlete: Person | undefined;
     markdown: string = `
 ## What does it do

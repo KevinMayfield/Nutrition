@@ -19,6 +19,7 @@ import {Observations} from "../models/observations";
 import {MeasurementSetting} from "../models/enums/MeasurementSetting";
 import {AuthService} from "../service/auth.service";
 import {GoogleFitService} from "../service/google-fit.service";
+import {Router} from "@angular/router";
 
 class ActivityWeek {
     week?: number;
@@ -179,6 +180,7 @@ export class ActivityComponent implements OnInit{
         private http: HttpClient,
         private epr: EPRService,
         private smart: SmartService,
+        private router: Router,
         private strava: StravaService,
         private withings: WithingsService,
         private googleFit: GoogleFitService,
@@ -1386,5 +1388,9 @@ export class ActivityComponent implements OnInit{
     getWeekNumberD(start_date: any) {
         let date = new Date(start_date)
         return this.getWeekNumber(date)
+    }
+
+    download() {
+        this.router.navigateByUrl('/chat');
     }
 }

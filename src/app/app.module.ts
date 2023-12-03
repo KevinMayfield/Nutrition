@@ -50,6 +50,7 @@ import { NgxEchartsModule} from "ngx-echarts";
 import { ScatterGraphComponent } from './echart/scatter-graph/scatter-graph.component';
 import { LineChartComponent } from './echart/line-chart/line-chart.component';
 import { StackedChartComponent } from './echart/stacked-chart/stacked-chart.component';
+import { ChatOpenAIComponent } from './chat-open-ai/chat-open-ai.component';
 
 @NgModule({
     declarations: [
@@ -71,7 +72,8 @@ import { StackedChartComponent } from './echart/stacked-chart/stacked-chart.comp
         PieChartPlusComponent,
         ScatterGraphComponent,
         LineChartComponent,
-        StackedChartComponent
+        StackedChartComponent,
+        ChatOpenAIComponent
     ],
     imports: [
         BrowserModule,

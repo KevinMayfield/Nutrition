@@ -7,6 +7,7 @@ import {AuthGuardService} from "./service/auth-guard.service";
 import {LoginComponent} from "./login/login.component";
 import {NutritionComponent} from "./nutrition/nutrition.component";
 import {PersonComponent} from "./person/person.component";
+import {ChatOpenAIComponent} from "./chat-open-ai/chat-open-ai.component";
 
 const routes: Routes = [ {
   path: '', component: MainMenuComponent,
@@ -16,6 +17,7 @@ const routes: Routes = [ {
     { path: 'person', component: PersonComponent, canActivate: [AuthGuardService]},
     { path: 'summary', component: ActivityComponent, canActivate: [AuthGuardService] },
     { path: 'nutrition', component: NutritionComponent, canActivate: [AuthGuardService] },
+    { path: 'chat', component: ChatOpenAIComponent, canActivate: [AuthGuardService] },
     { path: '**', component: LoginComponent }
   ]
 }];
