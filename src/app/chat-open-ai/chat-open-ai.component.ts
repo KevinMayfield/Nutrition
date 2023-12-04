@@ -1,5 +1,7 @@
 import {ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
 import * as monaco from "monaco-editor";
+import {languages} from "monaco-editor";
+import json = languages.json;
 
 
 const sql = `SELECT department_number, sampleid
@@ -72,8 +74,8 @@ const html = `<div layout="row" layout-align="start center" class="pad-xs pad-bo
   styleUrls: ['./chat-open-ai.component.scss']
 })
 export class ChatOpenAIComponent {
-  editorLanguage = 'sql';
-  editorVal: string = sql;
+  editorLanguage = 'json';
+  editorVal: string = '{}';
 
 
   @ViewChild('container') set playerRef(ref: ElementRef<HTMLElement>) {
