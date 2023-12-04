@@ -23,6 +23,7 @@ export class BodyMeasuresComponent {
   hba1cData: any[] = []
 
   steps: any[] = [];
+  bodyTemp: any[] = [];
 
   @Input() set observations(measure: Observations[]) {
     this.measures = measure
@@ -140,6 +141,7 @@ export class BodyMeasuresComponent {
       ]
   bodyPanelOpenState = false;
   bpOption: any | undefined;
+  bodyTempPanelOpenState= false
 
   constructor(public epr: EPRService,
               private _liveAnnouncer: LiveAnnouncer){
@@ -239,6 +241,15 @@ export class BodyMeasuresComponent {
       data: [],
       type: 'bar',
       name: 'Steps'
+    }]
+    this.bodyTemp = []
+    var bodyTemp: any[]=[{
+      data: [],
+      type: 'line',
+      name: 'Body Temp',
+      markLine: {
+        data: [{ type: 'average', name: 'Avg' }]
+      }
     }]
     var hb1ac: any[] = [
       {
@@ -438,12 +449,19 @@ export class BodyMeasuresComponent {
         idata.push(observations.steps)
         steps[0].data.push(idata)
       }
+      if (observations.bodytemp !== undefined) {
+        const idata: any[] = []
+        idata.push( observations.day)
+        idata.push(observations.bodytemp)
+        bodyTemp[0].data.push(idata)
+      }
     })
 
     this.bpOption = bpOption
 
     this.hba1cData = hb1ac
     this.steps = steps
+    this.bodyTemp = bodyTemp
 
 
 

@@ -68,6 +68,21 @@
         </span>
     </mat-expansion-panel>
     </span>
+    <span *ngIf="bodyTemp != undefined && bodyTemp[0].data != undefined && bodyTemp[0].data.length > 1">
+    <mat-expansion-panel (opened)="bodyTempPanelOpenState = true" (closed)="bodyTempPanelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Body Temperature -&nbsp;<b>{{round1DP(getLastE(bodyTemp[0].data))}} C</b>
+            </mat-panel-title>
+           <mat-panel-description>
+                Average &nbsp;<b>{{round1DP(getAvgE(bodyTemp[0].data))}} C</b>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <span *ngIf="bodyTempPanelOpenState">
+            <app-scatter-graph [setData]="bodyTemp" height="400px" [yMin]="getMinE(bodyTemp[0].data)" [yMax]="getMaxE(bodyTemp[0].data)" ></app-scatter-graph>
+        </span>
+    </mat-expansion-panel>
+    </span>
     <span *ngIf="weightData != undefined && weightData[0].data != undefined && weightData[0].data.length > 1">
         <mat-expansion-panel>
         <mat-expansion-panel-header>
@@ -123,6 +138,4 @@
             </mat-expansion-panel>
          </span>
     </span>
-
-
 </div>

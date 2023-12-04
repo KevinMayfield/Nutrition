@@ -38,7 +38,6 @@ export class GoogleFitService {
           if (source.dataType !== undefined) {
             if (source.dataType.name !== undefined) {
               let systemUri = source.dataType.name
-             // console.log(systemUri)
               if (systemUri === 'com.google.height') {
                 this.getAPIDataset(source.dataStreamId).subscribe(data => {
                   if (data.point !== undefined) {
@@ -57,8 +56,7 @@ export class GoogleFitService {
                     this.bodyMeasures.emit(measure)
                   }
                 })
-              } else
-              if (systemUri === 'com.google.weight' && source.dataStreamId === 'derived:com.google.weight:com.google.android.gms:merge_weight') {
+              } else if (systemUri === 'com.google.weight' && source.dataStreamId === 'derived:com.google.weight:com.google.android.gms:merge_weight') {
                 this.getAPIDataset(source.dataStreamId).subscribe(data => {
                   if (data.point !== undefined) {
                     var measure: Observations[] = []
@@ -87,8 +85,7 @@ export class GoogleFitService {
                     }
                   }
                 })
-              } else
-              if (systemUri === 'com.google.oxygen_saturation') {
+              } else if (systemUri === 'com.google.oxygen_saturation') {
                 if (source.dataStreamId !== undefined
                    && source.dataStreamId.startsWith('raw:')
                 ) {
@@ -112,11 +109,11 @@ export class GoogleFitService {
                     }
                   })
                 }
-              } else
-              if (systemUri === 'com.google.blood_glucose') {
+              } else if (systemUri === 'com.google.blood_glucose') {
                 if (source.dataStreamId !== undefined && source.dataStreamId.startsWith('raw:') ) {
                   this.getAPIDataset(source.dataStreamId).subscribe(data => {
                     if (data.point !== undefined) {
+
                       var measure : Observations[] = []
                       data.point.forEach((point: any) => {
                         if (point.startTimeNanos !== undefined) {
@@ -133,8 +130,32 @@ export class GoogleFitService {
                     }
                   })
                 }
-              } else {
-              // DEBUG  console.log(systemUri)
+              } else if (systemUri === 'com.google.body.temperature') {
+                this.getAPIDataset(source.dataStreamId).subscribe(data => {
+                  console.log(source.dataStreamId)
+                  if (source.dataStreamId !== undefined && source.dataStreamId === 'derived:com.google.body.temperature:com.google.android.gms:merged') {
+                    if (data.point !== undefined) {
+
+                      var measure: Observations[] = []
+                      data.point.forEach((point: any) => {
+                        if (point.startTimeNanos !== undefined) {
+                          let obsDate = new Date(point.startTimeNanos / 1000000);
+                          measure.push({
+                            measurementSetting: MeasurementSetting.home,
+                            day: obsDate,
+                            bodytemp: point.value[0].fpVal
+                            })
+                        }
+                      })
+
+                      this.bodyMeasures.emit(measure)
+                    }
+                  }
+                })
+              } else
+               {
+                // DEBUG
+                 console.log(systemUri)
               }
             }
           }
@@ -350,13 +371,16 @@ export class GoogleFitService {
         + '&client_id='+ environment.googleClientId
         + '&state=google'
         + '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read'
-        +'+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read'
-        +'+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read' +
-        '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read' +
-        '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.read' +
-        '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read' +
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.read'
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.nutrition.read'
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.oxygen_saturation.read'
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.sleep.read'
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_glucose.read'
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read'
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.write'
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read'
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.write'
         '&access_type=offline';
-
   }
 
   getOAuth2AccessToken(authorisationCode: any, routeUrl: string) {
@@ -399,7 +423,7 @@ export class GoogleFitService {
     token.expires_at = Math.round(timeObject.getTime() / 1000)
     if (token.refresh_token === undefined) {
       let tempToken = this.localStore.getData('googleFitToken');
-      if (tempToken !== undefined) {
+      if (tempToken !== undefined && tempToken !== '') {
         let jsonToken = JSON.parse(tempToken)
         if (jsonToken.refresh_token !== undefined) {
           console.log('Stored previous refrehs token')
