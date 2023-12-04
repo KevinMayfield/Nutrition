@@ -91,7 +91,7 @@ export class WithingsService {
                       obs.hydration = +measure.value / 100;
                       break;
                     case 71:
-                      obs.bodytemp = +measure.value / 1000;
+                      obs.bodytemp = Math.round(+measure.value / 100)/10;
                       break;
                     case 73:
                       obs.skintemp = +measure.value / 1000;

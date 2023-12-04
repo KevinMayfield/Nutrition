@@ -686,7 +686,6 @@ export class ActivityComponent implements OnInit{
             this.googleFit.getDataSources()
             this.googleFit.getSteps()
             this.googleFit.getSPO2()
-           // this.googleFit.getHbA1c()
         }
     }
     getStrava(){

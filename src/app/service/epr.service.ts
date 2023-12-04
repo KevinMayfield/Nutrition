@@ -67,9 +67,9 @@ export class EPRService {
     if (trimp > 500) {
       return 3
     } else
-    if (trimp > 350) {
+    if (trimp > 300) {
       return 2
-    } else if (trimp > 200) {
+    } else if (trimp > 150) {
       return 1
     } else {
       return 0

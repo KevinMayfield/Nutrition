@@ -20,7 +20,7 @@ export class AuthService {
     const token = this.localStore.getData("googleFitToken")
     return !this.googleFit.isTokenExpired(token); //!this.jwtHelper.isTokenExpired(token);
 /*
-    const token = this.localStore.getData('stravaAccessToken');
+    const token = this.localStore.getData('stravaToken');
 
     // Check whether the token is expired and return
     // true or false

@@ -38,120 +38,18 @@ export class GoogleFitService {
           if (source.dataType !== undefined) {
             if (source.dataType.name !== undefined) {
               let systemUri = source.dataType.name
+
               if (systemUri === 'com.google.height') {
-                this.getAPIDataset(source.dataStreamId).subscribe(data => {
-                  if (data.point !== undefined) {
-                    var measure: Observations[] = []
-                    data.point.forEach((point: any) => {
-                      if (point.startTimeNanos !== undefined) {
-                        let obsDate = new Date(point.startTimeNanos / 1000000);
-                        measure.push({
-                          measurementSetting: MeasurementSetting.home,
-                          day: obsDate,
-                          height: point.value[0].fpVal
-                        })
-                        this.epr.setHeight(Math.round(point.value[0].fpVal * 100))
-                      }
-                    })
-                    this.bodyMeasures.emit(measure)
-                  }
-                })
+                this.getHeight(source.dataStreamId)
               } else if (systemUri === 'com.google.weight' && source.dataStreamId === 'derived:com.google.weight:com.google.android.gms:merge_weight') {
-                this.getAPIDataset(source.dataStreamId).subscribe(data => {
-                  if (data.point !== undefined) {
-                    var measure: Observations[] = []
-                    data.point.forEach((point: any) => {
-                      if (point.startTimeNanos !== undefined) {
-                        let obsDate = new Date(point.startTimeNanos / 1000000);
-                        measure.push({
-                          measurementSetting: MeasurementSetting.home,
-                          day: obsDate,
-                          weight: point.value[0].fpVal
-                        })
-                      }
-                    })
-                    if (measure.length > 0) {
-                      var sum = 0
-                      measure.forEach(obs=>{
-                        if (obs.weight !== undefined) sum += obs.weight
-                      })
-                      const weight = Math.round(10 *sum/measure.length)/10
-                      if (this.epr.person.weight === undefined || this.epr.person.weight !== weight) {
-                        this.epr.setWeight(weight)
-                        this.strava.updateWeight(weight).subscribe(result => {
-                          console.log(result)
-                        })
-                      }
-                    }
-                  }
-                })
-              } else if (systemUri === 'com.google.oxygen_saturation') {
-                if (source.dataStreamId !== undefined
-                   && source.dataStreamId.startsWith('raw:')
+                this.getWeight(source.dataStreamId)
+              } else if (systemUri === 'com.google.oxygen_saturation' && source.dataStreamId.startsWith('raw:')
                 ) {
-                  this.getAPIDataset(source.dataStreamId).subscribe(data => {
-                    if (data.point !== undefined) {
-                      var measure: Observations[] = []
-                      data.point.forEach((point: any) => {
-                        if (point.startTimeNanos !== undefined) {
-                          let obsDate = new Date(point.startTimeNanos / 1000000);
-                          measure.push({
-                            measurementSetting: MeasurementSetting.home,
-                            day: obsDate,
-                            spo2: {
-                              avg: point.value[0].fpVal
-                            }
-                          })
-                        }
-                      })
-
-                      this.bodyMeasures.emit(measure)
-                    }
-                  })
-                }
-              } else if (systemUri === 'com.google.blood_glucose') {
-                if (source.dataStreamId !== undefined && source.dataStreamId.startsWith('raw:') ) {
-                  this.getAPIDataset(source.dataStreamId).subscribe(data => {
-                    if (data.point !== undefined) {
-
-                      var measure : Observations[] = []
-                      data.point.forEach((point: any) => {
-                        if (point.startTimeNanos !== undefined) {
-                          let obsDate = new Date(point.startTimeNanos / 1000000);
-                          measure.push({
-                            measurementSetting: MeasurementSetting.home,
-                            day: obsDate,
-                            glucose: {
-                              val: point.value[0].fpVal
-                            }})
-                        }
-                      })
-                      this.bodyMeasures.emit(measure)
-                    }
-                  })
-                }
-              } else if (systemUri === 'com.google.body.temperature') {
-                this.getAPIDataset(source.dataStreamId).subscribe(data => {
-                  console.log(source.dataStreamId)
-                  if (source.dataStreamId !== undefined && source.dataStreamId === 'derived:com.google.body.temperature:com.google.android.gms:merged') {
-                    if (data.point !== undefined) {
-
-                      var measure: Observations[] = []
-                      data.point.forEach((point: any) => {
-                        if (point.startTimeNanos !== undefined) {
-                          let obsDate = new Date(point.startTimeNanos / 1000000);
-                          measure.push({
-                            measurementSetting: MeasurementSetting.home,
-                            day: obsDate,
-                            bodytemp: point.value[0].fpVal
-                            })
-                        }
-                      })
-
-                      this.bodyMeasures.emit(measure)
-                    }
-                  }
-                })
+                this.getSPO2New(source.dataStreamId)
+              } else if (systemUri === 'com.google.blood_glucose' && source.dataStreamId.startsWith('raw:') ) {
+                this.getHbA1c(source.dataStreamId)
+              } else if (systemUri === 'com.google.body.temperature' && source.dataStreamId === 'derived:com.google.body.temperature:com.google.android.gms:merged') {
+               // this.getBodyTemperature(source.dataStreamId)
               } else
                {
                 // DEBUG
@@ -190,30 +88,93 @@ export class GoogleFitService {
     })
   }
 
-  public getHbA1c() {
-    this.getAPIHbA1c().subscribe( (result:any)  => {
-      let measure: Observations[] = []
-      if (result.bucket !== undefined) {
-        result.bucket.forEach((bucket: any) => {
-          if (bucket.dataset !== undefined) {
-            bucket.dataset.forEach((dataset: any) => {
-              if (dataset.point !== undefined) {
-                dataset.point.forEach((point: any) => {
-                  if (point.startTimeNanos !== undefined) {
-                    let obsDate = new Date(point.startTimeNanos / 1000000);
-                           measure.push({
-                                 measurementSetting: MeasurementSetting.home,
-                                 day: obsDate,
-                                 glucose: {
-                                   val: point.value[0].fpVal
-                                 }})
+  public getHbA1c(dataStreamId: string) {
+      this.getAPIDataset(dataStreamId).subscribe(data => {
+        if (data.point !== undefined) {
 
-                  }
-                })
+          var measure : Observations[] = []
+          data.point.forEach((point: any) => {
+            if (point.startTimeNanos !== undefined) {
+              let obsDate = new Date(point.startTimeNanos / 1000000);
+              measure.push({
+                measurementSetting: MeasurementSetting.home,
+                day: obsDate,
+                glucose: {
+                  val: point.value[0].fpVal
+                }})
+            }
+          })
+          this.bodyMeasures.emit(measure)
+        }
+      })
+  }
+  getWeight(dataStreamId: string) {
+    this.getAPIDataset(dataStreamId).subscribe(data => {
+      if (data.point !== undefined) {
+        var measure: Observations[] = []
+        data.point.forEach((point: any) => {
+          if (point.startTimeNanos !== undefined) {
+            let obsDate = new Date(point.startTimeNanos / 1000000);
+            measure.push({
+              measurementSetting: MeasurementSetting.home,
+              day: obsDate,
+              weight: point.value[0].fpVal
+            })
+          }
+        })
+        if (measure.length > 0) {
+          var sum = 0
+          measure.forEach(obs => {
+            if (obs.weight !== undefined) sum += obs.weight
+          })
+          const weight = Math.round(10 * sum / measure.length) / 10
+          if (this.epr.person.weight === undefined || this.epr.person.weight !== weight) {
+            this.epr.setWeight(weight)
+            this.strava.updateWeight(weight).subscribe(result => {
+              console.log(result)
+            })
+          }
+        }
+      }
+    })
+  }
+  getHeight(dataStreamId : string) {
+    this.getAPIDataset(dataStreamId).subscribe(data => {
+      if (data.point !== undefined) {
+        var measure: Observations[] = []
+        data.point.forEach((point: any) => {
+          if (point.startTimeNanos !== undefined) {
+            let obsDate = new Date(point.startTimeNanos / 1000000);
+            measure.push({
+              measurementSetting: MeasurementSetting.home,
+              day: obsDate,
+              height: point.value[0].fpVal
+            })
+            this.epr.setHeight(Math.round(point.value[0].fpVal * 100))
+          }
+        })
+        this.bodyMeasures.emit(measure)
+      }
+    })
+  }
+
+  getSPO2New(dataStreamId : string){
+    this.getAPIDataset(dataStreamId).subscribe(data => {
+      if (data.point !== undefined) {
+        var measure: Observations[] = []
+        data.point.forEach((point: any) => {
+          if (point.startTimeNanos !== undefined) {
+            let obsDate = new Date(point.startTimeNanos / 1000000);
+            measure.push({
+              measurementSetting: MeasurementSetting.home,
+              day: obsDate,
+              spo2: {
+                avg: point.value[0].fpVal
               }
             })
           }
         })
+
         this.bodyMeasures.emit(measure)
       }
     })
@@ -281,20 +242,7 @@ export class GoogleFitService {
       }
     return this.http.post<any>(url , body, { headers} );
   }
-  getAPIHbA1c() {
-    const headers = this.getAPIHeaders();
-    const url = 'https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate'
-    let body = {
-      "aggregateBy": [{
-        "dataTypeName": "com.google.blood_glucose",
-        "dataSourceId": "derived:com.google.blood_glucose:com.google.android.gms:merged"
-      }],
-      "bucketByTime": { "durationMillis": 86400000 },
-      "startTimeMillis": this.epr.getFromDate().getTime(),
-      "endTimeMillis": this.epr.getToDate().getTime()
-    }
-    return this.http.post<any>(url , body, { headers} );
-  }
+
   getAPISPO2() {
     const headers = this.getAPIHeaders();
     const url = 'https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate'
@@ -309,14 +257,6 @@ export class GoogleFitService {
     }
     return this.http.post<any>(url , body, { headers} );
   }
-  getAPISPO2Raw() {
-    const headers = this.getAPIHeaders();
-    console.log(this.epr.getFromDate().getTime())
-    const url = 'https://www.googleapis.com/fitness/v1/users/me/dataSources?dataTypeName=com.google.oxygen_saturation'
-
-    return this.http.get<any>(url ,  { headers} );
-  }
-
   private getAPIDataSources() {
     const headers = this.getAPIHeaders();
     const url = 'https://www.googleapis.com/fitness/v1/users/me/dataSources'
@@ -516,5 +456,24 @@ export class GoogleFitService {
   }
 
 
+  private getBodyTemperature(dataStreamId: any) {
+    this.getAPIDataset(dataStreamId).subscribe(data => {
+        if (data.point !== undefined) {
+          var measure: Observations[] = []
+          data.point.forEach((point: any) => {
+            if (point.startTimeNanos !== undefined) {
+              let obsDate = new Date(point.startTimeNanos / 1000000);
+              measure.push({
+                measurementSetting: MeasurementSetting.home,
+                day: obsDate,
+                bodytemp: point.value[0].fpVal
+              })
+            }
+          })
 
+          this.bodyMeasures.emit(measure)
+        }
+
+    })
+  }
 }
