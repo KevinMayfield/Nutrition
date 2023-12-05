@@ -362,13 +362,15 @@ export class GoogleFitService {
     timeObject = new Date(timeObject.getTime() + milliseconds);
     token.expires_at = Math.round(timeObject.getTime() / 1000)
     if (token.refresh_token === undefined) {
-      let tempToken = this.localStore.getData('googleFitToken');
-      if (tempToken !== undefined && tempToken !== '') {
-        let jsonToken = JSON.parse(tempToken)
+      let tolkein = this.localStore.getData('googleFitToken');
+      if (tolkein !== undefined && tolkein !== '') {
+        let jsonToken = JSON.parse(tolkein)
         if (jsonToken.refresh_token !== undefined) {
           console.log('Stored previous refresh token')
           token.refresh_token = jsonToken.refresh_token
         } else {
+          console.log(token)
+          console.log(jsonToken)
           console.log('GOOGLE FIT IN INVALID STATE RefreshToken error')
         }
       }
