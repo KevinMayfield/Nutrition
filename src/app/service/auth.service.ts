@@ -17,7 +17,8 @@ export class AuthService {
   //https://medium.com/@ryanchenkie_40935/angular-authentication-using-route-guards-bf7a4ca13ae3
 
   public isAuthenticated(): boolean {
-    const token = this.localStore.getData("googleFitToken")
+    const tolkien = this.localStore.getData("googleFitToken")
+    const token: any = JSON.parse(tolkien);
     return !this.googleFit.isTokenExpired(token); //!this.jwtHelper.isTokenExpired(token);
 /*
     const token = this.localStore.getData('stravaToken');

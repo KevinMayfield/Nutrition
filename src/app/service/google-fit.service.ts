@@ -366,10 +366,14 @@ export class GoogleFitService {
       if (tempToken !== undefined && tempToken !== '') {
         let jsonToken = JSON.parse(tempToken)
         if (jsonToken.refresh_token !== undefined) {
-          console.log('Stored previous refrehs token')
+          console.log('Stored previous refresh token')
           token.refresh_token = jsonToken.refresh_token
+        } else {
+          console.log('GOOGLE FIT IN INVALID STATE RefreshToken error')
         }
       }
+    } else {
+      console.log('GOOGLE FIT NO REFRESH TOKEN - Should not be possible')
     }
     console.log('new GoogleFit accessToken')
     this.localStore.saveData('googleFitToken', JSON.stringify(token));
@@ -399,12 +403,19 @@ export class GoogleFitService {
       decoded: any
   ): Date | null {
 
-    if (!decoded || !decoded.hasOwnProperty('expires_at')) {
+
+    if (!decoded) {
       // Invalid format
-      console.log('removed googleFitToken - getTokenExpiration date')
+      console.log('removed googleFitToken - decoded issue')
       return null;
     }
-
+    if (decoded.expires_at === undefined) {
+      // Invalid format
+      const decodedJSON = JSON.stringify(decoded)
+      console.log(decodedJSON)
+      console.log('Missing googleFitToken - expires_at')
+      return null;
+    }
     const date = new Date(0);
     date.setUTCSeconds(decoded.expires_at);
     return date;
