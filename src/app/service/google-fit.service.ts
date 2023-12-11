@@ -321,6 +321,7 @@ export class GoogleFitService {
         + 'redirect_uri=' + routeUrl
         + '&prompt=consent'
         + '&response_type=code'
+        + '&access_type=offline'
         + '&client_id='+ environment.googleClientId
         + '&state=google'
         + '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.activity.read'
@@ -332,8 +333,7 @@ export class GoogleFitService {
         + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body_temperature.read'
         + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.body.write'
         + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.read'
-        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.write'
-        '&access_type=offline';
+        + '+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffitness.blood_pressure.write';
   }
 
   getOAuth2AccessToken(authorisationCode: any, routeUrl: string) {
@@ -391,6 +391,7 @@ export class GoogleFitService {
       console.log('GOOGLE FIT NO REFRESH TOKEN - Should not be possible')
     }
     console.log('new GoogleFit accessToken')
+    console.log(token)
     this.localStore.saveData('googleFitToken', JSON.stringify(token));
     this.accessToken = token.access_token;
     this.tokenChange.emit(token);
@@ -558,7 +559,6 @@ export class GoogleFitService {
             }
         )
         if (sleep !== undefined) {
-          console.log(sleep)
           this.sleepMeasures.emit(sleep)
         }
       }
