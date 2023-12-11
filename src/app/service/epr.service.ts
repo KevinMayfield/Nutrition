@@ -86,7 +86,6 @@ export class EPRService {
       this.from.setDate(this.from.getDate() - 1);
     }
     var diffDays = this.getDateAbs(this.to) - this.getDateAbs(this.from);
-    console.log(this.to.toISOString() + ' ' + diffDays)
     this.duration = diffDays
     this.endWeekChanged.emit(this.to)
   }

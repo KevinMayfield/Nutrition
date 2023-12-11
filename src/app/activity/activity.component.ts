@@ -689,20 +689,20 @@ export class ActivityComponent implements OnInit{
         }
     }
     getStrava(){
-        if (this.auth.isAuthenticated()) {
-            console.log('get Strava Triggered')
-            // token changed so clear results
-            let activityArray = []
-            this.activities = []
-            this.powerActivities = [];
-            for (var i = 0; i <= this.epr.duration; i++) activityArray.push({duration: 0, kcal: 0, sessions: []})
-            this.activityArray = activityArray
-            this.strava.getAthlete().subscribe(athlete => {
-                if (athlete.weight !== undefined) this.weight = athlete.weight
-                this.epr.setPerson(athlete)
-                this.strava.getActivities()
-            })
-        }
+       if (this.strava.getAccessToken() !== undefined) {
+           console.log('get Strava Triggered')
+           // token changed so clear results
+           let activityArray = []
+           this.activities = []
+           this.powerActivities = [];
+           for (var i = 0; i <= this.epr.duration; i++) activityArray.push({duration: 0, kcal: 0, sessions: []})
+           this.activityArray = activityArray
+           this.strava.getAthlete().subscribe(athlete => {
+               if (athlete.weight !== undefined) this.weight = athlete.weight
+               this.epr.setPerson(athlete)
+               this.strava.getActivities()
+           })
+       }
     }
     setSelectAnswers() {
         if (this.smart.patient !== undefined) {

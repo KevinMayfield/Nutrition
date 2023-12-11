@@ -43,13 +43,15 @@ export class GoogleFitService {
                 this.getHeight(source.dataStreamId)
               } else if (systemUri === 'com.google.weight' && source.dataStreamId === 'derived:com.google.weight:com.google.android.gms:merge_weight') {
                 this.getWeight(source.dataStreamId)
-              } else if (systemUri === 'com.google.oxygen_saturation' && source.dataStreamId.startsWith('raw:')
-                ) {
+              } else if (systemUri === 'com.google.oxygen_saturation' && source.dataStreamId.startsWith('raw:')) {
                 this.getSPO2New(source.dataStreamId)
               } else if (systemUri === 'com.google.blood_glucose' && source.dataStreamId.startsWith('raw:') ) {
                 this.getHbA1c(source.dataStreamId)
               } else if (systemUri === 'com.google.body.temperature' && source.dataStreamId === 'derived:com.google.body.temperature:com.google.android.gms:merged') {
                // this.getBodyTemperature(source.dataStreamId)
+              } else if (systemUri === 'com.google.sleep.segment' && source.dataStreamId.startsWith('derived:')) {
+                console.log(source)
+                this.getSleepSegment(source.dataStreamId)
               } else
                {
                 // DEBUG
@@ -277,6 +279,14 @@ export class GoogleFitService {
    // headers.append('Content-Type', 'application/x-www-form-urlencoded');
     return headers;
   }
+
+  getToken() {
+    let tolkien = this.localStore.getData('googleFitToken')
+    if (tolkien !== undefined && tolkien !== '') {
+      return JSON.parse(tolkien);
+    }
+    return ''
+  }
   getAccessToken() {
 
     let tolkien = this.localStore.getData('googleFitToken')
@@ -487,6 +497,14 @@ export class GoogleFitService {
           this.bodyMeasures.emit(measure)
         }
 
+    })
+  }
+
+  private getSleepSegment(dataStreamId: any) {
+    this.getAPIDataset(dataStreamId).subscribe(data => {
+      if (data.point !== undefined) {
+        console.log(data)
+      }
     })
   }
 }

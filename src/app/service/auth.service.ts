@@ -19,13 +19,10 @@ export class AuthService {
   public isAuthenticated(): boolean {
     const tolkien = this.localStore.getData("googleFitToken")
     const token: any = JSON.parse(tolkien);
-    return !this.googleFit.isTokenExpired(token); //!this.jwtHelper.isTokenExpired(token);
-/*
-    const token = this.localStore.getData('stravaToken');
-
-    // Check whether the token is expired and return
-    // true or false
-
-    return !this.strava.isTokenExpired(token); //!this.jwtHelper.isTokenExpired(token);*/
+    console.log(token)
+    if (this.googleFit.isTokenExpired(token) && token.refresh_token !== undefined) {
+      this.googleFit.getRefreshToken()
+    }
+    return !this.googleFit.isTokenExpired(token);
   }
 }
