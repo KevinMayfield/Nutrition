@@ -436,33 +436,42 @@ export class ActivityComponent implements OnInit{
             measures.forEach((entry: Observations) => temp.push(entry))
             this.bodyMeasures = temp
         })
+        this.googleFit.sleepMeasures.subscribe(measure => {
+            console.log('Google Sleep')
+                this.processSleep(measure)
+        }
+        )
         this.withings.sleepMeasures.subscribe(measure => {
-            var today = this.epr.getToDate()
-            var activityDate = measure.day
-            if (activityDate !== undefined) {
-                var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
-                let bank = this.sleepMeasures[this.epr.duration - diffDays]
-                if (bank !== undefined) {
-                    // TODO Possible issue here with only going for best individual sleep results. It will ignore short naps.
-                    if (bank.sleepScore === undefined || (measure.sleepScore !== undefined && bank.sleepScore < measure.sleepScore)) {
-                        bank.hrv = measure.hrv
-                        bank.sleepScore = measure.sleepScore
-                        bank.hr_average = measure.hr_average
-                        bank.remsleepduration = measure.remsleepduration
-                        bank.sleep_duration = measure.sleep_duration
-                        bank.lightsleepduration = measure.lightsleepduration
-                        bank.durationtosleep = measure.durationtosleep
-                        bank.deepsleepduration = measure.deepsleepduration
-                        var tempAct: any[] = []
-                        for (let temp of this.sleepMeasures) tempAct.push(temp)
-                        this.sleepMeasures = tempAct
-                    }
-                } else {
-                    //console.log(today + ' ' + activityDate + ' ' + diffDays)
-                }
-            }
+           this.processSleep(measure)
         })
 
+    }
+
+    processSleep(measure: Observations) {
+        var today = this.epr.getToDate()
+        var activityDate = measure.day
+        if (activityDate !== undefined) {
+            var diffDays = this.epr.getDateAbs(today) - this.epr.getDateAbs(activityDate);
+            let bank = this.sleepMeasures[this.epr.duration - diffDays]
+            if (bank !== undefined) {
+                // TODO Possible issue here with only going for best individual sleep results. It will ignore short naps.
+               // if (bank.sleepScore === undefined || (measure.sleepScore !== undefined && bank.sleepScore < measure.sleepScore)) {
+                    bank.hrv = measure.hrv
+                    bank.sleepScore = measure.sleepScore
+                    bank.hr_average = measure.hr_average
+                    bank.remsleepduration = measure.remsleepduration
+                    bank.sleep_duration = measure.sleep_duration
+                    bank.lightsleepduration = measure.lightsleepduration
+                    bank.durationtosleep = measure.durationtosleep
+                    bank.deepsleepduration = measure.deepsleepduration
+                    var tempAct: any[] = []
+                    for (let temp of this.sleepMeasures) tempAct.push(temp)
+                    this.sleepMeasures = tempAct
+
+            } else {
+                console.log(today + ' ' + activityDate + ' ' + diffDays)
+            }
+        }
     }
 
     ngAfterViewInit(): void {

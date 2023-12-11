@@ -18,6 +18,7 @@ export class AuthService {
 
   public isAuthenticated(): boolean {
     const tolkien = this.localStore.getData("googleFitToken")
+    if (tolkien === undefined || tolkien === '') return false;
     const token: any = JSON.parse(tolkien);
     console.log(token)
     if (this.googleFit.isTokenExpired(token) && token.refresh_token !== undefined) {

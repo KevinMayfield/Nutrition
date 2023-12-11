@@ -15,6 +15,7 @@ export class GoogleFitService {
   private accessToken = undefined;
   tokenChange: EventEmitter<any> = new EventEmitter();
   bodyMeasures: EventEmitter<Observations[]> = new EventEmitter();
+  sleepMeasures: EventEmitter<Observations> = new EventEmitter();
   private refreshingToken = false;
   constructor(private http: HttpClient,
               private epr: EPRService,
@@ -49,9 +50,11 @@ export class GoogleFitService {
                 this.getHbA1c(source.dataStreamId)
               } else if (systemUri === 'com.google.body.temperature' && source.dataStreamId === 'derived:com.google.body.temperature:com.google.android.gms:merged') {
                // this.getBodyTemperature(source.dataStreamId)
-              } else if (systemUri === 'com.google.sleep.segment' && source.dataStreamId.startsWith('derived:')) {
-                console.log(source)
-                this.getSleepSegment(source.dataStreamId)
+              } else if (systemUri === 'com.google.sleep.segment') {
+               // console.log(source)
+                if (source.dataStreamId.startsWith('derived:com.google.sleep.segment:com.google.fitkit:apple:iphone')) {
+                  this.getSleepSegment(source.dataStreamId)
+                }
               } else
                {
                 // DEBUG
@@ -502,8 +505,56 @@ export class GoogleFitService {
 
   private getSleepSegment(dataStreamId: any) {
     this.getAPIDataset(dataStreamId).subscribe(data => {
+
       if (data.point !== undefined) {
-        console.log(data)
+        var firststartTimeNanos = 0
+        var lastendTimeNanos = 0
+        var sleep: Observations | undefined = undefined
+
+        data.point.forEach((point: any) => {
+
+              // modifiedTImeMillis is date last modified
+              if (lastendTimeNanos !== point.startTimeNanos) {
+                firststartTimeNanos = point.startTimeNanos
+                let obsDate = new Date(point.startTimeNanos / (1000 * 1000));
+                if (sleep !== undefined) {
+                  console.log(sleep)
+                  this.sleepMeasures.emit(sleep)
+                }
+                sleep = {
+                  day: obsDate,
+                  measurementSetting: MeasurementSetting.home,
+                  lightsleepduration: 0,
+                  remsleepduration: 0,
+                  deepsleepduration: 0
+                }
+              } else {
+                // console.log('continuous ')
+              }
+              lastendTimeNanos = point.endTimeNanos
+              const duration = (point.endTimeNanos - point.startTimeNanos) / (1000 * 1000 * 1000)
+              if (sleep !== undefined) {
+                switch (point.value[0].intVal) {
+                  case 4 : {
+                    if (sleep.lightsleepduration !== undefined) sleep.lightsleepduration += duration
+                    break
+                  }
+                  case 5 : {
+                    if (sleep.deepsleepduration !== undefined) sleep.deepsleepduration += duration
+                    break
+                  }
+                  case 6 : {
+                    if (sleep.remsleepduration !== undefined) sleep.remsleepduration += duration
+                    break
+                  }
+                }
+              }
+            }
+        )
+        if (sleep !== undefined) {
+          console.log(sleep)
+          this.sleepMeasures.emit(sleep)
+        }
       }
     })
   }
