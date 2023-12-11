@@ -518,7 +518,6 @@ export class GoogleFitService {
                 firststartTimeNanos = point.startTimeNanos
                 let obsDate = new Date(point.startTimeNanos / (1000 * 1000));
                 if (sleep !== undefined) {
-                  console.log(sleep)
                   this.sleepMeasures.emit(sleep)
                 }
                 sleep = {
@@ -532,7 +531,7 @@ export class GoogleFitService {
                 // console.log('continuous ')
               }
               lastendTimeNanos = point.endTimeNanos
-              const duration = (point.endTimeNanos - point.startTimeNanos) / (1000 * 1000 * 1000)
+              const duration = (point.endTimeNanos - point.startTimeNanos) / (1000 * 1000 * 1000 * 60)
               if (sleep !== undefined) {
                 switch (point.value[0].intVal) {
                   case 4 : {
@@ -546,6 +545,13 @@ export class GoogleFitService {
                   case 6 : {
                     if (sleep.remsleepduration !== undefined) sleep.remsleepduration += duration
                     break
+                  }
+                  case 1 : {
+                    if (sleep.durationtosleep !== undefined) sleep.durationtosleep += duration
+                    break
+                  }
+                  default: {
+                    console.log(point.value[0].intVal)
                   }
                 }
               }

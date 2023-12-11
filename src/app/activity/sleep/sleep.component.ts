@@ -137,51 +137,37 @@ export class SleepComponent {
 
     if (this.measure !== undefined) {
       for (let measure of this.measure) {
+          sleepScoreXAxis[0].data.push(measure.day.toISOString().split('T')[0])
 
+
+          const data = {
+              value: measure.sleepScore,
+              itemStyle: {
+                  color: this.epr.colorScheme[1]
+              }
+          }
           if (measure.sleepScore !== undefined) {
-
-              sleepScoreXAxis[0].data.push(measure.day.toISOString().split('T')[0])
-              const data = {
-                  value:measure.sleepScore,
-                  itemStyle: {
-                      color: this.epr.colorScheme[1]
-                  }
-              }
               if (measure.sleepScore < 85) {
-                 data.itemStyle.color = this.epr.colorScheme[2]
-              }
-              else if (measure.sleepScore < 50) {
+                  data.itemStyle.color = this.epr.colorScheme[2]
+              } else if (measure.sleepScore < 50) {
                   data.itemStyle.color = this.epr.colorScheme[3]
               }
-              sleepScoreData[0].data.push(data)
-              if (measure.durationtosleep !== undefined) {
-                  const data = {
-                      value: measure.durationtosleep,
-                  }
-                  sleepScoreData[1].data.push(data)
-              }
-              if (measure.lightsleepduration !== undefined) {
-                  const data = {
-                      value: measure.lightsleepduration,
-                  }
-                  sleepScoreData[2].data.push(data)
-              }
-              if (measure.remsleepduration !== undefined) {
-                  const data = {
-                      value: measure.remsleepduration,
-                  }
-                  sleepScoreData[3].data.push(data)
-              }
-              if (measure.deepsleepduration !== undefined) {
-                  const data = {
-                      value: measure.deepsleepduration,
-                  }
-                  sleepScoreData[4].data.push(data)
-              }
-
-          } else {
-
           }
+          sleepScoreData[0].data.push(data)
+            sleepScoreData[1].data.push({
+              value: measure.durationtosleep,
+          })
+
+          sleepScoreData[2].data.push({
+              value: measure.lightsleepduration,
+          })
+          sleepScoreData[3].data.push({
+              value: measure.remsleepduration,
+          })
+
+          sleepScoreData[4].data.push({
+              value: measure.deepsleepduration,
+          })
 
 
 

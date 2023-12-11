@@ -437,10 +437,8 @@ export class ActivityComponent implements OnInit{
             this.bodyMeasures = temp
         })
         this.googleFit.sleepMeasures.subscribe(measure => {
-            console.log('Google Sleep')
-                this.processSleep(measure)
-        }
-        )
+            this.processSleep(measure)
+        })
         this.withings.sleepMeasures.subscribe(measure => {
            this.processSleep(measure)
         })
