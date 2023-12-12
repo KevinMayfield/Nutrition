@@ -79,7 +79,22 @@
             </mat-panel-description>
         </mat-expansion-panel-header>
         <span *ngIf="bodyTempPanelOpenState">
-            <app-scatter-graph [setData]="bodyTemp" height="400px" [yMin]="getMinE(bodyTemp[0].data)" [yMax]="getMaxE(bodyTemp[0].data)" ></app-scatter-graph>
+            <app-scatter-graph [setData]="bodyTemp" height="300px" [yMin]="getMinE(bodyTemp[0].data)" [yMax]="getMaxE(bodyTemp[0].data)" ></app-scatter-graph>
+        </span>
+    </mat-expansion-panel>
+    </span>
+    <span *ngIf="pwv != undefined && pwv[0].data != undefined && pwv[0].data.length > 1">
+    <mat-expansion-panel (opened)="pwvPanelOpenState = true" (closed)="pwvPanelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Pulse Wave Velocity -&nbsp;<b>{{round1DP(getLastE(pwv[0].data))}} m/s</b>
+            </mat-panel-title>
+           <mat-panel-description>
+                Average &nbsp;<b>{{round1DP(getAvgE(pwv[0].data))}} m/s</b>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <span *ngIf="pwvPanelOpenState">
+            <app-scatter-graph [setData]="pwv" height="300px" [yMin]="getMinE(pwv[0].data)" [yMax]="getMaxE(pwv[0].data)" ></app-scatter-graph>
         </span>
     </mat-expansion-panel>
     </span>

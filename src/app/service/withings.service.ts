@@ -97,7 +97,7 @@ export class WithingsService {
                       obs.skintemp = +measure.value / 1000;
                       break;
                     case 91:
-                      tobs.pwv = +measure.value / 1000;
+                      obs.pwv = +measure.value / 1000;
                       break;
                     case 9 :
                       obs.diastolic = +measure.value;
