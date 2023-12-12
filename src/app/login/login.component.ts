@@ -51,6 +51,8 @@ These values are stored locally in your web browser, the application does not st
 
     anchor!: string;
 
+    person = false;
+
     constructor(private googleFit : GoogleFitService,
                 private router: Router,
                 private route: ActivatedRoute,) {
@@ -72,12 +74,23 @@ These values are stored locally in your web browser, the application does not st
     }
 
     ngOnInit(): void {
+        this.googleFit.tokenChange.subscribe(
+            (value) => {
+                if (!this.person) {
+                    this.router.navigateByUrl('/summary');
+                } else {
+                    this.router.navigateByUrl('/person');
+                }
+                console.log(value)
+            }
+        );
         this.route.queryParams.subscribe(params => {
             const code = params['code'];
             const state = params['state'];
             const scope : string = params['scope'];
             if (code !== undefined) {
                 if (scope !== undefined && (scope.includes('https://www.googleapis.com'))) {
+                    this.person = true
                     console.log(code)
                     console.log(scope)
                     this.doGoogleSetup(code, scope);
@@ -90,12 +103,7 @@ These values are stored locally in your web browser, the application does not st
 
     private doGoogleSetup(authorisationCode: any, scope: string) {
         //  console.log(authorisationCode);
-        this.googleFit.tokenChange.subscribe(
-            (value) => {
-                this.router.navigateByUrl('/person');
-                console.log(value)
-            }
-        );
+
         const url = window.location.href.split('?');
         this.googleFit.getOAuth2AccessToken(authorisationCode, url[0]);
     }
