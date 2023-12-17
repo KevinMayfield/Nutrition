@@ -172,6 +172,11 @@ export class BodyMeasuresComponent {
         data: [],
         type: 'line',
         name: 'high'
+      },
+      {
+        data: [],
+        type: 'line',
+        name: 'daily average'
       }
     ];
     const weightData: any[] = [
@@ -481,7 +486,33 @@ export class BodyMeasuresComponent {
     this.bodyTemp = bodyTemp
     this.pwv = pwv
 
+    var array : any[] = []
+    for (let i = Math.round(this.epr.getFromDate().getTime() / 86400000);i <= Math.round(this.epr.getToDate().getTime() / 86400000); i++) {
+      var entry : any = {
+        date: i,
+        values: []
+      }
+      spo2Data[0].data.forEach((value : any) => {
+          let date = Math.round(value[0] / 86400000)
+          if (date === i) {
+            entry.values.push(value[1])
+          }
+      })
+      array.push(entry)
+    }
 
+    array.forEach((value : any) => {
+        let sum=0
+        value.values.forEach(((ent : number) => {
+            sum += ent
+        }))
+        if (value.values.length>0) {
+          const idata: any[] = []
+          idata.push( new Date(value.date *86400000 + 43200000 ))
+          idata.push((sum / value.values.length))
+          spo2Data[3].data.push(idata)
+        }
+    })
 
     this.spo2Data = spo2Data
 

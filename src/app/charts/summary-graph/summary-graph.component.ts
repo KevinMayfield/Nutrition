@@ -71,7 +71,6 @@ export class SummaryGraphComponent {
     var tss: number[] = []
 
 
-
     var XAxis : any = [
       {
         data: []
@@ -107,6 +106,7 @@ export class SummaryGraphComponent {
         day++
       }
 
+      // Hert inc ACL
       var trimpData :any = [
       ]
 
@@ -150,9 +150,14 @@ export class SummaryGraphComponent {
         }
           ser.data.push(sum)
       })
-      // ACL
+
+
+
       trimpData.push(ser)
       this.trimpData = trimpData
+
+      // Power inc ACL
+
       var tssData :any = []
       for (let f=0;f<4;f++) {
         let ser: any = {
@@ -188,12 +193,15 @@ export class SummaryGraphComponent {
         }
         ser.data.push(sum)
       })
-      // ACL
+
+
       tssData.push(ser)
 
       this.tssData = tssData
+      // ACL End
       this.XAxis = XAxis
 
+      // Calories inc ACL
       var caloriesData :any[] = [
       ]
 
@@ -212,8 +220,26 @@ export class SummaryGraphComponent {
           caloriesData[f].data.push(value[f])
         }
       })
-
-
+      var serC : any = {
+        name: 'Acute Load',
+        type: 'line',
+        yAxisIndex: 1,
+        data:[]
+      }
+      calories.forEach((value, index) => {
+        var sum: number | undefined = undefined
+        var start = index - 7
+        if (start >= 0) {
+          sum = 0
+          for (var i = start; i <= index; i++) {
+            calories[i].forEach((entry : any) => {
+                sum += entry
+            })
+          }
+        }
+        serC.data.push(sum)
+      })
+      caloriesData.push(serC)
       this.caloriesData = caloriesData
     }
   }

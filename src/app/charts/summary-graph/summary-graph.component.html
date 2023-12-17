@@ -2,58 +2,8 @@
     <span *ngIf="type ==='kcal'">
     <h3>Energy (kcal)</h3>
          <span *ngIf="caloriesData !== undefined && XAxis !== undefined">
-             <app-stacked-chart [setData]="caloriesData" [xAxis]="XAxis"></app-stacked-chart>
+             <app-stacked-chart [setData]="caloriesData" [xAxis]="XAxis" [yAxis]="yAxis"></app-stacked-chart>
          </span>
-             <!--   <ngx-charts-bar-vertical-stacked *ngIf="calories!==undefined"
-                                                 [view]="[containerRef.offsetWidth, 150]"
-                                         [scheme]="colorScheme"
-                                         [results]="calories"
-                                         [gradient]="gradient"
-                                         [xAxis]="showXAxis"
-                                         [yAxis]="showYAxis"
-                                         [legend]="true"
-                                                    [legendPosition]="legendPosition"
-                                         [showXAxisLabel]="showXAxisLabel"
-                                         [showYAxisLabel]="showYAxisLabel"
-                                         [xAxisLabel]="xAxisLabel"
-                                         [yAxisLabel]="yAxisLabel"
-                                         (select)="onSelect($event)"
-                                            [animations]="false"
-                                                >
-                    <ng-template #tooltipTemplate let-model="model">
-
-                        <b>Heart Rate Zone {{model.name}}</b>
-                        <br/>
-                        <br/>
-                        <span *ngFor="let pizza of pizza(model.value)">
-                                                      <span class="material-symbols-outlined">local_pizza</span>
-                                                 </span>
-                        <span class="material-symbols-outlined">local_pizza</span>
-                        {{model.value}} kcal
-                        <hr/>
-                        <span *ngIf="model.extra !== undefined && model.extra.session !== undefined">
-                            Activities
-                            <hr/>
-                            <span *ngFor="let act of model.extra.session">
-
-                                     <span *ngIf="act.type !== undefined" class="material-symbols-outlined">
-                                     {{getType(act.type)}}
-                                     </span> {{act.name}}
-                                    <br/>
-                                    <span class="material-symbols-outlined">
-                                        ecg_heart
-                                    </span> avg {{act.activity.average_heartrate}} beats/min
-                                <br/>
-                                    <span class="material-symbols-outlined">
-                                                             timer
-                                                             </span>
-                                    {{duration(act.activity.elapsed_time/60)}}
-                                    <hr/>
-                                </span>
-                        </span>
-
-                    </ng-template>
-                </ngx-charts-bar-vertical-stacked> -->
             <br/>
         <br/>
         <br/>
