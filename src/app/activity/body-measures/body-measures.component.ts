@@ -509,7 +509,7 @@ export class BodyMeasuresComponent {
         if (value.values.length>0) {
           const idata: any[] = []
           idata.push( new Date(value.date *86400000 + 43200000 ))
-          idata.push((sum / value.values.length))
+          idata.push(this.round1DP(sum / value.values.length))
           spo2Data[3].data.push(idata)
         }
     })
