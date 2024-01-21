@@ -147,6 +147,7 @@ export class WithingsService {
               this.getAPISleepGet(sleep.startdate, sleep.enddate).subscribe(sleepDetail => {
 
                 const startdate = new Date(sleep.startdate * 1000);
+                const enddate = new Date(sleep.enddate * 1000);
                 let count = 0;
                 let hrvSum = 0;
                 if (sleepDetail.body !== undefined && sleepDetail.body.series !== undefined) {
