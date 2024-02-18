@@ -67,7 +67,9 @@ export class WithingsService {
                 for (const measure of grp.measures) {
                   switch (measure.type) {
                     case 1:
-                      obs.weight = +measure.value / 1000;
+                      if (+measure.value < 100000) {
+                        obs.weight = +measure.value / 1000;
+                      }
                       break;
                     case 76:
                       obs.muscle_mass = +measure.value / 100;
