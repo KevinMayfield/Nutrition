@@ -75,10 +75,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "IOPS-SMART-Demo-BMI:build:production"
+              "buildTarget": "IOPS-SMART-Demo-BMI:build:production"
             },
             "development": {
-              "browserTarget": "IOPS-SMART-Demo-BMI:build:development"
+              "buildTarget": "IOPS-SMART-Demo-BMI:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -86,7 +86,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "IOPS-SMART-Demo-BMI:build"
+            "buildTarget": "IOPS-SMART-Demo-BMI:build"
           }
         },
         "test": {
