@@ -467,7 +467,7 @@ export class ActivityComponent implements OnInit{
                     this.sleepMeasures = tempAct
 
             } else {
-                console.log(today + ' ' + activityDate + ' ' + diffDays)
+          //      console.log(today + ' ' + activityDate + ' ' + diffDays)
             }
         }
     }
@@ -1067,7 +1067,9 @@ export class ActivityComponent implements OnInit{
                 let iso= isoDate.toLocaleDateString()
 
                 // @ts-ignore
-                var entry = {"name": wk.week + ' ' + iso,
+                var entry = {
+                    "name": wk.week + ' ' + iso,
+                    "date": isoDate,
                     "series": [],
                     "pwr": [],
                     "hr": []
@@ -1398,5 +1400,15 @@ export class ActivityComponent implements OnInit{
 
     download() {
         this.router.navigateByUrl('/chat');
+    }
+
+
+    getStacked():any[] | undefined {
+        if (this.stacked === undefined) return undefined;
+
+        return this.stacked.sort((a: any, b: any) => {
+            if (a.date > b.date) return -1
+            else return 1
+        })
     }
 }

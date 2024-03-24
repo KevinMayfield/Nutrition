@@ -58,7 +58,7 @@ export class GoogleFitService {
               } else
                {
                 // DEBUG
-                 console.log(systemUri)
+              //   console.log(systemUri)
               }
             }
           }

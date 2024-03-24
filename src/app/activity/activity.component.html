@@ -80,7 +80,7 @@
             -->
             <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
-                    <mat-expansion-panel *ngFor="let pie of stacked">
+                    <mat-expansion-panel *ngFor="let pie of getStacked()">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 Week {{pie.name}}
@@ -132,7 +132,7 @@
 
                     <h3>Heart Rate</h3>
 
-                    <mat-expansion-panel *ngFor="let pie of stacked; let i = index" (opened)="heartPanelOpenState[i] = true"
+                    <mat-expansion-panel *ngFor="let pie of getStacked(); let i = index" (opened)="heartPanelOpenState[i] = true"
                                          (closed)="heartPanelOpenState[i] = false">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
