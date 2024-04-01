@@ -78,8 +78,7 @@
             Energy summary bar chart
 
             -->
-            <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
-            <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
+              <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
                     <mat-expansion-panel *ngFor="let pie of getStacked()">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -98,6 +97,9 @@
                                      [results]="pie.series">
                                 </app-pie-chart-plus>
                     </mat-expansion-panel>
+
+                    <!-- Display after the energy summaries so that it can be compared with other graphs -->
+                    <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
 
             </span>
             <!--
