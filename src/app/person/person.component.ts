@@ -58,15 +58,12 @@ export class PersonComponent implements OnInit {
           // console.log('Withings detected');
           this.doWithingsSetup(code, state);
         }
-        /* else if (scope !== undefined && (scope.includes('https://www.googleapis.com'))) {
-          // Remove??
-          console.log(code)
-          console.log(scope)
-          this.doGoogleSetup(code, scope);
-        } */
         else {
           this.doStravaSetup(code);
         }
+      } else {
+        // presume this is a result of a connnection
+       // this.connected()
       }
     });
     this.http.get(this.smart.epr + '/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender').subscribe(result => {
@@ -114,9 +111,14 @@ export class PersonComponent implements OnInit {
     this.getStrava()
     this.strava.tokenChange.subscribe(()=> {
       this.getStrava()
+
     })
+  }
 
-
+  connected()  {
+    if (this.stravaConnected() && this.withingsConnected()) {
+      this.router.navigateByUrl('\summary')
+    }
   }
 
   getStrava(){
@@ -237,6 +239,7 @@ export class PersonComponent implements OnInit {
     );
     // this will emit a change when the token is retrieved
     this.strava.getOAuth2AccessToken(authorisationCode);
+
   }
 
   withingsConnected() {

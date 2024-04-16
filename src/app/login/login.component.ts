@@ -95,6 +95,8 @@ These values are stored locally in your web browser, the application does not st
                     console.log(scope)
                     this.doGoogleSetup(code, scope);
                 }
+            } else {
+
             }
 
         });

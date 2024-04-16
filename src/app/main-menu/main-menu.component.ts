@@ -37,20 +37,21 @@ export class MainMenuComponent implements OnInit{
 
 
     event(event: any) {
+        this.pageName = 'Activity'
         if (event instanceof ActivityComponent) {
-            this.pageName = 'Wellness - Summary'
+            this.pageName += ' - Summary'
 
         } else if (event instanceof PersonComponent) {
-            this.pageName = 'Wellness - User Settings'
+            this.pageName += ' - User Settings'
 
         } else if (event instanceof NutritionComponent) {
-            this.pageName = 'Wellness - Nutrition'
+            this.pageName += ' - Nutrition'
 
         } else if (event instanceof BMIComponent) {
-            this.pageName = 'Wellness - Healthy Weight Calculator'
+            this.pageName += ' - Healthy Weight Calculator'
 
         } else {
-            this.pageName = 'Wellness'
+
         }
     }
 
