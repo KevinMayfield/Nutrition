@@ -268,7 +268,7 @@
                     icon="info">
                 <button td-message-actions mat-button (click)="viewPower()">Power-Meter.cc</button>
             </td-message>
-            <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR" type="power"></app-summary-graph>
+            <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zonePWR" type="power"></app-summary-graph>
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
                 <h3>Power</h3>
 

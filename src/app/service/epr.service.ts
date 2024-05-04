@@ -328,7 +328,7 @@ export class EPRService {
                 }
               }
             }
-            if (activity.stream.watts !== undefined && hr.distribution_buckets.length > 0) {
+            if (activity.stream.watts !== undefined && pwr.distribution_buckets.length > 0) {
               for (let range of pwr.distribution_buckets) {
                 //  console.log(range.max + ' ' +activity.stream.watts.data[i])
                 if (activity.stream.watts.data[i] >= range.min &&
@@ -347,7 +347,7 @@ export class EPRService {
 
         // TSS Calculation
       if (activity.stream.time !== undefined && activity.stream.distance) {
-        if (activity.stream.watts !== undefined && hr.distribution_buckets.length > 0) {
+        if (activity.stream.watts !== undefined && pwr.distribution_buckets.length > 0) {
           var rolling30: number[] = []
           for (let i = 0; i < activity.stream.time.original_size; i++) {
             let start = activity.stream.time.data[i]
