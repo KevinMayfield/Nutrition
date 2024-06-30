@@ -17,30 +17,33 @@
     <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectionchange)="tabChanged($event)">
         <mat-tab label="Summary">
             <span *ngIf="selectedTabIndex === undefined || selectedTabIndex === 0">
-            <td-message
+            <td-message *ngIf="!hasVitals()"
+                 label="Information"
+                 sublabel="Gender, Height and Weight are required to estimate energy intake."
+                 color="accent"
+                 icon="info">
+                    <a td-message-actions mat-button routerLink="/person" >Settings</a>
+            </td-message>
+            <span *ngIf="hasVitals()">
+                <td-message
                         label="Information"
                         sublabel="This screen is based on US Physical Activity - Time-based Measures"
                         color="primary"
                         icon="info">
-                <button td-message-actions mat-button (click)="viewPA()">View More</button>
-            </td-message>
+                    <button td-message-actions mat-button (click)="viewPA()">View More</button>
+                </td-message>
             <!--
 
              Energy Intake estimates
 
              -->
 
-            <div class="example-full-width">
+                 <div class="example-full-width">
                 <h3>Energy Intake Estimates</h3>
-                <td-message *ngIf="dailyEnergy == undefined || rmr == undefined"
-                            label="Information"
-                            sublabel="Gender, Height and Weight is required to estimate energy intake."
-                            color="primary"
-                            icon="info">
-                    <button td-message-actions mat-button >View More</button>
-                </td-message>
-                The estimates are based on activities recorded in Strava.
-                <div *ngIf="dailyEnergy !== undefined || rmr !== undefined">
+
+
+                <div *ngIf="hasVitals()">
+                    The estimates are based on activities recorded in Strava.
                     <mat-grid-list cols="2" rowHeight="2:1">
                       <mat-grid-tile>
                           <span class="bigger">{{exerciseFrequency?.display}}</span>
@@ -73,6 +76,7 @@
                         </mat-grid-list>
                 </div>
             </div>
+
             <!--
 
             Energy summary bar chart
@@ -102,6 +106,7 @@
                     <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR"></app-summary-graph>
 
             </span>
+                  </span>
             <!--
 
             Body Measures
@@ -122,13 +127,16 @@
         -->
         <mat-tab label="Heart Rate">
                     <span *ngIf="selectedTabIndex !== undefined && selectedTabIndex === 1">
-            <td-message
-                        label="Information"
-                        sublabel="This screen is based on US Physical Activity - Activity-based Measures"
-                        color="primary"
-                        icon="info">
-                <button td-message-actions mat-button (click)="viewPA()">View More</button>
+                             <span *ngIf="!hasVitals()">
+                               <td-message *ngIf="!hasVitals()"
+                                           label="Information"
+                                           sublabel="Gender, Height and Weight are required to estimate energy intake."
+                                           color="accent"
+                                           icon="info">
+                    <a td-message-actions mat-button routerLink="/person" >Settings</a>
             </td-message>
+                             </span>
+                        <span *ngIf="hasVitals()">
             <app-summary-graph  [dayActivity]="activityArray" [zoneHR]="zoneHR" type="heart"></app-summary-graph>
             <span *ngIf="stacked !== undefined && stacked.length>0" #containerRef>
 
@@ -160,6 +168,7 @@
                     </mat-expansion-panel>
 
             </span>
+                            </span>
              <div>
                 <table mat-table [dataSource]="dataSourceHR" class="mat-elevation-z8"
                        matSort #hrSort="matSort" (matSortChange)="announceSortChange($event)"

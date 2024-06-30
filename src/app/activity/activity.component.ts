@@ -20,6 +20,8 @@ import {MeasurementSetting} from "../models/enums/MeasurementSetting";
 import {AuthService} from "../service/auth.service";
 import {GoogleFitService} from "../service/google-fit.service";
 import {Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {InfoDiaglogComponent} from "../info-diaglog/info-diaglog.component";
 
 class ActivityWeek {
     week?: number;
@@ -184,8 +186,7 @@ export class ActivityComponent implements OnInit{
         private strava: StravaService,
         private withings: WithingsService,
         private googleFit: GoogleFitService,
-        private auth: AuthService,
-        protected sanitizer: DomSanitizer,
+        public dialog: MatDialog,
         private _liveAnnouncer: LiveAnnouncer) {
         this.viewEnergyPie = [innerWidth / this.widthQuota, this.viewEnergyPie[1]];
     }
@@ -708,7 +709,15 @@ export class ActivityComponent implements OnInit{
                if (athlete.weight !== undefined) this.weight = athlete.weight
                this.epr.setPerson(athlete)
                this.strava.getActivities()
-           })
+           },
+               error => {
+                    if (error.error !== undefined && error.error.message !== undefined) {
+                        this.openAlert('Error', error.error.message)
+                    } else {
+                        this.openAlert('Error', 'Strava - Unknown error')
+                    }
+
+               })
        }
     }
     setSelectAnswers() {
@@ -1410,5 +1419,25 @@ export class ActivityComponent implements OnInit{
             if (a.date > b.date) return -1
             else return 1
         })
+    }
+
+    hasVitals() {
+        if (this.epr.person.sex !== undefined && this.epr.person.height !== undefined
+        && this.epr.person.weight !== undefined) {
+            if (this.epr.person.height > 0
+                && this.epr.person.weight > 0)return true;
+        }
+        return false;
+    }
+
+    openAlert(title : string, information : string) {
+        let dialogRef = this.dialog.open(InfoDiaglogComponent, {
+            width: '400px',
+            data:  {
+                information: information,
+                title: title
+            }
+        });
+
     }
 }
