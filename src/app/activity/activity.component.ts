@@ -2,7 +2,6 @@ import {Component,  Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/
 import {Parameters, QuestionnaireResponse, ValueSetExpansionContains} from "fhir/r4";
 import {HttpClient} from "@angular/common/http";
 import {SmartService} from "../service/smart.service";
-import {DomSanitizer} from "@angular/platform-browser";
 import {StravaService} from "../service/strava.service";
 import {hrZone, pwrZone} from "../models/person";
 import {SummaryActivity} from "../models/summary-activity";
@@ -17,7 +16,6 @@ import {MatDatepickerInputEvent} from "@angular/material/datepicker";
 import {WithingsService} from "../service/withings.service";
 import {Observations} from "../models/observations";
 import {MeasurementSetting} from "../models/enums/MeasurementSetting";
-import {AuthService} from "../service/auth.service";
 import {GoogleFitService} from "../service/google-fit.service";
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
@@ -1439,5 +1437,14 @@ export class ActivityComponent implements OnInit{
             }
         });
 
+    }
+
+    efficiencyFactor(activity: SummaryActivity) {
+        if (activity.average_heartrate !== undefined
+            && activity.average_heartrate > 0
+            && activity.average_watts !== undefined) {
+            return Math.round(activity.average_watts * 100 / activity.average_heartrate)/100
+        }
+        return "";
     }
 }
